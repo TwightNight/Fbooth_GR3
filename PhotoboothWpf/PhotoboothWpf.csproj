@@ -165,9 +165,6 @@
     <Resource Include="backgrounds\StopButton.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\PHM_12_PNG.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgrounds\foreground_1.png" />
     <Resource Include="backgrounds\foreground_3.png" />
     <Resource Include="backgrounds\foreground_4.png" />
@@ -178,12 +175,11 @@
     <Resource Include="backgrounds\background_3.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\lookat.png" />
-    <Resource Include="backgrounds\PHM.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgrounds\MinusButton.png" />
     <Resource Include="backgrounds\PlusButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
