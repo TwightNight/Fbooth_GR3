@@ -83,7 +83,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\EmailSender.cs" />
+    <Compile Include="Classes\Entity\Infrastructure.cs" />
+    <Compile Include="Classes\Frames.cs" />
     <Compile Include="Classes\GetImageThumbnail.cs" />
+    <Compile Include="Classes\RenderManager.cs" />
     <Compile Include="Menu\UserSettings.cs" />
     <Compile Include="Foreground_menu.cs" />
     <Compile Include="Classes\CreateTemplate.cs" />
@@ -104,6 +107,10 @@
     <Compile Include="RepeatPhotoDialog.xaml.cs">
       <DependentUpon>RepeatPhotoDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControll\FrameScreen.xaml.cs">
+      <DependentUpon>FrameScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Util\UtilClass.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -128,6 +135,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControll\FrameScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -149,6 +160,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -180,6 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\Frames\1cut\1a\default.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

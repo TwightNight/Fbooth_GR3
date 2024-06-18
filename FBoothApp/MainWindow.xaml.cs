@@ -28,6 +28,7 @@ using FBoothApp.Classes;
 using Image = System.Windows.Controls.Image;
 using Path = System.IO.Path;
 using Point = System.Drawing.Point;
+using FBoothApp.UserControll;
 
 
 namespace FBoothApp
@@ -40,7 +41,9 @@ namespace FBoothApp
         public System.Windows.Threading.DispatcherTimer sliderTimer;
         public System.Windows.Threading.DispatcherTimer betweenPhotos;
         public System.Windows.Threading.DispatcherTimer secondCounter;
+        private int numberOfCut;
 
+        Frames frames;
         CanonAPI APIHandler;
         Camera MainCamera;
         ImageBrush liveView = new ImageBrush();
@@ -49,7 +52,7 @@ namespace FBoothApp
         PrintDialog pdialog = new PrintDialog();
 
         XDocument actualSettings = new XDocument();
-        List<System.Windows.Media.ImageSource> resizedImages = new List<System.Windows.Media.ImageSource>();  
+        List<System.Windows.Media.ImageSource> resizedImages = new List<System.Windows.Media.ImageSource>();
 
         public int photoNumber = 0;
         public int photoNumberInTemplate = 0;
@@ -73,13 +76,13 @@ namespace FBoothApp
         public bool turnOnTemplateMenu = false;
         public bool PhotoTaken = false;
 
-   
+
         public MainWindow()
         {
             InitializeComponent();
             FillSavedData();
             ActivateTimers();
-            CheckTemplate();     
+            CheckTemplate();
 
             //Canon:
             try
@@ -92,24 +95,24 @@ namespace FBoothApp
                 ErrorHandler.NonSevereErrorHappened += ErrorHandler_NonSevereErrorHappened;
 
                 SetImageAction = (BitmapImage img) => { liveView.ImageSource = img; };
-          
+
                 RefreshCamera();
                 OpenSession();
                 MainCamera.SetCapacity(4096, 0x1FFFFFFF);
-                
+
             }
             // TODO: Close main windows when null reference occures
             catch (NullReferenceException) { Report.Error("Chceck if camera is turned on and restart the program", true); }
             catch (DllNotFoundException) { Report.Error("Canon DLLs not found!", true); }
             catch (Exception ex) { Report.Error(ex.Message, true); }
-           
+
 
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             try
             {
-              
+
                 MainCamera?.Dispose();
                 APIHandler?.Dispose();
             }
@@ -155,16 +158,16 @@ namespace FBoothApp
             catch (Exception ex) { Report.Error(ex.Message, false); }
             // TODO: zamiast sleppa jakas metoda ktora sprawdza czy zdjecie juz sie zrobilio i potem kolejna linia kodu-
 
-            
+
             Thread.Sleep(2000);
             //jak mam sleep 4000 to mi nie dziala
 
 
             PhotoTextBox.Visibility = Visibility.Visible;
-                PhotoTextBox.Text = "Prepare for next Photo!";
-            
+            PhotoTextBox.Text = "Prepare for next Photo!";
+
             // Waiting for photo saving 
-            while (PhotoTaken==false)
+            while (PhotoTaken == false)
             {
                 Thread.Sleep(1000);
             }
@@ -172,61 +175,61 @@ namespace FBoothApp
             PhotoTaken = false;
 
             // One if than switch
-                switch (templateName)
-                {
-                    case "foreground_1":
-                        if (Control.photoTemplate(photosInTemplate, 1))
-                        {
-                            var printdata = new SavePrints(printNumber);
-                            printPath = printdata.PrintDirectory;
-                            LayTemplate.foreground1(printPath);
-                            printNumber++;
-                            PrintMenu();
+            switch (templateName)
+            {
+                case "foreground_1":
+                    if (Control.photoTemplate(photosInTemplate, 1))
+                    {
+                        var printdata = new SavePrints(printNumber);
+                        printPath = printdata.PrintDirectory;
+                        LayTemplate.foreground1(printPath);
+                        printNumber++;
+                        PrintMenu();
                         }
-                        break;
+                    break;
 
-                    case "foreground_3":
-                        if (Control.photoTemplate(photosInTemplate, 3))
-                        {
-                            var printdata = new SavePrints(printNumber);
-                            printPath = printdata.PrintDirectory;
-                            LayTemplate.foreground3(printPath);
-                            printNumber++;
-                            PrintMenu();
-                        }
-                        break;
-                    case "foreground_4":
-                        if (Control.photoTemplate(photosInTemplate, 4))
-                        {
-                            var printdata = new SavePrints(printNumber);
-                            printPath = printdata.PrintDirectory;
-                            LayTemplate.foreground4(printPath);
-                            printNumber++;
-                            PrintMenu();
-                        }
-                        break;
+                case "foreground_3":
+                    if (Control.photoTemplate(photosInTemplate, 3))
+                    {
+                        var printdata = new SavePrints(printNumber);
+                        printPath = printdata.PrintDirectory;
+                        LayTemplate.foreground3(printPath);
+                        printNumber++;
+                        PrintMenu();
+                    }
+                    break;
+                case "foreground_4":
+                    if (Control.photoTemplate(photosInTemplate, 4))
+                    {
+                        var printdata = new SavePrints(printNumber);
+                        printPath = printdata.PrintDirectory;
+                        LayTemplate.foreground4(printPath);
+                        printNumber++;
+                        PrintMenu();
+                    }
+                    break;
 
-                    case "foreground_4_paski":
-                        if (Control.photoTemplate(photosInTemplate, 4))
-                        {
-                            var printdata = new SavePrints(printNumber);
-                            printPath = printdata.PrintDirectory;
-                            LayTemplate.foreground4stripes(printPath);
-                            printNumber++;
-                            PrintMenu();
-                        }
-                        break;
-                    default:
-                        Debug.WriteLine("bug at switch which template");
-                        break;
-                }
+                case "foreground_4_paski":
+                    if (Control.photoTemplate(photosInTemplate, 4))
+                    {
+                        var printdata = new SavePrints(printNumber);
+                        printPath = printdata.PrintDirectory;
+                        LayTemplate.foreground4stripes(printPath);
+                        printNumber++;
+                        PrintMenu();
+                    }
+                    break;
+                default:
+                    Debug.WriteLine("bug at switch which template");
+                    break;
+            }
 
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             sliderTimer.Start();
-//TODO OR NOT WHEN NO CAMERA CONNECTED WILL CAUSE BUG WHILE CLICK STOP IN FOREGRUND MENU
+            //TODO OR NOT WHEN NO CAMERA CONNECTED WILL CAUSE BUG WHILE CLICK STOP IN FOREGRUND MENU
             MainCamera.StopLiveView();
             photosInTemplate = 0;
             photoNumberInTemplate = 0;
@@ -239,8 +242,8 @@ namespace FBoothApp
         public void ShowTimeLeft(object sender, EventArgs e)
         {
 
-                PhotoTextBox.Text = timeLeftCopy.ToString();
-                timeLeftCopy--;         
+            PhotoTextBox.Text = timeLeftCopy.ToString();
+            timeLeftCopy--;
         }
         #endregion
 
@@ -248,24 +251,24 @@ namespace FBoothApp
         public void slider(object sender, EventArgs e)
         {
             var sliderData = new Slider();
-            
+
             ImageBrush slide = new ImageBrush();
-          //  slide.Stretch = Stretch.Uniform;
-        
-            slide.ImageSource = new BitmapImage(new Uri(sliderData.imagePath));            
+            //  slide.Stretch = Stretch.Uniform;
+
+            slide.ImageSource = new BitmapImage(new Uri(sliderData.imagePath));
             Slider.Background = slide;
-            
-          //  var ratio = Math.Min(Slider.RenderSize.Width / slide.ImageSource.Width, Slider.RenderSize.Height / slide.ImageSource.Height);
-        //    CreateDynamicBorder(slide.ImageSource.Width, slide.ImageSource.Height);
+
+            //  var ratio = Math.Min(Slider.RenderSize.Width / slide.ImageSource.Width, Slider.RenderSize.Height / slide.ImageSource.Height);
+            //    CreateDynamicBorder(slide.ImageSource.Width, slide.ImageSource.Height);
 
         }
 
 
-    #endregion
+        #endregion
 
-    #region API Events
+        #region API Events
 
-    private void APIHandler_CameraAdded(CanonAPI sender)
+        private void APIHandler_CameraAdded(CanonAPI sender)
         {
             try { Dispatcher.Invoke((Action)delegate { RefreshCamera(); }); }
             catch (Exception ex) { Report.Error(ex.Message, false); }
@@ -298,44 +301,44 @@ namespace FBoothApp
 
         private void MainCamera_DownloadReady(Camera sender, DownloadInfo Info)
         {
-           
+
             try
             {
                 photoNumber++;
                 var savedata = new SavePhoto(photoNumber);
-                string  dir = savedata.FolderDirectory;
+                string dir = savedata.FolderDirectory;
 
-                Info.FileName = savedata.PhotoName;               
+                Info.FileName = savedata.PhotoName;
                 sender.DownloadFile(Info, dir);
-             
-//                ReSize.ImageAndSave(savedata.PhotoDirectory,photosInTemplate,templateName);
-                ReSize.ImageAndSave(savedata.PhotoDirectory,photoNumberInTemplate,templateName);
+
+                //                ReSize.ImageAndSave(savedata.PhotoDirectory,photosInTemplate,templateName);
+                ReSize.ImageAndSave(savedata.PhotoDirectory, photoNumberInTemplate, templateName);
 
             }
             catch (Exception ex) { Report.Error(ex.Message, false); }
 
             PhotoTaken = true;
-            
+
         }
 
         private void ErrorHandler_NonSevereErrorHappened(object sender, ErrorCode ex)
         {
             string errorCode = ((int)ex).ToString("X");
             switch (errorCode)
-             {
-               case "8D01": // TAKE_PICTURE_AF_NG
-                     if (photoNumberInTemplate!=0)
-                         {
-                            photoNumberInTemplate--;
-                        }
-                     if (photosInTemplate != 0)
-                         {
-                            photosInTemplate--;
-                        }
+            {
+                case "8D01": // TAKE_PICTURE_AF_NG
+                    if (photoNumberInTemplate != 0)
+                    {
+                        photoNumberInTemplate--;
+                    }
+                    if (photosInTemplate != 0)
+                    {
+                        photosInTemplate--;
+                    }
                     PhotoTaken = true;
-               Debug.WriteLine("Autofocus error");
-               return;
-             }
+                    Debug.WriteLine("Autofocus error");
+                    return;
+            }
             Report.Error($"SDK Error code: {ex} ({((int)ex).ToString("X")})", false);
         }
 
@@ -372,9 +375,9 @@ namespace FBoothApp
             }
             try
             {
-                
+
                 Slider.Background = liveView;
-                    MainCamera.StartLiveView();
+                MainCamera.StartLiveView();
 
             }
             catch (Exception ex) { Report.Error(ex.Message, false); }
@@ -387,10 +390,10 @@ namespace FBoothApp
         private void CloseSession()
         {
             try
-             {
+            {
                 MainCamera.CloseSession();
-             }
-             catch (ObjectDisposedException) { Report.Error("Camera has been turned off! \nPlease turned it on and restart the application", true); }
+            }
+            catch (ObjectDisposedException) { Report.Error("Camera has been turned off! \nPlease turned it on and restart the application", true); }
             //SettingsGroupBox.IsEnabled = false;
             //LiveViewGroupBox.IsEnabled = false;
             //SessionButton.Content = "Open Session";
@@ -413,7 +416,7 @@ namespace FBoothApp
             {
                 MainCamera = CamList[CameraListBox.SelectedIndex];
                 MainCamera.OpenSession();
-                MainCamera.LiveViewUpdated += MainCamera_LiveViewUpdated;           
+                MainCamera.LiveViewUpdated += MainCamera_LiveViewUpdated;
                 MainCamera.StateChanged += MainCamera_StateChanged;
                 MainCamera.DownloadReady += MainCamera_DownloadReady;
                 MainCamera.SetSetting(PropertyID.SaveTo, (int)SaveTo.Host);
@@ -427,9 +430,9 @@ namespace FBoothApp
             if (!Dispatcher.CheckAccess()) Dispatcher.Invoke((Action)delegate { EnableUI(enable); });
             else
             {
-            //    SettingsGroupBox.IsEnabled = enable;
-             //   InitGroupBox.IsEnabled = enable;
-           //     LiveViewGroupBox.IsEnabled = enable;
+                //    SettingsGroupBox.IsEnabled = enable;
+                //   InitGroupBox.IsEnabled = enable;
+                //     LiveViewGroupBox.IsEnabled = enable;
             }
         }
 
@@ -456,12 +459,14 @@ namespace FBoothApp
             var printerSettings = new PrinterSettings();
             var labelPaperSize = new PaperSize
             {
-                RawKind = (int)PaperKind.Custom, Height = 150, Width = 100
+                RawKind = (int)PaperKind.Custom,
+                Height = 150,
+                Width = 100
             };
             printerSettings.DefaultPageSettings.PaperSize = labelPaperSize;
-            printerSettings.DefaultPageSettings.Margins = new Margins(0,0,0,0);
+            printerSettings.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
 
-//            printerSettings.Copies = actualNumberOfCopies;
+            //            printerSettings.Copies = actualNumberOfCopies;
             pdialog.PrintVisual(vis, "My Image");
         }
 
@@ -470,7 +475,7 @@ namespace FBoothApp
         {
             photosInTemplate = 0;
             photoNumberInTemplate = 0;
-            Printing.Print(printPath,printerName,actualNumberOfCopies);
+            Printing.Print(printPath, printerName, actualNumberOfCopies);
             actualNumberOfCopies = 1;
             if (turnOnTemplateMenu) StartAllForegroundsWelcomeMenu();
             else StartWelcomeMenu();
@@ -489,6 +494,8 @@ namespace FBoothApp
             actualPrint.EndInit();
 
             ShowPrint.Source = actualPrint;
+            //FrameScreen frameScreen = new FrameScreen(actualPrint, frames, numberOfCut);
+            //contentFrame.Content = frameScreen;
             Print.Visibility = Visibility.Visible;
             NumberOfCopiesTextBox.Visibility = Visibility.Visible;
             AddOneCopyButton.Visibility = Visibility.Visible;
@@ -497,17 +504,17 @@ namespace FBoothApp
 
 
             ShowPrint.Visibility = Visibility.Visible;
-    //        CreateDynamicBorder(ShowPrint.ActualWidth, ShowPrint.ActualHeight);
+            //        CreateDynamicBorder(ShowPrint.ActualWidth, ShowPrint.ActualHeight);
         }
 
         private void MinusOneCopyButtonClick(object sender, RoutedEventArgs e)
         {
-            if (actualNumberOfCopies>1)
+            if (actualNumberOfCopies > 1)
             {
                 --actualNumberOfCopies;
                 NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
             }
-            
+
         }
 
         private void AddOneCopyButtonClick(object sender, RoutedEventArgs e)
@@ -523,17 +530,18 @@ namespace FBoothApp
 
         #region menu
 
-        private void FillSavedData ()
+        private void FillSavedData()
         {
             string firstprinter;
             string secondprinter;
 
-                if (!File.Exists(Path.Combine(currentDirectory, "menusettings.xml")))
-                    {
-                        Debug.WriteLine("XMLsettings doesnt exist");
-                        Report.Error("XML settings cannot be found\nPlease Press F12 and update settings", true);
-                        return;
-                     }
+            //lay ten may in
+            if (!File.Exists(Path.Combine(currentDirectory, "menusettings.xml")))
+            {
+                Debug.WriteLine("XMLsettings doesnt exist");
+                Report.Error("XML settings cannot be found\nPlease Press F12 and update settings", true);
+                return;
+            }
             try
             {
                 actualSettings = System.Xml.Linq.XDocument.Load(System.IO.Path.Combine(currentDirectory, "menusettings.xml"));
@@ -563,12 +571,12 @@ namespace FBoothApp
                 Debug.WriteLine("XMLsettings cannot be load properly");
                 Report.Error("XML settings cannot be load properly\nPlease Press F12 and update settings", true);
             }
-                
-           
+
+
 
         }
 
-       
+
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -602,16 +610,16 @@ namespace FBoothApp
 
         #region Foreground_Menu
 
-        
+
         private void Foreground_3_button_Click(object sender, RoutedEventArgs e)
         {
-            
+
             templateName = "foreground_3";
             StartButton_Click(sender, e);
 
         }
         private void Foreground_4_button_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             templateName = "foreground_4";
             StartButton_Click(sender, e);
         }
@@ -625,14 +633,14 @@ namespace FBoothApp
             templateName = "foreground_4_paski";
             StartButton_Click(sender, e);
         }
-       
+
 
         private void StartButtonMenu_Click(object sender, RoutedEventArgs e)
         {
             TurnOnForegroundMenu();
-           
+
         }
-         public void TurnOnForegroundMenu()
+        public void TurnOnForegroundMenu()
         {
             sliderTimer.Stop();
             Slider.Visibility = Visibility.Hidden;
@@ -679,7 +687,7 @@ namespace FBoothApp
         }
         public void CheckTemplate()
         {
-       
+
             if (turnOnTemplateMenu)
             {
                 StartButtonMenu.Visibility = Visibility.Visible;
@@ -695,13 +703,13 @@ namespace FBoothApp
         {
             var printBorder = new Border();
             // border.Background = new SolidColorBrush(Colors.LightGray);
-           printBorder.BorderThickness = new Thickness(10);
+            printBorder.BorderThickness = new Thickness(10);
             printBorder.BorderBrush = new SolidColorBrush(Colors.Coral);
-         //   border.CornerRadius = new CornerRadius(15);
+            //   border.CornerRadius = new CornerRadius(15);
             printBorder.Width = width;
             printBorder.Height = height;
-           
-            
+
+
         }
         private void StartWelcomeMenu()
         {
@@ -743,18 +751,18 @@ namespace FBoothApp
                 switch (templateName)
                 {
                     case "foreground_1":
-                        emailSender.SendEmail(photoNumber, 1, inputEmailSendDialog.Answer);
+                        emailSender.SendEmail(photoNumber, 1, inputEmailSendDialog.Answer, printPath);
                         break;
 
                     case "foreground_3":
-                        emailSender.SendEmail(photoNumber, 3, inputEmailSendDialog.Answer);
+                        emailSender.SendEmail(photoNumber, 3, inputEmailSendDialog.Answer, printPath);
                         break;
                     case "foreground_4":
-                        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer);
+                        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
                         break;
 
                     case "foreground_4_paski":
-                        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer);
+                        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
                         break;
                     default:
                         Debug.WriteLine("bug at switch which template in email send button");
@@ -762,7 +770,7 @@ namespace FBoothApp
                 }
             }
         }
-        public void ShowPhotoThumbnail ()
+        public void ShowPhotoThumbnail()
         {
             var getImageThumbnail = new GetImageThumbnail();
 
@@ -872,7 +880,7 @@ namespace FBoothApp
 
         private void LeftThumbnail_OnClick(object sender, RoutedEventArgs e)
         {
-            RepeatJustTakenPhoto(sender,e, 1);
+            RepeatJustTakenPhoto(sender, e, 1);
         }
 
         private void CenterThumbnail_OnClick(object sender, RoutedEventArgs e)
@@ -922,7 +930,7 @@ namespace FBoothApp
             if (repeatPhotoDialog.ShowDialog() == true)
             {
                 photosInTemplate--;
-                photoNumberInTemplate = photoNumberToRepeat-1;
+                photoNumberInTemplate = photoNumberToRepeat - 1;
                 Print.Visibility = Visibility.Hidden;
                 ShowPrint.Visibility = Visibility.Hidden;
                 NumberOfCopiesTextBox.Visibility = Visibility.Hidden;

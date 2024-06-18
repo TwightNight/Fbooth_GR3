@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Linq;
 using EOSDigital.SDK;
+using System.Net.Mime;
 
 
 namespace FBoothApp.Classes
@@ -24,30 +25,33 @@ namespace FBoothApp.Classes
         private XDocument settings = new XDocument();
         private string currentDirectory = Environment.CurrentDirectory;
 
-        public async void SendEmail(int photoNumber, int numberOfPhotosToSendViaEmail, string emailClientAddress)
+        public async void SendEmail(int photoNumber, int numberOfPhotosToSendViaEmail, string emailClientAddress, string printedPhotoPath)
         {
             try
             {
+                // Validate email address
+                if (!IsValidEmail(emailClientAddress))
+                {
+                    Report.Error("Wrong e-mail format \nPlease enter your e-mail correctly\nexample@mail.com", true);
+                    return;
+                }
+
+                LoadValues();
+
                 await Task.Run(() =>
                 {
-
-                    LoadValues();
                     MailMessage mail = new MailMessage();
-                    //put your SMTP address and port here.
                     SmtpClient SmtpServer = new SmtpClient(smtpServerName);
-                    //Put the email address
-                    mail.From = new MailAddress(emailHostAddress);
-                    //Put the email where you want to send.
-                    //TODO: Regexp sprawdzajacy poprawny e-mail
-                    mail.To.Add(emailClientAddress);
 
-                    mail.Subject = "Test1234Topic";
+                    mail.From = new MailAddress(emailHostAddress);
+                    mail.To.Add(emailClientAddress);
+                    mail.Subject = "Your Photos from FBooth";
 
                     StringBuilder sbBody = new StringBuilder();
-
-                    sbBody.AppendLine("Hi, this is test mail");
-
-                    mail.Body = sbBody.ToString();
+                    sbBody.AppendLine("<html>");
+                    sbBody.AppendLine("<body>");
+                    sbBody.AppendLine("<h1>Hi,</h1>");
+                    sbBody.AppendLine("<p>Thank you for using our photo booth! Here are your photos:</p>");
 
                     var instance = new SavePhoto(photoNumber);
                     for (int i = 0; i < numberOfPhotosToSendViaEmail; i++)
@@ -57,15 +61,45 @@ namespace FBoothApp.Classes
                         string photoName = instance.photoNaming(photoNumber);
                         string photoDirectoryPath = Path.Combine(Actual.FilePath(), photoName);
                         Debug.WriteLine(photoDirectoryPath);
+
+                        // Embed the image
+                        string contentId = Guid.NewGuid().ToString();
                         Attachment attachment = new Attachment(photoDirectoryPath);
+                        attachment.ContentDisposition.Inline = true;
+                        attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
+                        attachment.ContentId = contentId;
+                        attachment.ContentType.MediaType = "image/jpeg";
+                        attachment.ContentType.Name = Path.GetFileName(photoDirectoryPath);
                         mail.Attachments.Add(attachment);
+
+                        // Add the image to the body
+                        sbBody.AppendLine($"<img src=\"cid:{contentId}\" alt=\"Photo\" style=\"width:100%; max-width:600px;\"/>");
                     }
 
-                    /// mail - photomadnesstest@hotmail.com
-                    /// pass - Photomadness123
-                    /// Server name: smtp-mail.outlook.com
-                    //Port: 587
-                    //TODO:dodac mozliwosc podmiany maili
+                    if (!string.IsNullOrEmpty(printedPhotoPath) && File.Exists(printedPhotoPath))
+                    {
+                        string printedContentId = Guid.NewGuid().ToString();
+                        Attachment printedAttachment = new Attachment(printedPhotoPath);
+                        printedAttachment.ContentDisposition.Inline = true;
+                        printedAttachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
+                        printedAttachment.ContentId = printedContentId;
+                        printedAttachment.ContentType.MediaType = "image/jpeg";
+                        printedAttachment.ContentType.Name = Path.GetFileName(printedPhotoPath);
+                        mail.Attachments.Add(printedAttachment);
+
+                        // Add the printed photo to the body
+                        sbBody.AppendLine($"<h2>Your Printed Photo:</h2>");
+                        sbBody.AppendLine($"<img src=\"cid:{printedContentId}\" alt=\"Printed Photo\" style=\"width:100%; max-width:600px;\"/>");
+                    }
+
+                    sbBody.AppendLine("<p>Best regards,</p>");
+                    sbBody.AppendLine("<p>FBooth Team</p>");
+                    sbBody.AppendLine("</body>");
+                    sbBody.AppendLine("</html>");
+
+                    mail.Body = sbBody.ToString();
+                    mail.IsBodyHtml = true;
+
                     SmtpServer.Credentials = new NetworkCredential(emailHostAddress, emailHostPassword);
                     SmtpServer.Port = int.Parse(smtpPortNumber);
                     SmtpServer.EnableSsl = true;
@@ -73,12 +107,31 @@ namespace FBoothApp.Classes
                     SmtpServer.Send(mail);
                 });
             }
-            catch (FormatException) { Report.Error("Wrong e-mail format \nPlease enter your e-mail correctly\nexample@mail.com", true); }
+            catch (FormatException ex)
+            {
+                Report.Error("Wrong e-mail format \nPlease enter your e-mail correctly\nexample@mail.com", true);
+                Debug.WriteLine(ex.ToString());
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Report.Error("An error occurred while sending the email.", true);
+                Debug.WriteLine(ex.ToString());
             }
-            
+
+        }
+
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public void LoadValues()
@@ -91,7 +144,7 @@ namespace FBoothApp.Classes
                 emailHostPassword = settings.Root.Element("EmailHostPassword").Value;
                 smtpServerName = settings.Root.Element("SmtpServerName").Value;
                 smtpPortNumber = settings.Root.Element("SmtpPortNumber").Value;
-             }
+            }
             catch (XmlException e)
             {
                 Debug.WriteLine("LoadDefaultValues exception");

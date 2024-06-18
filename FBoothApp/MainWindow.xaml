@@ -34,6 +34,15 @@
             <ColumnDefinition Width="0.375*" />
         </Grid.ColumnDefinitions>
 
+        <ContentControl
+            x:Name="contentFrame"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+
         <Button
             x:Name="StartButton"
             Grid.Row="0"

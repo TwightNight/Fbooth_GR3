@@ -101,6 +101,8 @@ namespace FBoothApp
             string currFile = Path.Combine(PrintsFolderDirectory, fileName);
             return File.Exists(currFile);
         }
+
+        //chon folder de in
         public string currenFolderDirectory()
         {
             string p1 = Actual.FilePath();
