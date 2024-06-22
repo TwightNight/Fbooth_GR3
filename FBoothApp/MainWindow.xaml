@@ -133,17 +133,29 @@
             <Image Source="backgrounds/ReadyButton.png" />
         </Button>
 
-
+        <!--  Show tam anh de chuan bi in  -->
         <Image
             x:Name="ShowPrint"
             Grid.Row="1"
             Grid.RowSpan="2"
-            Grid.Column="1"
+            Grid.Column="0"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Visibility="Hidden" />
 
+        <!--  chỗ load background  -->
+        <WrapPanel
+            x:Name="BackgroundsWrapPanel"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="Visible" />
+
+        <!--  show nut in  -->
         <Button
             x:Name="Print"
             Grid.Row="1"
@@ -158,10 +170,12 @@
             <Image Source="backgrounds/PrintButton.png" />
         </Button>
 
+        <!--  show nut goi email  -->
         <Button
             x:Name="SendEmailButton"
-            Grid.Row="2"
-            Grid.Column="0"
+            Grid.Row="0"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{x:Null}"
@@ -172,6 +186,7 @@
             Foreground="White"
             Visibility="Hidden" />
 
+        <!--  show so luong anh muon in  -->
         <TextBox
             x:Name="NumberOfCopiesTextBox"
             Grid.Row="2"
@@ -188,6 +203,7 @@
             TextWrapping="Wrap"
             Visibility="Hidden" />
 
+        <!--  show nut +- so luong anh in  -->
         <Button
             x:Name="AddOneCopyButton"
             Grid.Row="2"

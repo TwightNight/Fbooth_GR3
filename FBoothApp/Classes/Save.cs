@@ -10,10 +10,10 @@ namespace FBoothApp
 {
     class SavePhoto
     {
+        public static string CurrentSessionPath { get; private set; }
 
         public int PhotoNumber { get; set; }
         public string FolderDirectory { get; set; }
-
         public string PhotoName { get; set; }
 
         public string PhotoDirectory { get; set; }
@@ -22,33 +22,44 @@ namespace FBoothApp
         public SavePhoto(int numb)
         {
             PhotoNumber = numb;
-            FolderDirectory = currenFolderDirectory();
-            PhotoName = actualPhotoName();
-            PhotoDirectory = nPhotoDirectory();
+            FolderDirectory = CurrentSessionDirectory();
+            PhotoName = ActualPhotoName();
+            PhotoDirectory = NewPhotoDirectory();
 
         }
-        public bool checkIfExsit (string fileName)
+        public bool checkIfExsit(string fileName)
         {
-             string currFile = Path.Combine(FolderDirectory, fileName);
+            string currFile = Path.Combine(FolderDirectory, fileName);
             return File.Exists(currFile);
         }
-        public string currenFolderDirectory()
+        public string CurrentSessionDirectory()
         {
-            string p1 = Environment.CurrentDirectory;
-            string p2 = Actual.DateNow();
+            if (CurrentSessionPath == null)
+            {
+                string p1 = Environment.CurrentDirectory;
+                string p2 = Actual.DateNow();
+                string sessionFolder = $"Session_{DateTime.Now.ToString("HH_mm")}";
+                var path = Path.Combine(p1, p2, sessionFolder);
 
-            var path = Path.Combine(p1, p2);
-            return path;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                CurrentSessionPath = path;
+            }
+
+            return CurrentSessionPath;
         }
 
-        public string actualPhotoName()
+        public string ActualPhotoName()
         {
             int number = PhotoNumber;
-            string photoName = photoNaming(number);
-            while(checkIfExsit(photoName)==true)
+            string photoName = PhotoNaming(number);
+            while (checkIfExsit(photoName) == true)
             {
                 number++;
-                photoName = photoNaming(number);
+                photoName = PhotoNaming(number);
             }
             return photoName;
         }
@@ -56,28 +67,28 @@ namespace FBoothApp
         public int PhotoNumberJustTaken()
         {
             int number = PhotoNumber;
-            string photoName = photoNaming(number);
+            string photoName = PhotoNaming(number);
             while (checkIfExsit(photoName) == true)
             {
                 number++;
-                photoName = photoNaming(number);
+                photoName = PhotoNaming(number);
             }
             number--;
             return number;
 
         }
-        public string photoNaming(int number)
+        public string PhotoNaming(int number)
         {
-            string temp = "IMG_" + number+".jpg";
+            string temp = "IMG_" + number + ".jpg";
             return temp;
         }
-       public string nPhotoDirectory()
+        public string NewPhotoDirectory()
         {
-            string p1 = Actual.FilePath();
+            string p1 = FolderDirectory;
             string p2 = PhotoName;
             return Path.Combine(p1, p2);
         }
-       
+
     }
     class SavePrints
     {
@@ -91,9 +102,9 @@ namespace FBoothApp
         public SavePrints(int numb)
         {
             PrintNumber = numb;
-            PrintsFolderDirectory = currenFolderDirectory();
-            PrintName = actualPhotoName();
-            PrintDirectory = nPhotoDirectory();
+            PrintsFolderDirectory = CurrentPrintsDirectory();
+            PrintName = ActualPrintName();
+            PrintDirectory = NewPrintDirectory();
 
         }
         public bool checkIfExsit(string fileName)
@@ -103,38 +114,45 @@ namespace FBoothApp
         }
 
         //chon folder de in
-        public string currenFolderDirectory()
+        public string CurrentPrintsDirectory()
         {
-            string p1 = Actual.FilePath();
-            string p2 = "prints";
+            string sessionFolder = new SavePhoto(PrintNumber).CurrentSessionDirectory();
+            string printsFolder = Path.Combine(sessionFolder, "prints");
 
-            var path = Path.Combine(p1, p2);
-            return path;
+            if (!Directory.Exists(printsFolder))
+            {
+                Directory.CreateDirectory(printsFolder);
+            }
+
+            return printsFolder;
         }
 
-        public string actualPhotoName()
+        public string ActualPrintName()
         {
             int number = PrintNumber;
-            string printName = printNaming(number);
+            string printName = PrintNaming(number);
             while (checkIfExsit(printName) == true)
             {
                 number++;
-                printName = printNaming(number);
+                printName = PrintNaming(number);
             }
 
             return printName;
 
         }
-        public string printNaming(int number)
+        public string PrintNaming(int number)
         {
             string temp = "print_" + number + ".jpg";
             return temp;
         }
-        public string nPhotoDirectory()
+        public string NewPrintDirectory()
         {
-            string p1 = currenFolderDirectory();
+
+            string p1 = PrintsFolderDirectory;
             string p2 = PrintName;
             return Path.Combine(p1, p2);
+
+            //return Path.Combine(PrintsFolderDirectory, PrintName);
         }
 
     }

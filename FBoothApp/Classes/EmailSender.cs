@@ -38,74 +38,71 @@ namespace FBoothApp.Classes
 
                 LoadValues();
 
-                await Task.Run(() =>
+                MailMessage mail = new MailMessage();
+                SmtpClient SmtpServer = new SmtpClient(smtpServerName)
                 {
-                    MailMessage mail = new MailMessage();
-                    SmtpClient SmtpServer = new SmtpClient(smtpServerName);
+                    Credentials = new NetworkCredential(emailHostAddress, emailHostPassword),
+                    Port = int.Parse(smtpPortNumber),
+                    EnableSsl = true
+                };
 
-                    mail.From = new MailAddress(emailHostAddress);
-                    mail.To.Add(emailClientAddress);
-                    mail.Subject = "Your Photos from FBooth";
+                mail.From = new MailAddress(emailHostAddress);
+                mail.To.Add(emailClientAddress);
+                mail.Subject = "Your Photos from FBooth";
 
-                    StringBuilder sbBody = new StringBuilder();
-                    sbBody.AppendLine("<html>");
-                    sbBody.AppendLine("<body>");
-                    sbBody.AppendLine("<h1>Hi,</h1>");
-                    sbBody.AppendLine("<p>Thank you for using our photo booth! Here are your photos:</p>");
+                StringBuilder sbBody = new StringBuilder();
+                sbBody.AppendLine("<html>");
+                sbBody.AppendLine("<body>");
+                sbBody.AppendLine("<h1>Hi,</h1>");
+                sbBody.AppendLine("<p>Thank you for using our photo booth! Here are your photos:</p>");
 
-                    var instance = new SavePhoto(photoNumber);
-                    for (int i = 0; i < numberOfPhotosToSendViaEmail; i++)
-                    {
-                        photoNumber = (instance.PhotoNumberJustTaken() - i);
-                        Debug.WriteLine("photo number is: " + photoNumber);
-                        string photoName = instance.photoNaming(photoNumber);
-                        string photoDirectoryPath = Path.Combine(Actual.FilePath(), photoName);
-                        Debug.WriteLine(photoDirectoryPath);
+                var instance = new SavePhoto(photoNumber);
+                for (int i = 0; i < numberOfPhotosToSendViaEmail; i++)
+                {
+                    photoNumber = (instance.PhotoNumberJustTaken() - i);
+                    string photoName = instance.PhotoNaming(photoNumber);
+                    string photoDirectoryPath = Path.Combine(Actual.FilePath(), photoName);
 
-                        // Embed the image
-                        string contentId = Guid.NewGuid().ToString();
-                        Attachment attachment = new Attachment(photoDirectoryPath);
-                        attachment.ContentDisposition.Inline = true;
-                        attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
-                        attachment.ContentId = contentId;
-                        attachment.ContentType.MediaType = "image/jpeg";
-                        attachment.ContentType.Name = Path.GetFileName(photoDirectoryPath);
-                        mail.Attachments.Add(attachment);
+                    // Embed the image
+                    string contentId = Guid.NewGuid().ToString();
+                    Attachment attachment = new Attachment(photoDirectoryPath);
+                    attachment.ContentDisposition.Inline = true;
+                    attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
+                    attachment.ContentId = contentId;
+                    attachment.ContentType.MediaType = "image/jpeg";
+                    attachment.ContentType.Name = Path.GetFileName(photoDirectoryPath);
+                    mail.Attachments.Add(attachment);
 
-                        // Add the image to the body
-                        sbBody.AppendLine($"<img src=\"cid:{contentId}\" alt=\"Photo\" style=\"width:100%; max-width:600px;\"/>");
-                    }
+                    // Add the image to the body
+                    sbBody.AppendLine($"<img src=\"cid:{contentId}\" alt=\"Photo\" style=\"width:100%; max-width:600px;\"/>");
+                }
 
-                    if (!string.IsNullOrEmpty(printedPhotoPath) && File.Exists(printedPhotoPath))
-                    {
-                        string printedContentId = Guid.NewGuid().ToString();
-                        Attachment printedAttachment = new Attachment(printedPhotoPath);
-                        printedAttachment.ContentDisposition.Inline = true;
-                        printedAttachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
-                        printedAttachment.ContentId = printedContentId;
-                        printedAttachment.ContentType.MediaType = "image/jpeg";
-                        printedAttachment.ContentType.Name = Path.GetFileName(printedPhotoPath);
-                        mail.Attachments.Add(printedAttachment);
+                // Add the printed photo to the email
+                if (!string.IsNullOrEmpty(printedPhotoPath) && File.Exists(printedPhotoPath))
+                {
+                    string printedContentId = Guid.NewGuid().ToString();
+                    Attachment printedAttachment = new Attachment(printedPhotoPath);
+                    printedAttachment.ContentDisposition.Inline = true;
+                    printedAttachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
+                    printedAttachment.ContentId = printedContentId;
+                    printedAttachment.ContentType.MediaType = "image/jpeg";
+                    printedAttachment.ContentType.Name = Path.GetFileName(printedPhotoPath);
+                    mail.Attachments.Add(printedAttachment);
 
-                        // Add the printed photo to the body
-                        sbBody.AppendLine($"<h2>Your Printed Photo:</h2>");
-                        sbBody.AppendLine($"<img src=\"cid:{printedContentId}\" alt=\"Printed Photo\" style=\"width:100%; max-width:600px;\"/>");
-                    }
+                    // Add the printed photo to the body
+                    sbBody.AppendLine($"<h2>Your Printed Photo:</h2>");
+                    sbBody.AppendLine($"<img src=\"cid:{printedContentId}\" alt=\"Printed Photo\" style=\"width:100%; max-width:600px;\"/>");
+                }
 
-                    sbBody.AppendLine("<p>Best regards,</p>");
-                    sbBody.AppendLine("<p>FBooth Team</p>");
-                    sbBody.AppendLine("</body>");
-                    sbBody.AppendLine("</html>");
+                sbBody.AppendLine("<p>Best regards,</p>");
+                sbBody.AppendLine("<p>FBooth Team</p>");
+                sbBody.AppendLine("</body>");
+                sbBody.AppendLine("</html>");
 
-                    mail.Body = sbBody.ToString();
-                    mail.IsBodyHtml = true;
+                mail.Body = sbBody.ToString();
+                mail.IsBodyHtml = true;
 
-                    SmtpServer.Credentials = new NetworkCredential(emailHostAddress, emailHostPassword);
-                    SmtpServer.Port = int.Parse(smtpPortNumber);
-                    SmtpServer.EnableSsl = true;
-
-                    SmtpServer.Send(mail);
-                });
+                await SmtpServer.SendMailAsync(mail);
             }
             catch (FormatException ex)
             {
@@ -147,15 +144,12 @@ namespace FBoothApp.Classes
             }
             catch (XmlException e)
             {
-                Debug.WriteLine("LoadDefaultValues exception");
+                Debug.WriteLine("LoadDefaultValues exception: " + e.Message);
             }
             catch (NullReferenceException e)
             {
-                Debug.WriteLine("missing settings in menusettings.xml");
+                Debug.WriteLine("Missing settings in menusettings.xml: " + e.Message);
             }
-
-
-
         }
     }
 }

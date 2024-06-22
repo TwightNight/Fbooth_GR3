@@ -29,7 +29,7 @@ namespace FBoothApp
             Debug.WriteLine("Error happend");
         }
     }
-  
+
 
     class Actual
     {
@@ -47,7 +47,7 @@ namespace FBoothApp
             string p2 = Actual.DateNow();
             string pathString = System.IO.Path.Combine(p1, p2);
             return pathString;
-        }  
+        }
     }
 
     class Control
@@ -61,6 +61,24 @@ namespace FBoothApp
 
     class Create
     {
+        private static string currentSessionPath;
+
+        static public string CurrentSessionDirectory()
+        {
+            if (currentSessionPath == null)
+            {
+                string p1 = Environment.CurrentDirectory;
+                string p2 = Actual.DateNow();
+                currentSessionPath = System.IO.Path.Combine(p1, p2);
+
+                if (!Directory.Exists(currentSessionPath))
+                {
+                    Directory.CreateDirectory(currentSessionPath);
+                }
+            }
+
+            return currentSessionPath;
+        }
         static public void TodayPhotoFolder()
         {
             string p1 = Environment.CurrentDirectory;
@@ -82,23 +100,22 @@ namespace FBoothApp
             switch (templateName)
             {
                 case "foreground_1":
-                    { 
-                    byte[] imageBytes = LoadImageData(imagepath);                      
-                    ImageSource imageSource = (CreateImage(imageBytes, 1390, 0));                        
-                    imageBytes = GetEncodedImageData(imageSource, ".jpg");
-
+                    {
+                        byte[] imageBytes = LoadImageData(imagepath);
+                        ImageSource imageSource = (CreateImage(imageBytes, 1390, 0));
+                        imageBytes = GetEncodedImageData(imageSource, ".jpg");
 
                         SaveImageData(imageBytes, naming(photoInTemplateNumb));
-            }
-                break;
+                    }
+                    break;
 
                 case "foreground_3":
-                    { 
-                    byte[] imageBytes = LoadImageData(imagepath);
-                    ImageSource imageSource = CreateImage(imageBytes, 410, 0);
-                    imageBytes = GetEncodedImageData(imageSource, ".jpg");
+                    {
+                        byte[] imageBytes = LoadImageData(imagepath);
+                        ImageSource imageSource = CreateImage(imageBytes, 410, 0);
+                        imageBytes = GetEncodedImageData(imageSource, ".jpg");
 
-                    SaveImageData(imageBytes, naming(photoInTemplateNumb));
+                        SaveImageData(imageBytes, naming(photoInTemplateNumb));
                     }
                     break;
 
@@ -110,22 +127,22 @@ namespace FBoothApp
 
                         SaveImageData(imageBytes, naming(photoInTemplateNumb));
                     }
-                                
+
                     break;
 
                 case "foreground_4_paski":
-                    { 
-                    byte[] imageBytes = LoadImageData(imagepath);
-                    ImageSource imageSource = CreateImage(imageBytes, 410, 0);
-                    imageBytes = GetEncodedImageData(imageSource, ".jpg");
-                      SaveImageData(imageBytes, naming(photoInTemplateNumb));
+                    {
+                        byte[] imageBytes = LoadImageData(imagepath);
+                        ImageSource imageSource = CreateImage(imageBytes, 410, 0);
+                        imageBytes = GetEncodedImageData(imageSource, ".jpg");
+                        SaveImageData(imageBytes, naming(photoInTemplateNumb));
                     }
                     break;
                 default:
                     Debug.WriteLine("bug on switch which template in ImageAndSave");
                     break;
             }
-            
+
         }
 
         public static byte[] LoadImageData(string filePath)
@@ -135,7 +152,7 @@ namespace FBoothApp
 
             BinaryReader br = new BinaryReader(fs);
 
-            byte[] imageBytes = br.ReadBytes((int) fs.Length);
+            byte[] imageBytes = br.ReadBytes((int)fs.Length);
 
             br.Close();
 
@@ -234,7 +251,7 @@ namespace FBoothApp
 
                 BinaryReader br = new BinaryReader(stream);
 
-                br.Read(result, 0, (int) stream.Length);
+                br.Read(result, 0, (int)stream.Length);
 
                 br.Close();
 
