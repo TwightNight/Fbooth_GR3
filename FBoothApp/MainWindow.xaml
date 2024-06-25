@@ -1,0 +1,434 @@
+﻿<Window
+    x:Class="FBoothApp.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FBoothApp"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Photomadness"
+    Width="{x:Static SystemParameters.PrimaryScreenWidth}"
+    Height="{x:Static SystemParameters.PrimaryScreenHeight}"
+    Closing="Window_Closing"
+    KeyDown="Window_KeyDown"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <Window.Background>
+        <ImageBrush ImageSource="backgrounds/background_3.jpg" />
+    </Window.Background>
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="0.375*" />
+            <ColumnDefinition Width="0.375*" />
+        </Grid.ColumnDefinitions>
+
+        <ContentControl
+            x:Name="contentFrame"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+
+        <Button
+            x:Name="StartButton"
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="StartButton_Click">
+            <Image Source="backgrounds/StartButton.png" />
+        </Button>
+
+        <Button
+            x:Name="StartButtonMenu"
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="StartButtonMenu_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/StartButton.png" />
+        </Button>
+
+        <Border
+            x:Name="SliderBorder"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            BorderBrush="AliceBlue"
+            BorderThickness="5">
+            <Canvas
+                x:Name="Slider"
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                Grid.ColumnSpan="2">
+                <Canvas.Background>
+                    <ImageBrush ImageSource="backgrounds/logo.png" Stretch="Uniform" />
+                </Canvas.Background>
+            </Canvas>
+        </Border>
+
+        <Button
+            x:Name="StopButton"
+            Grid.Row="3"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="StopButton_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/StopButton.png" />
+        </Button>
+
+        <Button
+            x:Name="NextButton"
+            Grid.Row="3"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="NextButton_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/NextButton.png" />
+        </Button>
+
+        <ListBox x:Name="CameraListBox" Visibility="Hidden" />
+        <TextBox
+            x:Name="PhotoTextBox"
+            Grid.Row="0"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            FontFamily="Arial"
+            FontSize="35"
+            Foreground="White"
+            Text="Hello"
+            TextWrapping="Wrap"
+            Visibility="Visible" />
+
+        <Button
+            x:Name="ReadyButton"
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="ReadyButton_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/ReadyButton.png" />
+        </Button>
+
+        <!--  Show tam anh de chuan bi in  -->
+        <Grid
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
+            <Image
+                x:Name="ShowPrint"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="Hidden" />
+
+            <Canvas
+                Name="canvasSticker"
+                Panel.ZIndex="3"
+                AllowDrop="True"
+                Background="Transparent" />
+        </Grid>
+
+
+        <!--  chỗ load background  -->
+
+        <WrapPanel
+            x:Name="BackgroundsWrapPanel"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="Visible" />
+
+
+
+        <!--  chỗ load Sticker  -->
+        <WrapPanel
+            x:Name="StickerWrapPanel"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="Hidden" />
+        <Canvas
+            x:Name="StickerCanvas"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center" />
+
+        <!--  show nut in  -->
+        <Button
+            x:Name="Print"
+            Grid.Row="1"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="Print_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/PrintButton.png" />
+        </Button>
+
+        <!--  show nut goi email  -->
+        <Button
+            x:Name="SendEmailButton"
+            Grid.Row="0"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="SendEmailButtonClick"
+            Content="Send Email"
+            FontSize="35"
+            Foreground="White"
+            Visibility="Hidden" />
+
+        <!--  show so luong anh muon in  -->
+        <TextBox
+            x:Name="NumberOfCopiesTextBox"
+            Grid.Row="2"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="{x:Null}"
+            BorderThickness="0"
+            FontFamily="Arial"
+            FontSize="35"
+            Foreground="White"
+            Text="1"
+            TextWrapping="Wrap"
+            Visibility="Hidden" />
+
+        <!--  show nut +- so luong anh in  -->
+        <Button
+            x:Name="AddOneCopyButton"
+            Grid.Row="2"
+            Grid.Column="3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="AddOneCopyButtonClick"
+            Visibility="Hidden">
+            <Image Source="backgrounds/PlusButton.png" />
+        </Button>
+
+        <Button
+            x:Name="MinusOneCopyButton"
+            Grid.Row="2"
+            Grid.Column="4"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="MinusOneCopyButtonClick"
+            Visibility="Hidden">
+            <Image Source="backgrounds/MinusButton.png" />
+        </Button>
+
+        <Button
+            x:Name="Foreground_1_button"
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="Foreground_1_button_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/foreground_1.png" />
+        </Button>
+        <Button
+            x:Name="Foreground_3_button"
+            Grid.Row="1"
+            Grid.Column="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="Foreground_3_button_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/foreground_3.png" />
+        </Button>
+        <Button
+            x:Name="Foreground_4_button"
+            Grid.Row="2"
+            Grid.Column="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="Foreground_4_button_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/foreground_4.png" />
+        </Button>
+        <Button
+            x:Name="Foreground_4_paski_button"
+            Grid.Row="2"
+            Grid.Column="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="Foreground_4_paski_button_Click"
+            Visibility="Hidden">
+            <Image Source="backgrounds/foreground_4_paski.png" />
+        </Button>
+
+        <DockPanel
+            x:Name="DockPanel4pictures"
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Visibility="Visible">
+
+            <Button
+                x:Name="FirstThumbnail"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="FirstThumbnail_OnClick"
+                Visibility="Hidden">
+                <Image
+                    x:Name="FirstThumbnailImage"
+                    Source="backgrounds/MinusButton.png"
+                    Stretch="Uniform" />
+            </Button>
+
+            <Button
+                x:Name="SecondThumbnail"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="SecondThumbnail_OnClick"
+                Visibility="Hidden">
+                <Image
+                    x:Name="SecondThumbnailImage"
+                    Source="backgrounds/logo.png"
+                    Stretch="Uniform" />
+            </Button>
+
+            <Button
+                x:Name="ThirdThumbnail"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="ThirdThumbnail_OnClick"
+                Visibility="Hidden">
+                <Image
+                    x:Name="ThirdThumbnailImage"
+                    Source="backgrounds/logo.png"
+                    Stretch="Uniform" />
+            </Button>
+            <Button
+                x:Name="FourthThumbnail"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="FourthThumbnail_OnClick"
+                Visibility="Hidden">
+                <Image
+                    x:Name="FourthThumbnailImage"
+                    Source="backgrounds/PlusButton.png"
+                    Stretch="Uniform" />
+            </Button>
+
+        </DockPanel>
+
+        <DockPanel
+            x:Name="DockPanel1or3pictures"
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Visibility="Visible">
+
+            <Button
+                x:Name="LeftThumbnail"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="LeftThumbnail_OnClick"
+                Visibility="Hidden">
+                <Image
+                    x:Name="LeftThumbnailImage"
+                    Source="backgrounds/logo.png"
+                    Stretch="Uniform" />
+            </Button>
+
+            <Button
+                x:Name="CenterThumbnail"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="CenterThumbnail_OnClick"
+                Visibility="Hidden">
+                <Image
+                    x:Name="CenterThumbnailImage"
+                    Source="backgrounds/logo.png"
+                    Stretch="Uniform" />
+            </Button>
+
+            <Button
+                x:Name="RightThumbnail"
+                Background="{x:Null}"
+                BorderThickness="0"
+                Click="RightThumbnail_OnClick"
+                Visibility="Hidden">
+                <Image
+                    x:Name="RightThumbnailImage"
+                    Source="backgrounds/logo.png"
+                    Stretch="Uniform" />
+            </Button>
+
+        </DockPanel>
+
+    </Grid>
+</Window>
+
+
+
