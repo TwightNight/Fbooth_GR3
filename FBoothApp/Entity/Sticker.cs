@@ -47,6 +47,11 @@ namespace FBoothApp.Entity
             set => _image.Source = value;
         }
 
+        public void HideCloseButton()
+        {
+            _closeButton.Visibility = Visibility.Collapsed;
+        }
+
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             if (this.Parent is Canvas canvas)

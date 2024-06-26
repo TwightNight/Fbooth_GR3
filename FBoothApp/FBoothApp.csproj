@@ -86,6 +86,7 @@
     <Compile Include="Classes\GetImageThumbnail.cs" />
     <Compile Include="Classes\ImageProcess.cs" />
     <Compile Include="Classes\ResizeAdorner.cs" />
+    <Compile Include="Entity\IconInImage.cs" />
     <Compile Include="Entity\Layout.cs" />
     <Compile Include="Entity\Sticker.cs" />
     <Compile Include="Menu\UserSettings.cs" />

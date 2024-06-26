@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
+using FBoothApp.Entity;
 
 namespace FBoothApp.Classes
 {
@@ -185,7 +186,40 @@ namespace FBoothApp.Classes
             if (y < height - 1) yield return new Point(x, y + 1);
         }
 
+        public static Bitmap RenderIcons(Bitmap bitmap, List<IconInImage> icons)
+        {
+            // Kiểm tra nếu bitmap là null
+            if (bitmap == null)
+            {
+                throw new ArgumentNullException(nameof(bitmap), "Bitmap cannot be null.");
+            }
 
+            // Tạo một bitmap mới với kích thước của bitmap đầu vào
+            Bitmap result = new Bitmap(bitmap.Width, bitmap.Height);
+
+            // Sử dụng Graphics để vẽ lên bitmap mới
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                // Vẽ hình bitmap đầu vào lên bitmap mới
+                g.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
+
+                // Vẽ các icon lên bitmap mới tại vị trí được chỉ định
+                foreach (IconInImage icon in icons)
+                {
+                    // Tạo một bitmap mới từ ảnh icon và loại bỏ màu nền đen
+                    Bitmap transparentIcon = new Bitmap(icon.IconBitmap);
+                    transparentIcon.MakeTransparent(Color.Black);
+
+                    // Vẽ icon lên bitmap kết quả
+                    g.DrawImage(transparentIcon, new Rectangle(icon.Position, icon.Size));
+
+                    // Giải phóng bộ nhớ của bitmap tạm thời
+                    transparentIcon.Dispose();
+                }
+            }
+
+            return result;
+        }
 
     }
 

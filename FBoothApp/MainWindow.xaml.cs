@@ -43,7 +43,8 @@ namespace FBoothApp
         public System.Windows.Threading.DispatcherTimer sliderTimer;
         public System.Windows.Threading.DispatcherTimer betweenPhotos;
         public System.Windows.Threading.DispatcherTimer secondCounter;
-        private int numberOfCut;
+        private BitmapImage actualPrint;
+
 
         CanonAPI APIHandler;
         Camera MainCamera;
@@ -187,8 +188,9 @@ namespace FBoothApp
                         printPath = printdata.PrintDirectory;
                         TemplateProcessing.foreground1(printPath);
                         printNumber++;
-                        BackgroundMenu();
-                        //PrintMenu();
+                        RetakePhotoMenu();
+                        //BackgroundMenu();
+                       //PrintMenu();
                         }
                     break;
 
@@ -199,7 +201,8 @@ namespace FBoothApp
                         printPath = printdata.PrintDirectory;
                         TemplateProcessing.foreground3(printPath);
                         printNumber++;
-                        BackgroundMenu();
+                        RetakePhotoMenu();
+                        //BackgroundMenu();
                         //PrintMenu();
                     }
                     break;
@@ -210,7 +213,8 @@ namespace FBoothApp
                         printPath = printdata.PrintDirectory;
                         TemplateProcessing.foreground4(printPath);
                         printNumber++;
-                        BackgroundMenu();
+                        RetakePhotoMenu();
+                        //BackgroundMenu();
                         //PrintMenu();
                     }
                     break;
@@ -222,7 +226,8 @@ namespace FBoothApp
                         printPath = printdata.PrintDirectory;
                         TemplateProcessing.foreground4stripes(printPath);
                         printNumber++;
-                        BackgroundMenu();
+                        RetakePhotoMenu();
+                        //BackgroundMenu();
                         //PrintMenu();
                     }
                     break;
@@ -491,16 +496,6 @@ namespace FBoothApp
             else StartWelcomeMenu();
         }
 
-        private void NextButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Ẩn BackgroundsWrapPanel
-            BackgroundsWrapPanel.Visibility = Visibility.Hidden;
-
-            // Hiển thị StickerWrapPanel
-            StickerWrapPanel.Visibility = Visibility.Visible;
-            LoadSticker();
-        }
-
         private void LoadSticker()
         {
             string stickerDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Sticker");
@@ -545,8 +540,10 @@ namespace FBoothApp
             sticker.MouseLeftButtonUp += Sticker_MouseLeftButtonUp;
             sticker.MouseMove += Sticker_MouseMove;
 
+            // Add sticker to the canvas
             canvasSticker.Children.Add(sticker);
 
+            // Add adorner for resizing
             AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(sticker);
             if (adornerLayer != null)
             {
@@ -572,21 +569,173 @@ namespace FBoothApp
 
         private void Sticker_MouseMove(object sender, MouseEventArgs e)
         {
-            if (sender is Sticker clickedSticker && e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                var position = e.GetPosition(canvasSticker);
-                Canvas.SetLeft(clickedSticker, position.X - clickedSticker.ActualWidth / 2);
-                Canvas.SetTop(clickedSticker, position.Y - clickedSticker.ActualHeight / 2);
+                Sticker clickedSticker = sender as Sticker;
+                if (clickedSticker != null)
+                {
+                    var position = e.GetPosition(ShowPrint);
+
+                    // Calculate new position considering the sticker size
+                    double newX = position.X - clickedSticker.ActualWidth / 2;
+                    double newY = position.Y - clickedSticker.ActualHeight / 2;
+
+                    // Constrain within the ShowPrint bounds
+                    if (newX < 0) newX = 0;
+                    if (newY < 0) newY = 0;
+                    if (newX + clickedSticker.ActualWidth > ShowPrint.ActualWidth) newX = ShowPrint.ActualWidth - clickedSticker.ActualWidth;
+                    if (newY + clickedSticker.ActualHeight > ShowPrint.ActualHeight) newY = ShowPrint.ActualHeight - clickedSticker.ActualHeight;
+
+                    Canvas.SetLeft(clickedSticker, newX);
+                    Canvas.SetTop(clickedSticker, newY);
+                }
             }
         }
 
+        private void RenderStickersOnImage()
+        {
+            // Tạo một RenderTargetBitmap với kích thước của ShowPrint
+            int width = (int)ShowPrint.ActualWidth;
+            int height = (int)ShowPrint.ActualHeight;
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+
+            // Tạo một DrawingVisual và mở DrawingContext của nó
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                // Tạo một VisualBrush từ ShowPrint và vẽ nó lên DrawingContext
+                VisualBrush vb = new VisualBrush(ShowPrint);
+                dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
+
+                // Tạo một VisualBrush từ canvasSticker và vẽ nó lên DrawingContext
+                VisualBrush stickerBrush = new VisualBrush(canvasSticker);
+                dc.DrawRectangle(stickerBrush, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
+            }
+
+            // Render DrawingVisual lên RenderTargetBitmap
+            renderTargetBitmap.Render(dv);
+
+            // Cập nhật ShowPrint để hiển thị hình ảnh đã được render kèm sticker
+            ShowPrint.Source = renderTargetBitmap;
+        }
+
+        private void SaveFinalImage()
+        {
+            HideCloseButtons();
+            // Tạo một RenderTargetBitmap với kích thước của ShowPrint
+            int width = (int)ShowPrint.ActualWidth;
+            int height = (int)ShowPrint.ActualHeight;
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+
+            // Tạo một DrawingVisual và mở DrawingContext của nó
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                // Tạo một VisualBrush từ ShowPrint và vẽ nó lên DrawingContext
+                VisualBrush vb = new VisualBrush(ShowPrint);
+                dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
+
+                // Tạo một VisualBrush từ canvasSticker và vẽ nó lên DrawingContext
+                VisualBrush stickerBrush = new VisualBrush(canvasSticker);
+                dc.DrawRectangle(stickerBrush, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
+            }
+
+            // Render DrawingVisual lên RenderTargetBitmap
+            renderTargetBitmap.Render(dv);
+
+            // Lưu RenderTargetBitmap thành một file PNG
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+            // Đường dẫn và tên file cho ảnh cuối cùng
+            string filePath = Path.Combine(currentDirectory, "Final pic.png");
+            using (FileStream file = File.OpenWrite(filePath))
+            {
+                encoder.Save(file);
+            }
+
+            // Cập nhật đường dẫn của ảnh đã in cho PrintMenu
+            printPath = filePath;
+        }
 
 
+        private void HideStickers()
+        {
+            foreach (var child in canvasSticker.Children)
+            {
+                if (child is Sticker sticker && sticker.Visibility == Visibility.Visible)
+                {
+                    // Ẩn sticker
+                    sticker.Visibility = Visibility.Hidden;
 
+                    // Loại bỏ Adorner
+                    var adornerLayer = AdornerLayer.GetAdornerLayer(sticker);
+                    if (adornerLayer != null)
+                    {
+                        var adorners = adornerLayer.GetAdorners(sticker);
+                        if (adorners != null)
+                        {
+                            foreach (var adorner in adorners)
+                            {
+                                adornerLayer.Remove(adorner);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        private void HideCloseButtons()
+        {
+            foreach (var child in canvasSticker.Children)
+            {
+                if (child is Sticker sticker)
+                {
+                    sticker.HideCloseButton();
+                }
+            }
+        }
 
+        private void NextButtonBackGround_Click(object sender, RoutedEventArgs e)
+        {
+            BackgroundMenu();
+        }
 
-        private BitmapImage actualPrint;
+        private void NextButtonSticker_Click(object sender, RoutedEventArgs e)
+        {
+            StickerMenu();
+        }
+        private void NextButtonPrinting_Click(object sender, RoutedEventArgs e)
+        {
+            
+            RenderStickersOnImage();
+            SaveFinalImage();
+            PrintMenu();
+
+            HideStickers();
+
+        }
+
+        private void RetakePhotoMenu()
+        {
+            Slider.Visibility = Visibility.Hidden;
+            SliderBorder.Visibility = Visibility.Hidden;
+            ReadyButton.Visibility = Visibility.Hidden;
+            StopButton.Visibility = Visibility.Hidden;
+
+            PhotoTextBox.Text = "Choose a thumbnail below to retake the picture";
+
+            actualPrint = new BitmapImage();
+            actualPrint.BeginInit();
+            actualPrint.UriSource = new Uri(printPath);
+            actualPrint.EndInit();
+
+            ShowPictureInlayout.Source = actualPrint;
+            ShowPictureInlayout.Visibility = Visibility.Visible;
+
+            NextButtonBackGround.Visibility = Visibility.Visible;
+        }
+
         private void BackgroundMenu()
         {
 
@@ -594,6 +743,19 @@ namespace FBoothApp
             SliderBorder.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
             StopButton.Visibility = Visibility.Hidden;
+            NextButtonBackGround.Visibility = Visibility.Hidden;
+            ShowPictureInlayout.Visibility = Visibility.Hidden;
+
+            FirstThumbnail.Visibility = Visibility.Hidden;
+            SecondThumbnail.Visibility = Visibility.Hidden;
+            ThirdThumbnail.Visibility = Visibility.Hidden;
+            FourthThumbnail.Visibility = Visibility.Hidden;
+            LeftThumbnail.Visibility = Visibility.Hidden;
+            CenterThumbnail.Visibility = Visibility.Hidden;
+            RightThumbnail.Visibility = Visibility.Hidden;
+
+            BackgroundsWrapPanel.Visibility = Visibility.Visible;
+            NextButtonSticker.Visibility = Visibility.Visible;
 
             PhotoTextBox.Text = "Choose background";
             NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
@@ -608,17 +770,27 @@ namespace FBoothApp
 
             ShowPrint.Visibility = Visibility.Visible;
             BackgroundsWrapPanel.Visibility = Visibility.Visible;
-            NextButton.Visibility = Visibility.Visible;
+            NextButtonSticker.Visibility = Visibility.Visible;
             LoadBackgrounds();
+        }
+
+        private void StickerMenu()
+        {
+            BackgroundsWrapPanel.Visibility = Visibility.Hidden;
+            NextButtonSticker.Visibility = Visibility.Hidden;
+
+            // Hiển thị StickerWrapPanel
+            StickerWrapPanel.Visibility = Visibility.Visible;
+            NextButtonPrinting.Visibility = Visibility.Visible;
+            LoadSticker();
         }
 
         //cho nay hien anh de in
         private void PrintMenu()
         {
-            
-            Slider.Visibility = Visibility.Hidden;
-            SliderBorder.Visibility = Visibility.Hidden;
-            ReadyButton.Visibility = Visibility.Hidden;
+            StickerWrapPanel.Visibility = Visibility.Hidden;
+            NextButtonPrinting.Visibility = Visibility.Hidden;
+
             PhotoTextBox.Text = "Press button to continue";
             NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
 
@@ -638,6 +810,7 @@ namespace FBoothApp
 
 
             ShowPrint.Visibility = Visibility.Visible;
+            StopButton.Visibility = Visibility.Visible;
             //        CreateDynamicBorder(ShowPrint.ActualWidth, ShowPrint.ActualHeight);
         }
         
@@ -672,9 +845,28 @@ namespace FBoothApp
             var savePhoto = new SavePhoto(photoNumber);
             string sessionDirectory = savePhoto.CurrentSessionDirectory();
 
-            //Bitmap result = imageProcess.OverlayBackgroundBINHTHUONG(actualPrint, background);
-            Bitmap result = imageProcess.OverlayBackground(background, sessionDirectory);
+            Bitmap result = imageProcess.OverlayBackgroundBINHTHUONG(actualPrint, background);
+            //Bitmap result = imageProcess.OverlayBackground(background, sessionDirectory);
             ShowPrint.Source = imageProcess.ConvertToBitmapImageBINHTHUONG(result);
+
+            //Image clickedBackground = sender as Image;
+            //string fileName = System.IO.Path.GetFileName(((BitmapImage)clickedBackground.Source).UriSource.LocalPath);
+            //Bitmap background = new Bitmap(Path.Combine(Directory.GetCurrentDirectory(), "Bground", layout.LayoutCode, fileName));
+
+            //var savePhoto = new SavePhoto(photoNumber);
+            //string sessionDirectory = savePhoto.CurrentSessionDirectory();
+
+            //Bitmap result = imageProcess.OverlayBackground(background, sessionDirectory);
+
+            //ShowPrint.Source = imageProcess.ConvertToBitmapImageBINHTHUONG(result);
+            //ShowPrint.Visibility = Visibility.Visible;
+
+            //// Position the ShowPrint image in the center of the canvasSticker
+            //double left = (canvasSticker.ActualWidth - ShowPrint.ActualWidth) / 2;
+            //double top = (canvasSticker.ActualHeight - ShowPrint.ActualHeight) / 2;
+
+            //Canvas.SetLeft(ShowPrint, left);
+            //Canvas.SetTop(ShowPrint, top);
         }
 
         
@@ -1106,6 +1298,7 @@ namespace FBoothApp
             {
                 photosInTemplate--;
                 photoNumberInTemplate = photoNumberToRepeat - 1;
+                ShowPictureInlayout.Visibility = Visibility.Hidden;
                 Print.Visibility = Visibility.Hidden;
                 ShowPrint.Visibility = Visibility.Hidden;
                 NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
