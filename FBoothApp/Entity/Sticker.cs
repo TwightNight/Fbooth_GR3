@@ -56,14 +56,17 @@ namespace FBoothApp.Entity
         {
             if (this.Parent is Canvas canvas)
             {
-                double newX = Canvas.GetLeft(this) + e.HorizontalChange;
-                double newY = Canvas.GetTop(this) + e.VerticalChange;
+                double newLeft = Canvas.GetLeft(this) + e.HorizontalChange;
+                double newTop = Canvas.GetTop(this) + e.VerticalChange;
 
-                if (newX >= 0 && newX + this.ActualWidth <= canvas.ActualWidth)
-                    Canvas.SetLeft(this, newX);
+                // Ensure the sticker stays within the bounds of the canvas
+                newLeft = Math.Max(0, newLeft);
+                newTop = Math.Max(0, newTop);
+                newLeft = Math.Min(canvas.ActualWidth - this.ActualWidth, newLeft);
+                newTop = Math.Min(canvas.ActualHeight - this.ActualHeight, newTop);
 
-                if (newY >= 0 && newY + this.ActualHeight <= canvas.ActualHeight)
-                    Canvas.SetTop(this, newY);
+                Canvas.SetLeft(this, newLeft);
+                Canvas.SetTop(this, newTop);
             }
         }
 

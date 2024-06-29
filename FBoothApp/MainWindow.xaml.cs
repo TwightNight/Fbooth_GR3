@@ -526,6 +526,7 @@ namespace FBoothApp
 
         private void AddStickerToCanvas(BitmapImage stickerImageSource)
         {
+
             Sticker sticker = new Sticker
             {
                 Width = 100,
@@ -540,14 +541,13 @@ namespace FBoothApp
             sticker.MouseLeftButtonUp += Sticker_MouseLeftButtonUp;
             sticker.MouseMove += Sticker_MouseMove;
 
-            // Add sticker to the canvas
             canvasSticker.Children.Add(sticker);
 
-            // Add adorner for resizing
             AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(sticker);
             if (adornerLayer != null)
             {
-                adornerLayer.Add(new ResizeAdorner(sticker));
+                var resizeAdorner = new ResizeAdorner(sticker);
+                adornerLayer.Add(resizeAdorner);
             }
         }
 
