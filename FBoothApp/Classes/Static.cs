@@ -18,6 +18,7 @@ using System.Drawing;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using FBoothApp.Properties;
+using FBoothApp.Entity;
 
 namespace FBoothApp
 {
@@ -94,54 +95,74 @@ namespace FBoothApp
     class ReSize
     {
         //hàm lưu ảnh
-        static public void ImageAndSave(string imagepath, int photoInTemplateNumb, string templateName)
+        static public void ImageAndSave(string imagepath, int photoInTemplateNumb, Layout layout)
         {
+            byte[] imageBytes = LoadImageData(imagepath);
 
-            switch (templateName)
+            // Lấy thông tin kích thước và tọa độ từ layout
+            int targetWidth = layout.PhotoBoxes[photoInTemplateNumb - 1].boxWidth;
+            int targetHeight = layout.PhotoBoxes[photoInTemplateNumb - 1].boxHeight;
+            int targetX = layout.PhotoBoxes[photoInTemplateNumb - 1].CoordinatesX;
+            int targetY = layout.PhotoBoxes[photoInTemplateNumb - 1].CoordinatesY;
+
+            if (targetWidth > targetHeight)
             {
-                case "foreground_1":
-                    {
-                        byte[] imageBytes = LoadImageData(imagepath);
-                        ImageSource imageSource = (CreateImage(imageBytes, 1390, 0));
-                        imageBytes = GetEncodedImageData(imageSource, ".jpg");
+                ImageSource imageSource = CreateImage(imageBytes, targetWidth, 0);
+                imageBytes = GetEncodedImageData(imageSource, ".jpg");
 
-                        SaveImageData(imageBytes, naming(photoInTemplateNumb));
-                    }
-                    break;
-
-                case "foreground_3":
-                    {
-                        byte[] imageBytes = LoadImageData(imagepath);
-                        ImageSource imageSource = CreateImage(imageBytes, 410, 0);
-                        imageBytes = GetEncodedImageData(imageSource, ".jpg");
-
-                        SaveImageData(imageBytes, naming(photoInTemplateNumb));
-                    }
-                    break;
-
-                case "foreground_4":
-                    {
-                        byte[] imageBytes = LoadImageData(imagepath);
-                        ImageSource imageSource = CreateImage(imageBytes, 560, 0);
-                        imageBytes = GetEncodedImageData(imageSource, ".jpg");
-
-                        SaveImageData(imageBytes, naming(photoInTemplateNumb));
-                    }
-
-                    break;
-
-                case "foreground_4_paski":
-                    {
-                        byte[] imageBytes = LoadImageData(imagepath);
-                        ImageSource imageSource = CreateImage(imageBytes, 410, 0);
-                        imageBytes = GetEncodedImageData(imageSource, ".jpg");
-                        SaveImageData(imageBytes, naming(photoInTemplateNumb));
-                    }
-                    break;
-                default:
-                    Debug.WriteLine("bug on switch which template in ImageAndSave");
-                    break;
             }
+            else
+            {
+                ImageSource imageSource = CreateImage(imageBytes, targetHeight, 0);
+                imageBytes = GetEncodedImageData(imageSource, ".jpg");
+            }
+
+            SaveImageData(imageBytes, naming(photoInTemplateNumb));
+            //switch (templateName)
+            //{
+            //    case "foreground_1":
+            //        {
+            //            byte[] imageBytes = LoadImageData(imagepath);
+            //            ImageSource imageSource = (CreateImage(imageBytes, 1390, 0));
+            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
+
+            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
+            //        }
+            //        break;
+
+            //    case "foreground_3":
+            //        {
+            //            byte[] imageBytes = LoadImageData(imagepath);
+            //            ImageSource imageSource = CreateImage(imageBytes, 410, 0);
+            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
+
+            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
+            //        }
+            //        break;
+
+            //    case "foreground_4":
+            //        {
+            //            byte[] imageBytes = LoadImageData(imagepath);
+            //            ImageSource imageSource = CreateImage(imageBytes, 560, 0);
+            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
+
+            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
+            //        }
+
+            //        break;
+
+            //    case "foreground_4_paski":
+            //        {
+            //            byte[] imageBytes = LoadImageData(imagepath);
+            //            ImageSource imageSource = CreateImage(imageBytes, 410, 0);
+            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
+            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
+            //        }
+            //        break;
+            //    default:
+            //        Debug.WriteLine("bug on switch which template in ImageAndSave");
+            //        break;
+            //}
 
         }
 

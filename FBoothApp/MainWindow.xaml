@@ -68,6 +68,30 @@
             <Image Source="backgrounds/StartButton.png" />
         </Button>
 
+        <Image
+            x:Name="LiveViewImage"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Stretch="UniformToFill"
+            Visibility="Visible" />
+
+        <!--  kẻ lưới trong tấm ảnh chụp  -->
+        <Canvas
+            x:Name="GridCanvasLiveViewImage"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            IsHitTestVisible="False">
+            <!--  Grid lines will be added dynamically in code-behind  -->
+        </Canvas>
+
         <Border
             x:Name="SliderBorder"
             Grid.Row="1"
@@ -207,6 +231,21 @@
         </Grid>
 
 
+        <ScrollViewer
+            x:Name="LayoutScrollViewer"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <WrapPanel
+                x:Name="LayoutsWrapPanel"
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </ScrollViewer>
+
         <!--  chỗ load background  -->
 
         <WrapPanel
@@ -315,7 +354,7 @@
             <Image Source="backgrounds/MinusButton.png" />
         </Button>
 
-        <Button
+        <!--<Button
             x:Name="Foreground_1_button"
             Grid.Row="1"
             Grid.Column="1"
@@ -362,9 +401,9 @@
             Click="Foreground_4_paski_button_Click"
             Visibility="Hidden">
             <Image Source="backgrounds/foreground_4_paski.png" />
-        </Button>
+        </Button>-->
 
-        <DockPanel
+        <!--<DockPanel
             x:Name="DockPanel4pictures"
             Grid.Row="3"
             Grid.Column="1"
@@ -465,6 +504,16 @@
                     Stretch="Uniform" />
             </Button>
 
+        </DockPanel>-->
+
+        <DockPanel
+            x:Name="ThumbnailDockPanel"
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Visibility="Visible">
+            <!--  Placeholder for dynamically added buttons  -->
         </DockPanel>
 
     </Grid>

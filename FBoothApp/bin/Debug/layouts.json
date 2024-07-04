@@ -1,0 +1,116 @@
+[
+  {
+    "LayoutID": "1c70a4c1-70e0-4674-76ed-08dc98d74585",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1719896186/FBooth-Layout/fcxv84uynr96rxofxh7v.png",
+    "CouldID": "FBooth-Layout/lhleqr0ohwjtef0yen04",
+    "LayoutCode": "onepic",
+    "Status": "Available",
+    "Height": 1920,
+    "Width": 1080,
+    "PhotoSlot": 1,
+    "CreatedDate": "2024-06-30T14:35:53.99",
+    "LastModified": null,
+    "PhotoBoxes": [
+      {
+        "boxHeight": 1920,
+        "boxWidth": 1080,
+        "CoordinatesX": 0,
+        "CoordinatesY": 0,
+        "LayoutID": "1c70a4c1-70e0-4674-76ed-08dc98d74585"
+      }
+    ],
+    "Backgrounds": [
+      {
+        "BackgroundID": "b3d32d18-4d86-4c48-0903-08dc98d9b63c",
+        "BackgroundCode": "onepic",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1719734000/FBooth-Background/tkf6kuvlxhkuqp2ielk6.png",
+        "CouldID": "FBooth-Background/tkf6kuvlxhkuqp2ielk6",
+        "Height": 1920,
+        "Width": 1080,
+        "CreatedDate": "2024-06-30T14:53:21.6666667",
+        "LastModified": null,
+        "LayoutID": "1c70a4c1-70e0-4674-76ed-08dc98d74585"
+      },
+      {
+        "BackgroundID": "21cca01a-83de-4976-0904-08dc98d9b63c",
+        "BackgroundCode": "onepic",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1719734033/FBooth-Background/zoxhwyzkmwrvu4mewhjj.png",
+        "CouldID": "FBooth-Background/zoxhwyzkmwrvu4mewhjj",
+        "Height": 1920,
+        "Width": 1080,
+        "CreatedDate": "2024-06-30T14:53:53.6266667",
+        "LastModified": null,
+        "LayoutID": "1c70a4c1-70e0-4674-76ed-08dc98d74585"
+      }
+    ]
+  },
+  {
+    "LayoutID": "e259fac0-9a0f-4269-4a14-08dc98da1218",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1719734155/FBooth-Layout/aiykla0fnl48sevmfbl2.png",
+    "CouldID": "FBooth-Layout/aiykla0fnl48sevmfbl2",
+    "LayoutCode": "fourpic",
+    "Status": "Available",
+    "Height": 2000,
+    "Width": 707,
+    "PhotoSlot": 4,
+    "CreatedDate": "2024-06-30T14:55:55.39",
+    "LastModified": null,
+    "PhotoBoxes": [
+      {
+        "boxHeight": 378,
+        "boxWidth": 625,
+        "CoordinatesX": 40,
+        "CoordinatesY": 69,
+        "LayoutID": "e259fac0-9a0f-4269-4a14-08dc98da1218"
+      },
+      {
+        "boxHeight": 378,
+        "boxWidth": 625,
+        "CoordinatesX": 40,
+        "CoordinatesY": 467,
+        "LayoutID": "e259fac0-9a0f-4269-4a14-08dc98da1218"
+      },
+      {
+        "boxHeight": 378,
+        "boxWidth": 625,
+        "CoordinatesX": 40,
+        "CoordinatesY": 865,
+        "LayoutID": "e259fac0-9a0f-4269-4a14-08dc98da1218"
+      },
+      {
+        "boxHeight": 378,
+        "boxWidth": 625,
+        "CoordinatesX": 40,
+        "CoordinatesY": 1262,
+        "LayoutID": "e259fac0-9a0f-4269-4a14-08dc98da1218"
+      }
+    ],
+    "Backgrounds": [
+      {
+        "BackgroundID": "de2e4bc9-8363-43f2-0905-08dc98d9b63c",
+        "BackgroundCode": "fourpic",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1719734226/FBooth-Background/uoxjnlfceb698c3idvst.png",
+        "CouldID": "FBooth-Background/uoxjnlfceb698c3idvst",
+        "Height": 2000,
+        "Width": 707,
+        "CreatedDate": "2024-06-30T14:57:06.7766667",
+        "LastModified": null,
+        "LayoutID": "e259fac0-9a0f-4269-4a14-08dc98da1218"
+      }
+    ]
+  },
+  {
+    "LayoutID": "9a291ce4-1e16-40e8-b1b6-08dc999da7f9",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1719818159/FBooth-Layout/dukcu6n9n5ma8olzrjwu.png",
+    "CouldID": "FBooth-Layout/dukcu6n9n5ma8olzrjwu",
+    "LayoutCode": "fourpic",
+    "Status": "Available",
+    "Height": 1844,
+    "Width": 1240,
+    "PhotoSlot": 4,
+    "CreatedDate": "2024-07-01T14:15:58.88",
+    "LastModified": null,
+    "PhotoBoxes": [],
+    "Backgrounds": []
+  }
+]

@@ -31,6 +31,7 @@ using Point = System.Drawing.Point;
 using System.Drawing.Imaging;
 using FBoothApp.Entity;
 using System.Drawing.Drawing2D;
+using FBoothApp.Services;
 
 
 namespace FBoothApp
@@ -54,6 +55,7 @@ namespace FBoothApp
         PrintDialog pdialog = new PrintDialog();
         ImageProcess imageProcess;
 
+
         XDocument actualSettings = new XDocument();
         List<System.Windows.Media.ImageSource> resizedImages = new List<System.Windows.Media.ImageSource>();
 
@@ -67,13 +69,17 @@ namespace FBoothApp
         short actualNumberOfCopies = 1;
         int printtime = 10;
 
+
         public string SmtpServerName;
         public string SmtpPortNumber;
         public string EmailHostAddress;
         public string EmailHostPassword;
 
         string printPath = string.Empty;
+
         private Layout layout;
+        private FetchApiServices _apiServices;
+
         //public string templateName = string.Empty;
         string printerName = string.Empty;
         private string currentDirectory = Environment.CurrentDirectory;
@@ -84,6 +90,7 @@ namespace FBoothApp
         public MainWindow()
         {
             layout = new Layout();
+            _apiServices = new FetchApiServices();
             imageProcess = new ImageProcess();
             InitializeComponent();
             FillSavedData();
@@ -131,7 +138,7 @@ namespace FBoothApp
             secondCounter.Start();
         }
 
-        public void MakePhoto(object sender, EventArgs e)
+        public async void MakePhoto(object sender, EventArgs e)
         {
             try
             {
@@ -176,66 +183,129 @@ namespace FBoothApp
             {
                 Thread.Sleep(1000);
             }
-            ShowPhotoThumbnail();
-            PhotoTaken = false;  
-            // One if than switch
-            switch (layout.LayoutCode)
+
+            if (isRetake)
             {
-                case "foreground_1":
-                    if (Control.photoTemplate(photosInTemplate, 1))
-                    {
-                        var printdata = new SavePrints(printNumber);
-                        printPath = printdata.PrintDirectory;
-                        TemplateProcessing.foreground1(printPath);
-                        printNumber++;
-                        RetakePhotoMenu();
-                        //BackgroundMenu();
-                       //PrintMenu();
-                        }
-                    break;
-
-                case "foreground_3":
-                    if (Control.photoTemplate(photosInTemplate, 3))
-                    {
-                        var printdata = new SavePrints(printNumber);
-                        printPath = printdata.PrintDirectory;
-                        TemplateProcessing.foreground3(printPath);
-                        printNumber++;
-                        RetakePhotoMenu();
-                        //BackgroundMenu();
-                        //PrintMenu();
-                    }
-                    break;
-                case "foreground_4":
-                    if (Control.photoTemplate(photosInTemplate, 4))
-                    {
-                        var printdata = new SavePrints(printNumber);
-                        printPath = printdata.PrintDirectory;
-                        TemplateProcessing.foreground4(printPath);
-                        printNumber++;
-                        RetakePhotoMenu();
-                        //BackgroundMenu();
-                        //PrintMenu();
-                    }
-                    break;
-
-                case "foreground_4_paski":
-                    if (Control.photoTemplate(photosInTemplate, 4))
-                    {
-                        var printdata = new SavePrints(printNumber);
-                        printPath = printdata.PrintDirectory;
-                        TemplateProcessing.foreground4stripes(printPath);
-                        printNumber++;
-                        RetakePhotoMenu();
-                        //BackgroundMenu();
-                        //PrintMenu();
-                    }
-                    break;
-                default:
-                    Debug.WriteLine("bug at switch which template");
-                    break;
+                UpdatePhotoAfterRetake();
+            }
+            else
+            {
+                ShowPhotoThumbnail();
             }
 
+
+            var layouts = await _apiServices.GetLayoutsAsync();
+            var currentLayout = layouts.FirstOrDefault(l => l.LayoutCode == layout.LayoutCode);
+
+            if (Control.photoTemplate(photosInTemplate, layout.PhotoSlot))
+            {
+                if (currentLayout != null)
+                {
+                    var printdata = new SavePrints(printNumber);
+                    printPath = printdata.PrintDirectory;
+                    TemplateProcessing.ProcessLayout(currentLayout, printPath);
+                    printNumber++;
+                    RetakePhotoMenu();
+
+                    if (isRetake)
+                    {
+                        UpdatePhotoAfterRetake();
+                    }
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Layout not found");
+            }
+        }
+
+
+
+        private async void LoadLayouts()
+        {
+            var layouts = await _apiServices.GetLayoutsAsync();
+            foreach (var layout in layouts)
+            {
+                // Create a ViewBox to maintain aspect ratio and fit within WrapPanel
+                var viewBox = new Viewbox
+                {
+                    Width = 400, // Set desired width
+                    Height = 500, // Set desired height
+                    Stretch = System.Windows.Media.Stretch.Uniform // Maintain aspect ratio
+                };
+
+                var image = new Image
+                {
+                    Source = new BitmapImage(new Uri(layout.LayoutURL)),
+                    Tag = layout, // Store the layout ID in the Tag property
+                    Margin = new Thickness(5)
+                };
+                image.MouseLeftButtonDown += Image_Click;
+
+                viewBox.Child = image;
+                LayoutsWrapPanel.Children.Add(viewBox);
+            }
+        }
+
+        private void Image_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //Image clickedImage = sender as Image;
+            //if (clickedImage != null)
+            //{
+            //    string layoutID = clickedImage.Tag as string;
+            //    // Implement interaction logic here. For example, open a new window to interact with the selected layout.
+            //    MessageBox.Show($"Selected layout ID: {layoutID}");
+            //}
+            Image clickedImage = sender as Image;
+            if (clickedImage != null)
+            {
+                var layoutChoosen = clickedImage.Tag as Layout;
+                layout = layoutChoosen;
+                StartButton_Click(sender, e);
+            }
+
+        }
+
+
+        private void DrawGridLines()
+        {
+            double width = GridCanvasLiveViewImage.ActualWidth;
+            double height = GridCanvasLiveViewImage.ActualHeight;
+
+            // Clear any existing children
+            GridCanvasLiveViewImage.Children.Clear();
+
+            // Draw vertical lines
+            for (int i = 1; i < 3; i++)
+            {
+                double x = width * i / 3;
+                Line verticalLine = new Line
+                {
+                    X1 = x,
+                    Y1 = 0,
+                    X2 = x,
+                    Y2 = height,
+                    Stroke = System.Windows.Media.Brushes.White,
+                    StrokeThickness = 1
+                };
+                GridCanvasLiveViewImage.Children.Add(verticalLine);
+            }
+
+            // Draw horizontal lines
+            for (int i = 1; i < 3; i++)
+            {
+                double y = height * i / 3;
+                Line horizontalLine = new Line
+                {
+                    X1 = 0,
+                    Y1 = y,
+                    X2 = width,
+                    Y2 = y,
+                    Stroke = System.Windows.Media.Brushes.White,
+                    StrokeThickness = 1
+                };
+                GridCanvasLiveViewImage.Children.Add(horizontalLine);
+            }
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -250,7 +320,7 @@ namespace FBoothApp
             TurnOffForegroundMenu();
         }
 
-       
+
 
         public void ShowTimeLeft(object sender, EventArgs e)
         {
@@ -306,7 +376,11 @@ namespace FBoothApp
                     EvfImage.CacheOption = BitmapCacheOption.OnLoad;
                     EvfImage.EndInit();
                     EvfImage.Freeze();
-                    Application.Current.Dispatcher.BeginInvoke(SetImageAction, EvfImage);
+                    //Application.Current.Dispatcher.BeginInvoke(SetImageAction, EvfImage);
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        LiveViewImage.Source = EvfImage;
+                    }));
                 }
             }
             catch (Exception ex) { Report.Error(ex.Message, false); }
@@ -326,7 +400,7 @@ namespace FBoothApp
 
 
                 //               ReSize.ImageAndSave(savedata.PhotoDirectory,photosInTemplate,templateName);
-                ReSize.ImageAndSave(savedata.PhotoDirectory, photoNumberInTemplate, layout.LayoutCode);
+                ReSize.ImageAndSave(savedata.PhotoDirectory, photoNumberInTemplate, layout);
                 //TemplateProcessing.ImageAndSave(savedata.PhotoDirectory, photosInTemplate, templateName);
 
             }
@@ -370,14 +444,16 @@ namespace FBoothApp
         {
             sliderTimer.Stop();
             TurnOffForegroundMenu();
-            SliderBorder.Visibility = Visibility.Visible;
-            Slider.Visibility = Visibility.Visible;
+            SliderBorder.Visibility = Visibility.Hidden;
+            Slider.Visibility = Visibility.Hidden;
             StartButton.Visibility = Visibility.Hidden;
             StartButtonMenu.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Visible;
             StopButton.Visibility = Visibility.Visible;
             PhotoTextBox.Visibility = Visibility.Visible;
-            PhotoTextBox.Text = "Are you ready for first picture?";
+
+
+            PhotoTextBox.Text = "Are you ready for taking picture?";
 
             try
             {
@@ -391,8 +467,12 @@ namespace FBoothApp
             try
             {
 
-                Slider.Background = liveView;
+                //Slider.Background = liveView;
+                DrawGridLines();
                 MainCamera.StartLiveView();
+                LiveViewImage.Visibility = Visibility.Visible;
+                GridCanvasLiveViewImage.Visibility = Visibility.Visible;
+
 
             }
             catch (Exception ex) { Report.Error(ex.Message, false); }
@@ -707,7 +787,7 @@ namespace FBoothApp
         }
         private void NextButtonPrinting_Click(object sender, RoutedEventArgs e)
         {
-            
+
             RenderStickersOnImage();
             SaveFinalImage();
             PrintMenu();
@@ -722,6 +802,8 @@ namespace FBoothApp
             SliderBorder.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
             StopButton.Visibility = Visibility.Hidden;
+            LiveViewImage.Visibility = Visibility.Hidden;
+            GridCanvasLiveViewImage.Visibility = Visibility.Hidden;
 
             PhotoTextBox.Text = "Choose a thumbnail below to retake the picture";
 
@@ -746,13 +828,13 @@ namespace FBoothApp
             NextButtonBackGround.Visibility = Visibility.Hidden;
             ShowPictureInlayout.Visibility = Visibility.Hidden;
 
-            FirstThumbnail.Visibility = Visibility.Hidden;
-            SecondThumbnail.Visibility = Visibility.Hidden;
-            ThirdThumbnail.Visibility = Visibility.Hidden;
-            FourthThumbnail.Visibility = Visibility.Hidden;
-            LeftThumbnail.Visibility = Visibility.Hidden;
-            CenterThumbnail.Visibility = Visibility.Hidden;
-            RightThumbnail.Visibility = Visibility.Hidden;
+            //FirstThumbnail.Visibility = Visibility.Hidden;
+            //SecondThumbnail.Visibility = Visibility.Hidden;
+            //ThirdThumbnail.Visibility = Visibility.Hidden;
+            //FourthThumbnail.Visibility = Visibility.Hidden;
+            //LeftThumbnail.Visibility = Visibility.Hidden;
+            //CenterThumbnail.Visibility = Visibility.Hidden;
+            //RightThumbnail.Visibility = Visibility.Hidden;
 
             BackgroundsWrapPanel.Visibility = Visibility.Visible;
             NextButtonSticker.Visibility = Visibility.Visible;
@@ -813,11 +895,11 @@ namespace FBoothApp
             StopButton.Visibility = Visibility.Visible;
             //        CreateDynamicBorder(ShowPrint.ActualWidth, ShowPrint.ActualHeight);
         }
-        
+
         private void LoadBackgrounds()
         {
             BackgroundsWrapPanel.Children.Clear(); // Xóa các phần tử cũ trước khi tải mới
-            string backgroundsDirectory = Path.Combine(Directory.GetCurrentDirectory(), $"Bground\\{layout.LayoutCode}");
+            string backgroundsDirectory = Path.Combine(Directory.GetCurrentDirectory(), $"Backgrounds\\{layout.LayoutCode}");
             string[] backgroundFiles = Directory.GetFiles(backgroundsDirectory, "*.png");
 
             foreach (string file in backgroundFiles)
@@ -839,7 +921,7 @@ namespace FBoothApp
         {
             Image clickedBackground = sender as Image;
             string fileName = System.IO.Path.GetFileName(((BitmapImage)clickedBackground.Source).UriSource.LocalPath);
-            Bitmap background = new Bitmap(Path.Combine(Directory.GetCurrentDirectory(), "Bground", layout.LayoutCode, fileName));
+            Bitmap background = new Bitmap(Path.Combine(Directory.GetCurrentDirectory(), "Backgrounds", layout.LayoutCode, fileName));
 
             // Lấy đường dẫn thư mục session hiện tại
             var savePhoto = new SavePhoto(photoNumber);
@@ -848,28 +930,9 @@ namespace FBoothApp
             Bitmap result = imageProcess.OverlayBackgroundBINHTHUONG(actualPrint, background);
             //Bitmap result = imageProcess.OverlayBackground(background, sessionDirectory);
             ShowPrint.Source = imageProcess.ConvertToBitmapImageBINHTHUONG(result);
-
-            //Image clickedBackground = sender as Image;
-            //string fileName = System.IO.Path.GetFileName(((BitmapImage)clickedBackground.Source).UriSource.LocalPath);
-            //Bitmap background = new Bitmap(Path.Combine(Directory.GetCurrentDirectory(), "Bground", layout.LayoutCode, fileName));
-
-            //var savePhoto = new SavePhoto(photoNumber);
-            //string sessionDirectory = savePhoto.CurrentSessionDirectory();
-
-            //Bitmap result = imageProcess.OverlayBackground(background, sessionDirectory);
-
-            //ShowPrint.Source = imageProcess.ConvertToBitmapImageBINHTHUONG(result);
-            //ShowPrint.Visibility = Visibility.Visible;
-
-            //// Position the ShowPrint image in the center of the canvasSticker
-            //double left = (canvasSticker.ActualWidth - ShowPrint.ActualWidth) / 2;
-            //double top = (canvasSticker.ActualHeight - ShowPrint.ActualHeight) / 2;
-
-            //Canvas.SetLeft(ShowPrint, left);
-            //Canvas.SetTop(ShowPrint, top);
         }
 
-        
+
 
         private void MinusOneCopyButtonClick(object sender, RoutedEventArgs e)
         {
@@ -975,26 +1038,26 @@ namespace FBoothApp
 
 
         //Chỗ này chọn templateName
-        private void Foreground_3_button_Click(object sender, RoutedEventArgs e)
-        {
-            layout.LayoutCode = "foreground_3";
-            StartButton_Click(sender, e);
-        }
-        private void Foreground_4_button_Click(object sender, RoutedEventArgs e)
-        {
-            layout.LayoutCode = "foreground_4";
-            StartButton_Click(sender, e);
-        }
-        private void Foreground_1_button_Click(object sender, RoutedEventArgs e)
-        {
-            layout.LayoutCode = "foreground_1";
-            StartButton_Click(sender, e);
-        }
-        private void Foreground_4_paski_button_Click(object sender, RoutedEventArgs e)
-        {
-            layout.LayoutCode = "foreground_4_paski";
-            StartButton_Click(sender, e);
-        }
+        //private void Foreground_3_button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    layout.LayoutCode = "foreground_3";
+        //    StartButton_Click(sender, e);
+        //}
+        //private void Foreground_4_button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    layout.LayoutCode = "foreground_4";
+        //    StartButton_Click(sender, e);
+        //}
+        //private void Foreground_1_button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    layout.LayoutCode = "foreground_1";
+        //    StartButton_Click(sender, e);
+        //}
+        //private void Foreground_4_paski_button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    layout.LayoutCode = "foreground_4_paski";
+        //    StartButton_Click(sender, e);
+        //}
 
 
         private void StartButtonMenu_Click(object sender, RoutedEventArgs e)
@@ -1007,19 +1070,22 @@ namespace FBoothApp
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
 
-            Foreground_1_button.Visibility = Visibility.Visible;
-            Foreground_3_button.Visibility = Visibility.Visible;
-            Foreground_4_button.Visibility = Visibility.Visible;
-            Foreground_4_paski_button.Visibility = Visibility.Visible;
+            //Foreground_1_button.Visibility = Visibility.Visible;
+            //Foreground_3_button.Visibility = Visibility.Visible;
+            //Foreground_4_button.Visibility = Visibility.Visible;
+            //Foreground_4_paski_button.Visibility = Visibility.Visible;
+            LoadLayouts();
             StopButton.Visibility = Visibility.Visible;
 
         }
         public void TurnOffForegroundMenu()
         {
-            Foreground_1_button.Visibility = Visibility.Hidden;
-            Foreground_3_button.Visibility = Visibility.Hidden;
-            Foreground_4_button.Visibility = Visibility.Hidden;
-            Foreground_4_paski_button.Visibility = Visibility.Hidden;
+            LayoutsWrapPanel.Visibility = Visibility.Hidden;
+            LayoutScrollViewer.Visibility = Visibility.Hidden;
+            //Foreground_1_button.Visibility = Visibility.Hidden;
+            //Foreground_3_button.Visibility = Visibility.Hidden;
+            //Foreground_4_button.Visibility = Visibility.Hidden;
+            //Foreground_4_paski_button.Visibility = Visibility.Hidden;
         }
         public void StartAllForegroundsWelcomeMenu()
         {
@@ -1038,13 +1104,15 @@ namespace FBoothApp
             AddOneCopyButton.Visibility = Visibility.Hidden;
             MinusOneCopyButton.Visibility = Visibility.Hidden;
             SendEmailButton.Visibility = Visibility.Hidden;
-            FirstThumbnail.Visibility = Visibility.Hidden;
-            SecondThumbnail.Visibility = Visibility.Hidden;
-            ThirdThumbnail.Visibility = Visibility.Hidden;
-            FourthThumbnail.Visibility = Visibility.Hidden;
-            LeftThumbnail.Visibility = Visibility.Hidden;
-            CenterThumbnail.Visibility = Visibility.Hidden;
-            RightThumbnail.Visibility = Visibility.Hidden;
+
+
+            //FirstThumbnail.Visibility = Visibility.Hidden;
+            //SecondThumbnail.Visibility = Visibility.Hidden;
+            //ThirdThumbnail.Visibility = Visibility.Hidden;
+            //FourthThumbnail.Visibility = Visibility.Hidden;
+            //LeftThumbnail.Visibility = Visibility.Hidden;
+            //CenterThumbnail.Visibility = Visibility.Hidden;
+            //RightThumbnail.Visibility = Visibility.Hidden;
 
             //SliderBorderTakingphoto.Visibility = Visibility.Hidden;
             //SliderTakingPhoto.Visibility = Visibility.Hidden;
@@ -1093,13 +1161,14 @@ namespace FBoothApp
             AddOneCopyButton.Visibility = Visibility.Hidden;
             MinusOneCopyButton.Visibility = Visibility.Hidden;
             SendEmailButton.Visibility = Visibility.Hidden;
-            FirstThumbnail.Visibility = Visibility.Hidden;
-            SecondThumbnail.Visibility = Visibility.Hidden;
-            ThirdThumbnail.Visibility = Visibility.Hidden;
-            FourthThumbnail.Visibility = Visibility.Hidden;
-            LeftThumbnail.Visibility = Visibility.Hidden;
-            CenterThumbnail.Visibility = Visibility.Hidden;
-            RightThumbnail.Visibility = Visibility.Hidden;
+
+            //FirstThumbnail.Visibility = Visibility.Hidden;
+            //SecondThumbnail.Visibility = Visibility.Hidden;
+            //ThirdThumbnail.Visibility = Visibility.Hidden;
+            //FourthThumbnail.Visibility = Visibility.Hidden;
+            //LeftThumbnail.Visibility = Visibility.Hidden;
+            //CenterThumbnail.Visibility = Visibility.Hidden;
+            //RightThumbnail.Visibility = Visibility.Hidden;
         }
         #endregion
 
@@ -1136,168 +1205,64 @@ namespace FBoothApp
             }
         }
 
-        //show hinh anh thu nho
+
         public void ShowPhotoThumbnail()
         {
+            // Xóa các nút hiện tại trong DockPanel
+            ThumbnailDockPanel.Children.Clear();
             var getImageThumbnail = new GetImageThumbnail();
 
-            ImageBrush thumbnailImageBrush = new ImageBrush();
-            getImageThumbnail.GetThumbnailPath();
-
-            switch (layout.LayoutCode)
+            // Tạo các nút hình thu nhỏ dựa trên số lượng ảnh đã chụp
+            for (int i = 1; i <= photosInTemplate; i++)
             {
-                case "foreground_1":
-                    if (photoNumberInTemplate == 1)
-                    {
-                        CenterThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                        CenterThumbnail.Visibility = Visibility.Visible;
-                    }
-                    break;
+                string thumbnailPath = getImageThumbnail.GetThumbnailPathForIndex(i);
 
+                Button thumbnailButton = new Button
+                {
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    BorderThickness = new Thickness(0),
+                    Visibility = Visibility.Visible,
+                    Margin = new Thickness(5),
+                    Tag = i // Lưu số thứ tự ảnh trong thuộc tính Tag
+                };
 
-                case "foreground_3":
-                    switch (photoNumberInTemplate)
-                    {
-                        case 1:
-                            LeftThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            LeftThumbnail.Visibility = Visibility.Visible;
-                            break;
+                Image thumbnailImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(thumbnailPath)),
+                    Stretch = Stretch.Uniform,
+                    Width = 200, // Đặt kích thước phù hợp
+                    Height = 200
+                };
 
-                        case 2:
-                            CenterThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            CenterThumbnail.Visibility = Visibility.Visible;
-                            break;
+                thumbnailButton.Content = thumbnailImage;
 
-                        case 3:
-                            RightThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            RightThumbnail.Visibility = Visibility.Visible;
-                            break;
-                        default:
-                            Debug.WriteLine("bug at switch which template in ShowPhotoThumbnail - foreground3");
-                            Debug.WriteLine("bug because photoNumberInTemplate = " + photoNumberInTemplate);
+                // Thêm sự kiện click cho các nút hình thu nhỏ
+                thumbnailButton.Click += ThumbnailButton_Click;
 
-                            break;
-                    }
-                    break;
-                case "foreground_4":
-                    switch (photoNumberInTemplate)
-                    {
-                        case 1:
-                            FirstThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            FirstThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        case 2:
-                            SecondThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            SecondThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        case 3:
-                            ThirdThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            ThirdThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        case 4:
-                            FourthThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            FourthThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        default:
-                            Debug.WriteLine("bug at switch which template in ShowPhotoThumbnail - foreground 4");
-                            Debug.WriteLine("bug because photoNumberInTemplate = " + photoNumberInTemplate);
-
-                            break;
-                    }
-                    break;
-
-                case "foreground_4_paski":
-                    switch (photoNumberInTemplate)
-                    {
-                        case 1:
-                            FirstThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            FirstThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        case 2:
-                            SecondThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            SecondThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        case 3:
-                            ThirdThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            ThirdThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        case 4:
-                            FourthThumbnailImage.Source = new BitmapImage(new Uri(getImageThumbnail.thumbnailPath));
-                            FourthThumbnail.Visibility = Visibility.Visible;
-                            break;
-
-                        default:
-                            Debug.WriteLine("bug at switch which template in ShowPhotoThumbnail = foreground 4 paski");
-                            Debug.WriteLine("bug because photoNumberInTemplate = " + photoNumberInTemplate);
-                            break;
-                    }
-                    break;
-                default:
-                    Debug.WriteLine("bug at switch which template in showphotothumbnail");
-                    break;
+                ThumbnailDockPanel.Children.Add(thumbnailButton);
             }
         }
 
-        private void LeftThumbnail_OnClick(object sender, RoutedEventArgs e)
+        private void ThumbnailButton_Click(object sender, RoutedEventArgs e)
         {
-            RepeatJustTakenPhoto(sender, e, 1);
-        }
-
-        private void CenterThumbnail_OnClick(object sender, RoutedEventArgs e)
-        {
-            switch (layout.LayoutCode)
+            if (sender is Button button && button.Tag is int photoIndex)
             {
-                case "foreground_1":
-                    RepeatJustTakenPhoto(sender, e, 1);
-                    break;
-                case "foreground_3":
-                    RepeatJustTakenPhoto(sender, e, 2);
-                    break;
-                default:
-                    Debug.WriteLine("Bug at centerThumbnail_OnClick");
-                    break;
+                RepeatJustTakenPhoto(sender, e, photoIndex);
             }
         }
+        private bool isRetake = false;
+        private int retakeIndex;
 
-        private void RightThumbnail_OnClick(object sender, RoutedEventArgs e)
-        {
-            RepeatJustTakenPhoto(sender, e, 3);
-        }
-
-        private void FirstThumbnail_OnClick(object sender, RoutedEventArgs e)
-        {
-            RepeatJustTakenPhoto(sender, e, 1);
-        }
-
-        private void SecondThumbnail_OnClick(object sender, RoutedEventArgs e)
-        {
-            RepeatJustTakenPhoto(sender, e, 2);
-        }
-
-        private void ThirdThumbnail_OnClick(object sender, RoutedEventArgs e)
-        {
-            RepeatJustTakenPhoto(sender, e, 3);
-        }
-
-        private void FourthThumbnail_OnClick(object sender, RoutedEventArgs e)
-        {
-            RepeatJustTakenPhoto(sender, e, 4);
-        }
-
+        //hàm chụp lại
         public void RepeatJustTakenPhoto(object sender, RoutedEventArgs e, int photoNumberToRepeat)
         {
             RepeatPhotoDialog repeatPhotoDialog = new RepeatPhotoDialog();
             if (repeatPhotoDialog.ShowDialog() == true)
             {
                 photosInTemplate--;
+                // Lưu lại số thứ tự của ảnh được chọn để chụp lại
                 photoNumberInTemplate = photoNumberToRepeat - 1;
+
                 ShowPictureInlayout.Visibility = Visibility.Hidden;
                 Print.Visibility = Visibility.Hidden;
                 ShowPrint.Visibility = Visibility.Hidden;
@@ -1306,10 +1271,33 @@ namespace FBoothApp
                 MinusOneCopyButton.Visibility = Visibility.Hidden;
                 SendEmailButton.Visibility = Visibility.Hidden;
 
+
+                isRetake = true;
+                retakeIndex = photoNumberToRepeat;
+
                 StartButton_Click(sender, e);
-                //TODO: Repeat selected photo, not only the last one like now
+
             }
         }
+        public void UpdatePhotoAfterRetake()
+        {
+            var getImageThumbnail = new GetImageThumbnail();
+            string newThumbnailPath = getImageThumbnail.GetLatestThumbnailPath();
+
+            // Cập nhật nút ảnh thu nhỏ tương ứng
+            foreach (Button btn in ThumbnailDockPanel.Children)
+            {
+                if ((int)btn.Tag == retakeIndex)
+                {
+                    Image thumbnailImage = (Image)btn.Content;
+                    thumbnailImage.Source = new BitmapImage(new Uri(newThumbnailPath));
+                    break;
+                }
+            }
+            isRetake = false;
+            retakeIndex = 0;
+        }
+
     }
 }
 
