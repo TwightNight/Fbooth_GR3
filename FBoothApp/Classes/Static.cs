@@ -1,24 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 using System.Drawing;
-using System.Xml.Linq;
-using System.Xml.Schema;
-using FBoothApp.Properties;
 using FBoothApp.Entity;
+using System.Drawing.Drawing2D;
 
 namespace FBoothApp
 {
@@ -95,74 +83,50 @@ namespace FBoothApp
     class ReSize
     {
         //hàm lưu ảnh
-        static public void ImageAndSave(string imagepath, int photoInTemplateNumb, Layout layout)
+        public static void ImageAndSave(string imagepath, int photoInTemplateNumb, Layout layout)
         {
             byte[] imageBytes = LoadImageData(imagepath);
 
             // Lấy thông tin kích thước và tọa độ từ layout
             int targetWidth = layout.PhotoBoxes[photoInTemplateNumb - 1].boxWidth;
             int targetHeight = layout.PhotoBoxes[photoInTemplateNumb - 1].boxHeight;
-            int targetX = layout.PhotoBoxes[photoInTemplateNumb - 1].CoordinatesX;
-            int targetY = layout.PhotoBoxes[photoInTemplateNumb - 1].CoordinatesY;
 
-            if (targetWidth > targetHeight)
+            using (var ms = new MemoryStream(imageBytes))
             {
-                ImageSource imageSource = CreateImage(imageBytes, targetWidth, 0);
-                imageBytes = GetEncodedImageData(imageSource, ".jpg");
+                using (var originalImage = System.Drawing.Image.FromStream(ms))
+                {
+                    int newWidth, newHeight;
+                    if (targetWidth > targetHeight)
+                    {
+                        // Nếu chiều rộng lớn hơn chiều cao
+                        float scale = (float)targetWidth / originalImage.Width;
+                        newWidth = targetWidth;
+                        newHeight = (int)(originalImage.Height * scale);
+                    }
+                    else
+                    {
+                        // Nếu chiều cao lớn hơn chiều rộng
+                        float scale = (float)targetHeight / originalImage.Height;
+                        newHeight = targetHeight;
+                        newWidth = (int)(originalImage.Width * scale);
+                    }
 
+                    var resizedImage = new Bitmap(newWidth, newHeight);
+
+                    using (var graphics = Graphics.FromImage(resizedImage))
+                    {
+                        graphics.CompositingQuality = CompositingQuality.HighQuality;
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                        graphics.DrawImage(originalImage, new System.Drawing.Rectangle(0, 0, newWidth, newHeight));
+
+                        var imageFormat = originalImage.RawFormat;
+                        string outputPath = naming(photoInTemplateNumb);
+                        resizedImage.Save(outputPath, imageFormat);
+                    }
+                }
             }
-            else
-            {
-                ImageSource imageSource = CreateImage(imageBytes, targetHeight, 0);
-                imageBytes = GetEncodedImageData(imageSource, ".jpg");
-            }
-
-            SaveImageData(imageBytes, naming(photoInTemplateNumb));
-            //switch (templateName)
-            //{
-            //    case "foreground_1":
-            //        {
-            //            byte[] imageBytes = LoadImageData(imagepath);
-            //            ImageSource imageSource = (CreateImage(imageBytes, 1390, 0));
-            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
-
-            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
-            //        }
-            //        break;
-
-            //    case "foreground_3":
-            //        {
-            //            byte[] imageBytes = LoadImageData(imagepath);
-            //            ImageSource imageSource = CreateImage(imageBytes, 410, 0);
-            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
-
-            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
-            //        }
-            //        break;
-
-            //    case "foreground_4":
-            //        {
-            //            byte[] imageBytes = LoadImageData(imagepath);
-            //            ImageSource imageSource = CreateImage(imageBytes, 560, 0);
-            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
-
-            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
-            //        }
-
-            //        break;
-
-            //    case "foreground_4_paski":
-            //        {
-            //            byte[] imageBytes = LoadImageData(imagepath);
-            //            ImageSource imageSource = CreateImage(imageBytes, 410, 0);
-            //            imageBytes = GetEncodedImageData(imageSource, ".jpg");
-            //            SaveImageData(imageBytes, naming(photoInTemplateNumb));
-            //        }
-            //        break;
-            //    default:
-            //        Debug.WriteLine("bug on switch which template in ImageAndSave");
-            //        break;
-            //}
 
         }
 

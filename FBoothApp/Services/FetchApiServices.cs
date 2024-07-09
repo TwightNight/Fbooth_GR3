@@ -2,30 +2,37 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace FBoothApp.Services
 {
-    public class LayoutServices
+    public class FetchApiServices
     {
         private readonly HttpClient _httpClient;
         private readonly string _layoutsFolderPath;
         private readonly string _backgroundsFolderPath;
-        private Task<string> _initialLoadTask;
+        private readonly string _stickersFolderPath;
 
+        private Task<string> _initialLoadTask;
+        private Task<string> _initialStickerLoadTask;
         private readonly string _localJsonPath;
 
-
-        public LayoutServices()
+        public FetchApiServices()
         {
             _httpClient = new HttpClient();
             _initialLoadTask = _httpClient.GetStringAsync("https://localhost:7156/api/layout");
+            _initialStickerLoadTask = _httpClient.GetStringAsync("https://localhost:7156/api/sticker");
+
             _layoutsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Layouts");
             _backgroundsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Backgrounds");
+            _stickersFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Stickers");
+
             _localJsonPath = Path.Combine(Directory.GetCurrentDirectory(), "layouts.json");
 
             if (!Directory.Exists(_layoutsFolderPath))
@@ -36,6 +43,11 @@ namespace FBoothApp.Services
             if (!Directory.Exists(_backgroundsFolderPath))
             {
                 Directory.CreateDirectory(_backgroundsFolderPath);
+            }
+
+            if (!Directory.Exists(_stickersFolderPath))
+            {
+                Directory.CreateDirectory(_stickersFolderPath);
             }
         }
 
@@ -56,6 +68,66 @@ namespace FBoothApp.Services
 
             return layouts;
         }
+
+        public async Task<List<Sticker>> GetStickersAsync()
+        {
+            List<Sticker> stickers = new List<Sticker>();
+            try
+            {
+                var response = await _initialStickerLoadTask;
+                stickers = JsonConvert.DeserializeObject<List<Sticker>>(response);
+                await SyncStickersLocalFiles(stickers);
+            }
+            catch (HttpRequestException)
+            {
+                stickers = LoadLocalStickers();
+            }
+
+            return stickers;
+        }
+
+        private List<Sticker> LoadLocalStickers()
+        {
+            var stickers = new List<Sticker>();
+            var stickerFiles = Directory.GetFiles(_stickersFolderPath, "*.png");
+
+            foreach (var filePath in stickerFiles)
+            {
+                var stickerId = Path.GetFileNameWithoutExtension(filePath);
+                stickers.Add(new Sticker
+                {
+                    StickerID = stickerId,
+                    StickerURL = filePath,
+                    LastModified = File.GetLastWriteTime(filePath)
+                });
+            }
+
+            return stickers;
+        }
+
+        private async Task SyncStickersLocalFiles(List<Sticker> stickers)
+        {
+            var stickerFiles = new HashSet<string>(Directory.GetFiles(_stickersFolderPath, "*", SearchOption.AllDirectories));
+
+            foreach (var sticker in stickers)
+            {
+                string stickerFileName = $"{sticker.StickerID}.png";
+                string stickerFilePath = Path.Combine(_stickersFolderPath, stickerFileName);
+
+                if (!File.Exists(stickerFilePath) || FileNeedsUpdate(stickerFilePath, sticker.LastModified))
+                {
+                    await DownloadAndSaveImageAsync(sticker.StickerURL, stickerFilePath);
+                }
+                stickerFiles.Remove(stickerFilePath); // Xóa các file sticker đã tồn tại từ danh sách
+            }
+
+            // Xóa các sticker không còn tồn tại trên server
+            foreach (var file in stickerFiles)
+            {
+                File.Delete(file);
+            }
+        }
+
 
         private void SaveLayoutsToLocalJson(List<Layout> layouts)
         {
@@ -79,9 +151,6 @@ namespace FBoothApp.Services
             var layoutFiles = new HashSet<string>(Directory.GetFiles(_layoutsFolderPath));
             var backgroundFiles = new HashSet<string>(Directory.GetFiles(_backgroundsFolderPath, "*", SearchOption.AllDirectories));
 
-            //var layoutIds = new HashSet<string>(layouts.ConvertAll(layout => layout.LayoutID.ToString()));
-
-            // Download and save new or updated layouts
             foreach (var layout in layouts)
             {
                 string layoutFileName = $"{layout.LayoutID}.png";
@@ -133,33 +202,36 @@ namespace FBoothApp.Services
             }
         }
 
-        //private List<Layout> LoadLocalLayouts()
-        //{
-        //    var layouts = new List<Layout>();
-        //    foreach (var file in Directory.GetFiles(_layoutsFolderPath, "*.png"))
-        //    {
-        //        var layoutId = Path.GetFileNameWithoutExtension(file);
-        //        layouts.Add(new Layout { LayoutID = layoutId, LayoutURL = file });
-        //    }
-        //    return layouts;
-        //}
-
         private async Task DownloadAndSaveImageAsync(string url, string filePath)
         {
             using (var response = await _httpClient.GetAsync(url))
             {
                 response.EnsureSuccessStatusCode();
                 var imageBytes = await response.Content.ReadAsByteArrayAsync();
-                WriteAllBytes(filePath, imageBytes);
+                SaveImageWithHighestQuality(filePath, imageBytes);
             }
         }
 
-        private void WriteAllBytes(string path, byte[] bytes)
+        private void SaveImageWithHighestQuality(string path, byte[] imageBytes)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+            using (var ms = new MemoryStream(imageBytes))
+            using (var image = System.Drawing.Image.FromStream(ms))
             {
-                fs.Write(bytes, 0, bytes.Length);
+                var encoder = GetEncoder(ImageFormat.Png);
+                var encoderParameters = new EncoderParameters(1);
+                encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
+
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    image.Save(fs, encoder, encoderParameters);
+                }
             }
+        }
+
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            var codecs = ImageCodecInfo.GetImageDecoders();
+            return codecs.FirstOrDefault(codec => codec.FormatID == format.Guid);
         }
 
         private bool FileNeedsUpdate(string filePath, DateTime? lastModified)

@@ -399,9 +399,7 @@ namespace FBoothApp
                 sender.DownloadFile(Info, dir);
 
 
-                //               ReSize.ImageAndSave(savedata.PhotoDirectory,photosInTemplate,templateName);
                 ReSize.ImageAndSave(savedata.PhotoDirectory, photoNumberInTemplate, layout);
-                //TemplateProcessing.ImageAndSave(savedata.PhotoDirectory, photosInTemplate, templateName);
 
             }
             catch (Exception ex) { Report.Error(ex.Message, false); }
@@ -515,6 +513,7 @@ namespace FBoothApp
                 MainCamera.StateChanged += MainCamera_StateChanged;
                 MainCamera.DownloadReady += MainCamera_DownloadReady;
                 MainCamera.SetSetting(PropertyID.SaveTo, (int)SaveTo.Host);
+                //MainCamera.SetSetting(PropertyID.ImageQuality, (int)ImageQuality.LargeFineJPEG);
                 MainCamera.SetCapacity(4096, 0x1FFFFFFF);
 
             }
@@ -576,18 +575,17 @@ namespace FBoothApp
             else StartWelcomeMenu();
         }
 
-        private void LoadSticker()
+        private async void LoadSticker()
         {
-            string stickerDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Sticker");
-            string[] stickerFiles = Directory.GetFiles(stickerDirectory, "*.png");
+            var stickerFiles = await _apiServices.GetStickersAsync();
 
-            foreach (string stickerFile in stickerFiles)
+            foreach (var stickerFile in stickerFiles)
             {
                 Image stickerImage = new Image
                 {
-                    Source = new BitmapImage(new Uri(stickerFile)),
-                    Width = 50,
-                    Height = 50,
+                    Source = new BitmapImage(new Uri(stickerFile.StickerURL)),
+                    Width = 100,
+                    Height = 100,
                     Margin = new Thickness(5)
                 };
                 stickerImage.MouseLeftButtonDown += StickerImage_MouseLeftButtonDown;
@@ -607,7 +605,7 @@ namespace FBoothApp
         private void AddStickerToCanvas(BitmapImage stickerImageSource)
         {
 
-            Sticker sticker = new Sticker
+            StickerServices sticker = new StickerServices
             {
                 Width = 100,
                 Height = 100,
@@ -633,7 +631,7 @@ namespace FBoothApp
 
         private void Sticker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Sticker clickedSticker)
+            if (sender is StickerServices clickedSticker)
             {
                 clickedSticker.CaptureMouse();
             }
@@ -641,7 +639,7 @@ namespace FBoothApp
 
         private void Sticker_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Sticker clickedSticker)
+            if (sender is StickerServices clickedSticker)
             {
                 clickedSticker.ReleaseMouseCapture();
             }
@@ -651,7 +649,7 @@ namespace FBoothApp
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Sticker clickedSticker = sender as Sticker;
+                StickerServices clickedSticker = sender as StickerServices;
                 if (clickedSticker != null)
                 {
                     var position = e.GetPosition(ShowPrint);
@@ -727,8 +725,13 @@ namespace FBoothApp
             BitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
-            // Đường dẫn và tên file cho ảnh cuối cùng
-            string filePath = Path.Combine(currentDirectory, "Final pic.png");
+            // Tạo đối tượng SavePrints để lấy đường dẫn lưu ảnh
+            var savePrints = new SavePrints(printNumber);
+            string filePath = savePrints.PrintDirectory;
+
+            // Tăng số thứ tự của ảnh in để lần lưu tiếp theo không bị trùng tên
+            printNumber++;
+
             using (FileStream file = File.OpenWrite(filePath))
             {
                 encoder.Save(file);
@@ -743,7 +746,7 @@ namespace FBoothApp
         {
             foreach (var child in canvasSticker.Children)
             {
-                if (child is Sticker sticker && sticker.Visibility == Visibility.Visible)
+                if (child is StickerServices sticker && sticker.Visibility == Visibility.Visible)
                 {
                     // Ẩn sticker
                     sticker.Visibility = Visibility.Hidden;
@@ -769,7 +772,7 @@ namespace FBoothApp
         {
             foreach (var child in canvasSticker.Children)
             {
-                if (child is Sticker sticker)
+                if (child is StickerServices sticker)
                 {
                     sticker.HideCloseButton();
                 }
@@ -860,6 +863,7 @@ namespace FBoothApp
         {
             BackgroundsWrapPanel.Visibility = Visibility.Hidden;
             NextButtonSticker.Visibility = Visibility.Hidden;
+            PhotoTextBox.Text = "Choose sticker";
 
             // Hiển thị StickerWrapPanel
             StickerWrapPanel.Visibility = Visibility.Visible;
@@ -1036,28 +1040,6 @@ namespace FBoothApp
 
         #region Foreground_Menu
 
-
-        //Chỗ này chọn templateName
-        //private void Foreground_3_button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    layout.LayoutCode = "foreground_3";
-        //    StartButton_Click(sender, e);
-        //}
-        //private void Foreground_4_button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    layout.LayoutCode = "foreground_4";
-        //    StartButton_Click(sender, e);
-        //}
-        //private void Foreground_1_button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    layout.LayoutCode = "foreground_1";
-        //    StartButton_Click(sender, e);
-        //}
-        //private void Foreground_4_paski_button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    layout.LayoutCode = "foreground_4_paski";
-        //    StartButton_Click(sender, e);
-        //}
 
 
         private void StartButtonMenu_Click(object sender, RoutedEventArgs e)
