@@ -65,6 +65,7 @@
       <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -89,6 +90,7 @@
     <Compile Include="Classes\GetImageThumbnail.cs" />
     <Compile Include="Classes\ImageProcess.cs" />
     <Compile Include="Classes\ResizeAdorner.cs" />
+    <Compile Include="Entity\AppSettings.cs" />
     <Compile Include="Entity\Background.cs" />
     <Compile Include="Entity\Layout.cs" />
     <Compile Include="Entity\PhotoBox.cs" />
@@ -193,6 +195,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\NextButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\send.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

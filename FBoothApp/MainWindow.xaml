@@ -24,7 +24,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
             <RowDefinition Height="2*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -51,11 +51,12 @@
             VerticalAlignment="Center"
             Background="{x:Null}"
             BorderThickness="0"
-            Click="StartButton_Click">
+            Click="StartButton_Click"
+            Visibility="Hidden">
             <Image Source="backgrounds/StartButton.png" />
         </Button>
 
-        <Button
+        <!--<Button
             x:Name="StartButtonMenu"
             Grid.Row="0"
             Grid.Column="0"
@@ -66,7 +67,7 @@
             Click="StartButtonMenu_Click"
             Visibility="Hidden">
             <Image Source="backgrounds/StartButton.png" />
-        </Button>
+        </Button>-->
 
         <Image
             x:Name="LiveViewImage"
@@ -245,6 +246,63 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center" />
         </ScrollViewer>
+
+        <Grid
+            x:Name="InputGrid"
+            Grid.Row="4"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Margin="10">
+            <Border
+                Padding="5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Background="White"
+                CornerRadius="15">
+                <Grid>
+                    <TextBox
+                        x:Name="RoundedTextBox"
+                        Width="1143"
+                        Padding="10"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="20"
+                        Foreground="Gray"
+                        GotFocus="RoundedTextBox_GotFocus"
+                        LostFocus="RoundedTextBox_LostFocus"
+                        Text="Enter your code here!"
+                        TextChanged="RoundedTextBox_TextChanged" />
+                    <Button
+                        x:Name="SendButton"
+                        Width="50"
+                        Height="50"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="SendButton_Click"
+                        IsEnabled="False">
+                        <Image
+                            Width="30"
+                            Height="30"
+                            Source="backgrounds/send.png">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Opacity" Value="0.5" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEnabled, ElementName=SendButton}" Value="True">
+                                            <Setter Property="Opacity" Value="1.0" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
 
         <!--  chỗ load background  -->
 

@@ -445,7 +445,10 @@ namespace FBoothApp
             SliderBorder.Visibility = Visibility.Hidden;
             Slider.Visibility = Visibility.Hidden;
             StartButton.Visibility = Visibility.Hidden;
-            StartButtonMenu.Visibility = Visibility.Hidden;
+
+            //StartButtonMenu.Visibility = Visibility.Hidden;
+            InputGrid.Visibility = Visibility.Hidden;
+
             ReadyButton.Visibility = Visibility.Visible;
             StopButton.Visibility = Visibility.Visible;
             PhotoTextBox.Visibility = Visibility.Visible;
@@ -1042,15 +1045,16 @@ namespace FBoothApp
 
 
 
-        private void StartButtonMenu_Click(object sender, RoutedEventArgs e)
-        {
-            TurnOnForegroundMenu();
-        }
+        //private void StartButtonMenu_Click(object sender, RoutedEventArgs e)
+        //{
+        //    TurnOnForegroundMenu();
+        //}
         public void TurnOnForegroundMenu()
         {
             sliderTimer.Stop();
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
+            InputGrid.Visibility = Visibility.Hidden;
 
             //Foreground_1_button.Visibility = Visibility.Visible;
             //Foreground_3_button.Visibility = Visibility.Visible;
@@ -1074,7 +1078,9 @@ namespace FBoothApp
             PhotoTextBox.Visibility = Visibility.Visible;
             PhotoTextBox.Text = "Hello";
             SliderBorder.Visibility = Visibility.Visible;
-            StartButtonMenu.Visibility = Visibility.Visible;
+
+            //StartButtonMenu.Visibility = Visibility.Visible;
+
             Slider.Visibility = Visibility.Visible;
             sliderTimer.Start();
 
@@ -1104,7 +1110,8 @@ namespace FBoothApp
 
             if (turnOnTemplateMenu)
             {
-                StartButtonMenu.Visibility = Visibility.Visible;
+                //StartButtonMenu.Visibility = Visibility.Visible;
+                SendButton.Visibility = Visibility.Visible;
             }
             else
             {
@@ -1164,26 +1171,28 @@ namespace FBoothApp
             {
                 Debug.WriteLine("inputemailsend is ok, answer is :" + inputEmailSendDialog.Answer);
                 EmailSender emailSender = new EmailSender();
-                switch (layout.LayoutCode)
-                {
-                    case "foreground_1":
-                        emailSender.SendEmail(photoNumber, 1, inputEmailSendDialog.Answer, printPath);
-                        break;
+                //switch (layout.LayoutCode)
+                //{
+                //    case "foreground_1":
+                //        emailSender.SendEmail(photoNumber, 1, inputEmailSendDialog.Answer, printPath);
+                //        break;
 
-                    case "foreground_3":
-                        emailSender.SendEmail(photoNumber, 3, inputEmailSendDialog.Answer, printPath);
-                        break;
-                    case "foreground_4":
-                        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
-                        break;
+                //    case "foreground_3":
+                //        emailSender.SendEmail(photoNumber, 3, inputEmailSendDialog.Answer, printPath);
+                //        break;
+                //    case "foreground_4":
+                //        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
+                //        break;
 
-                    case "foreground_4_paski":
-                        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
-                        break;
-                    default:
-                        Debug.WriteLine("bug at switch which template in email send button");
-                        break;
-                }
+                //    case "foreground_4_paski":
+                //        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
+                //        break;
+                //    default:
+                //        Debug.WriteLine("bug at switch which template in email send button");
+                //        break;
+                //}
+                       emailSender.SendEmail(photoNumber, layout.PhotoSlot, inputEmailSendDialog.Answer, printPath);
+
             }
         }
 
@@ -1278,6 +1287,46 @@ namespace FBoothApp
             }
             isRetake = false;
             retakeIndex = 0;
+        }
+
+
+        private void RoundedTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (RoundedTextBox.Text == "Enter your code here!")
+            {
+                RoundedTextBox.Text = string.Empty;
+                RoundedTextBox.Foreground = new SolidColorBrush(Colors.Black);
+            }
+        }
+
+        private void RoundedTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(RoundedTextBox.Text))
+            {
+                RoundedTextBox.Text = "Enter your code here!";
+                RoundedTextBox.Foreground = new SolidColorBrush(Colors.Gray);
+            }
+        }
+
+        private void RoundedTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SendButton == null) return; // Ensure SendButton is not null
+
+            if (string.IsNullOrWhiteSpace(RoundedTextBox.Text) || RoundedTextBox.Text == "Enter your code here!")
+            {
+                SendButton.IsEnabled = false;
+                SendButton.Opacity = 0.5;
+            }
+            else
+            {
+                SendButton.IsEnabled = true;
+                SendButton.Opacity = 1.0;
+            }
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            TurnOnForegroundMenu();
         }
 
     }
