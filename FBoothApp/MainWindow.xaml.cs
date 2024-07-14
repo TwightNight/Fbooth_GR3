@@ -32,6 +32,7 @@ using System.Drawing.Imaging;
 using FBoothApp.Entity;
 using System.Drawing.Drawing2D;
 using FBoothApp.Services;
+using System.Windows.Media.Animation;
 
 
 namespace FBoothApp
@@ -336,13 +337,16 @@ namespace FBoothApp
             var sliderData = new Slider();
 
             ImageBrush slide = new ImageBrush();
-            //  slide.Stretch = Stretch.Uniform;
-
             slide.ImageSource = new BitmapImage(new Uri(sliderData.imagePath));
+            slide.Stretch = Stretch.Uniform; // Nếu muốn sử dụng Stretch
+
+            // Tạo hiệu ứng mờ dần
+            Slider.BeginAnimation(OpacityProperty, null); // Hủy bỏ bất kỳ hiệu ứng nào trước đó
+            Slider.Opacity = 0; // Đặt độ mờ ban đầu thành 0
             Slider.Background = slide;
 
-            //  var ratio = Math.Min(Slider.RenderSize.Width / slide.ImageSource.Width, Slider.RenderSize.Height / slide.ImageSource.Height);
-            //    CreateDynamicBorder(slide.ImageSource.Width, slide.ImageSource.Height);
+            var storyboard = (Storyboard)FindResource("ImageTransitionStoryboard");
+            storyboard.Begin(Slider);
 
         }
 

@@ -21,27 +21,25 @@ namespace FBoothApp
     {
         public string imgName { get; set; }
         public string imagePath { get; set; }
-        public FileInfo [] imageNumbers { get; set; }
+        public FileInfo[] imageNumbers { get; set; }
 
         public string actualFolder { get; set; }
 
         public Slider()
-        {         
+        {
             actualFolder = chooseImageToShow();
-            imageNumbers = new DirectoryInfo(actualFolder).GetFiles("*.jpg");
+            imageNumbers = GetAllImageFiles(actualFolder);
 
             imgName = randomIMG();
             imagePath = ImageLocation();
-           
-            
         }
 
         public string chooseImageToShow()
         {
             string todayFolder = Actual.DateNow();
-            var tempNumbers = new DirectoryInfo(todayFolder).GetFiles("*.jpg");
+            var tempNumbers = GetAllImageFiles(todayFolder);
 
-            if (tempNumbers.Length<=2)
+            if (tempNumbers.Length <= 2)
             {
                 return "sample";
             }
@@ -50,16 +48,28 @@ namespace FBoothApp
                 return todayFolder;
             }
         }
-     private string randomIMG()
-        {            
-            int length = imageNumbers.Length-1;
+
+        private FileInfo[] GetAllImageFiles(string folder)
+        {
+            string[] extensions = new[] { "*.jpg", "*.jpeg", "*.png", "*.bmp" };
+            var files = new List<FileInfo>();
+            foreach (var ext in extensions)
+            {
+                files.AddRange(new DirectoryInfo(folder).GetFiles(ext));
+            }
+            return files.ToArray();
+        }
+
+        private string randomIMG()
+        {
+            int length = imageNumbers.Length - 1;
 
             Random r = new Random();
             int rInt = r.Next(0, length);
 
             string randomImage = imageNumbers[rInt].Name;
             return randomImage;
-        }   
+        }
 
         private string ImageLocation()
         {

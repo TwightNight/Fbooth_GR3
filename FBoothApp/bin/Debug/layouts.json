@@ -63,5 +63,91 @@
       }
     ],
     "Backgrounds": []
+  },
+  {
+    "LayoutID": "abeea916-bc2a-413e-e40d-08dca3e1d79e",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1720946955/FBooth-Layout/togt9be1wzejuozjcvja.png",
+    "CouldID": "FBooth-Layout/togt9be1wzejuozjcvja",
+    "LayoutCode": "Orange Colorful Playful Retro 90's Good Vibes Photobooth Collage Photostrip (7)",
+    "Status": "Available",
+    "Height": 2000,
+    "Width": 707,
+    "PhotoSlot": 4,
+    "CreatedDate": "2024-07-14T15:49:16.23",
+    "LastModified": null,
+    "PhotoBoxes": [
+      {
+        "boxHeight": 374,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 71,
+        "LayoutID": "abeea916-bc2a-413e-e40d-08dca3e1d79e"
+      },
+      {
+        "boxHeight": 374,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 469,
+        "LayoutID": "abeea916-bc2a-413e-e40d-08dca3e1d79e"
+      },
+      {
+        "boxHeight": 373,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 867,
+        "LayoutID": "abeea916-bc2a-413e-e40d-08dca3e1d79e"
+      },
+      {
+        "boxHeight": 374,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 1264,
+        "LayoutID": "abeea916-bc2a-413e-e40d-08dca3e1d79e"
+      }
+    ],
+    "Backgrounds": []
+  },
+  {
+    "LayoutID": "56539a23-9674-4bc7-e40e-08dca3e1d79e",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1720946971/FBooth-Layout/wjmj5rcaosik7q1undcl.png",
+    "CouldID": "FBooth-Layout/wjmj5rcaosik7q1undcl",
+    "LayoutCode": "Orange Colorful Playful Retro 90's Good Vibes Photobooth Collage Photostrip (3)",
+    "Status": "Available",
+    "Height": 2000,
+    "Width": 707,
+    "PhotoSlot": 4,
+    "CreatedDate": "2024-07-14T15:49:32.1866667",
+    "LastModified": null,
+    "PhotoBoxes": [
+      {
+        "boxHeight": 374,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 71,
+        "LayoutID": "56539a23-9674-4bc7-e40e-08dca3e1d79e"
+      },
+      {
+        "boxHeight": 374,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 469,
+        "LayoutID": "56539a23-9674-4bc7-e40e-08dca3e1d79e"
+      },
+      {
+        "boxHeight": 373,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 867,
+        "LayoutID": "56539a23-9674-4bc7-e40e-08dca3e1d79e"
+      },
+      {
+        "boxHeight": 374,
+        "boxWidth": 621,
+        "CoordinatesX": 43,
+        "CoordinatesY": 1264,
+        "LayoutID": "56539a23-9674-4bc7-e40e-08dca3e1d79e"
+      }
+    ],
+    "Backgrounds": []
   }
 ]

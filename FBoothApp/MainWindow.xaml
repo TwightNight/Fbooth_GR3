@@ -16,6 +16,16 @@
     WindowStyle="None"
     mc:Ignorable="d">
 
+    <Window.Resources>
+        <Storyboard x:Key="ImageTransitionStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:1" />
+        </Storyboard>
+    </Window.Resources>
+
     <Window.Background>
         <ImageBrush ImageSource="backgrounds/background_3.jpg" />
     </Window.Background>
@@ -100,7 +110,7 @@
             Grid.Column="1"
             Grid.ColumnSpan="2"
             BorderBrush="AliceBlue"
-            BorderThickness="5">
+            BorderThickness="0">
             <Canvas
                 x:Name="Slider"
                 Grid.Row="1"
@@ -231,21 +241,22 @@
                 Background="Transparent" />
         </Grid>
 
-
         <ScrollViewer
             x:Name="LayoutScrollViewer"
             Grid.Row="1"
             Grid.RowSpan="2"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="5"
             HorizontalScrollBarVisibility="Disabled"
-            VerticalScrollBarVisibility="Auto">
+            PanningMode="VerticalOnly"
+            VerticalScrollBarVisibility="Hidden">
             <WrapPanel
                 x:Name="LayoutsWrapPanel"
                 Margin="10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center" />
         </ScrollViewer>
+
 
         <Grid
             x:Name="InputGrid"
