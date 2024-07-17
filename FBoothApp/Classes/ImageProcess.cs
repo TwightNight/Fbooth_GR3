@@ -14,7 +14,7 @@ namespace FBoothApp.Classes
 {
     public class ImageProcess
     {
-        public Bitmap OverlayBackgroundBINHTHUONG(BitmapImage photo, Bitmap background)
+        public Bitmap OverlayBackground(BitmapImage photo, Bitmap background)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -47,7 +47,7 @@ namespace FBoothApp.Classes
             }
         }
 
-        public BitmapImage ConvertToBitmapImageBINHTHUONG(Bitmap bitmap)
+        public BitmapImage ConvertToBitmapImage(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
             {

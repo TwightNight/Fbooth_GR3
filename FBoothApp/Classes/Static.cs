@@ -88,8 +88,8 @@ namespace FBoothApp
             byte[] imageBytes = LoadImageData(imagepath);
 
             // Lấy thông tin kích thước và tọa độ từ layout
-            int targetWidth = layout.PhotoBoxes[photoInTemplateNumb - 1].boxWidth;
-            int targetHeight = layout.PhotoBoxes[photoInTemplateNumb - 1].boxHeight;
+            int targetWidth = layout.PhotoBoxes[photoInTemplateNumb - 1].BoxWidth;
+            int targetHeight = layout.PhotoBoxes[photoInTemplateNumb - 1].BoxHeight;
 
             using (var ms = new MemoryStream(imageBytes))
             {

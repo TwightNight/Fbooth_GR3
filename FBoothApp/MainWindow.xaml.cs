@@ -204,7 +204,7 @@ namespace FBoothApp
                 {
                     var printdata = new SavePrints(printNumber);
                     printPath = printdata.PrintDirectory;
-                    TemplateProcessing.ProcessLayout(currentLayout, printPath);
+                    LayoutProcessing.ProcessLayout(currentLayout, printPath);
                     printNumber++;
                     RetakePhotoMenu();
 
@@ -938,9 +938,8 @@ namespace FBoothApp
             var savePhoto = new SavePhoto(photoNumber);
             string sessionDirectory = savePhoto.CurrentSessionDirectory();
 
-            Bitmap result = imageProcess.OverlayBackgroundBINHTHUONG(actualPrint, background);
-            //Bitmap result = imageProcess.OverlayBackground(background, sessionDirectory);
-            ShowPrint.Source = imageProcess.ConvertToBitmapImageBINHTHUONG(result);
+            Bitmap result = imageProcess.OverlayBackground(actualPrint, background);
+            ShowPrint.Source = imageProcess.ConvertToBitmapImage(result);
         }
 
 
@@ -1055,6 +1054,7 @@ namespace FBoothApp
         //}
         public void TurnOnForegroundMenu()
         {
+            PhotoTextBox.Text = "Please select a layout to get started.";
             sliderTimer.Stop();
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
@@ -1170,7 +1170,7 @@ namespace FBoothApp
             // Mở bàn phím ảo
             //Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.System) + Path.DirectorySeparatorChar + "osk.exe");
 
-            EmailSendDialog inputEmailSendDialog = new EmailSendDialog("Please enter your email address:", "name@example.com");
+            EmailSendDialog inputEmailSendDialog = new EmailSendDialog("Please enter your email address:", "name@gmail.com");
             if (inputEmailSendDialog.ShowDialog() == true)
             {
                 Debug.WriteLine("inputemailsend is ok, answer is :" + inputEmailSendDialog.Answer);
@@ -1195,7 +1195,7 @@ namespace FBoothApp
                 //        Debug.WriteLine("bug at switch which template in email send button");
                 //        break;
                 //}
-                       emailSender.SendEmail(photoNumber, layout.PhotoSlot, inputEmailSendDialog.Answer, printPath);
+                emailSender.SendEmail(photoNumber, layout.PhotoSlot, inputEmailSendDialog.Answer, printPath);
 
             }
         }

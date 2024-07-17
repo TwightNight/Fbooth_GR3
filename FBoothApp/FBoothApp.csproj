@@ -97,7 +97,7 @@
     <Compile Include="Entity\Sticker.cs" />
     <Compile Include="Entity\StickerServices.cs" />
     <Compile Include="Menu\UserSettings.cs" />
-    <Compile Include="Classes\TemplateProcessing.cs" />
+    <Compile Include="Classes\LayoutProcessing.cs" />
     <Compile Include="Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>

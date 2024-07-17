@@ -52,18 +52,40 @@ namespace FBoothApp.Classes
 
                 StringBuilder sbBody = new StringBuilder();
                 sbBody.AppendLine("<html>");
+                sbBody.AppendLine("<head>");
+                sbBody.AppendLine("<style type=\"text/css\">");
+                sbBody.AppendLine("body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }");
+                sbBody.AppendLine(".container { width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 10px; }");
+                sbBody.AppendLine(".header { text-align: center; padding: 20px; background-color: #90c9ff; border-top-left-radius: 10px; border-top-right-radius: 10px; }");
+                sbBody.AppendLine(".header img { width: 100px; height: auto; }");
+                sbBody.AppendLine(".content { padding: 20px; text-align: center; }");
+                sbBody.AppendLine(".content h1 { font-size: 24px; color: #333333; }");
+                sbBody.AppendLine(".content p { font-size: 16px; color: #666666; }");
+                sbBody.AppendLine(".content img { width: 100%; max-width: 500px; margin: 20px 0; border: 1px solid #dddddd; border-radius: 10px; }");
+                sbBody.AppendLine(".footer { padding: 20px; text-align: center; font-size: 12px; color: #999999; background-color: #f5f5f5; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }");
+                sbBody.AppendLine("</head>");
                 sbBody.AppendLine("<body>");
+                sbBody.AppendLine("<div class=\"container\">");
+
+                // Header with logo
+                sbBody.AppendLine("<div class=\"header\">");
+                sbBody.AppendLine("<img src=\"https://res.cloudinary.com/dfxvccyje/image/upload/v1721217361/Logo/FboothLogo.png\" alt=\"FBooth Logo\">");
+                sbBody.AppendLine("</div>");
+
+                // Greeting message
+                sbBody.AppendLine("<div class=\"content\">");
                 sbBody.AppendLine("<h1>Hi,</h1>");
                 sbBody.AppendLine("<p>Thank you for using our photo booth! Here are your photos:</p>");
 
+                // Embed images
                 var instance = new SavePhoto(photoNumber);
                 for (int i = 0; i < numberOfPhotosToSendViaEmail; i++)
                 {
                     photoNumber = (instance.PhotoNumberJustTaken() - i);
-                    string photoName = instance.PhotoNaming(photoNumber);
-                    string photoDirectoryPath = Path.Combine(Actual.FilePath(), photoName);
+                    var save = new SavePhoto(photoNumber);
+                    string photoName = save.PhotoNaming(photoNumber);
+                    string photoDirectoryPath = Path.Combine(save.FolderDirectory, photoName);
 
-                    // Embed the image
                     string contentId = Guid.NewGuid().ToString();
                     Attachment attachment = new Attachment(photoDirectoryPath);
                     attachment.ContentDisposition.Inline = true;
@@ -73,11 +95,10 @@ namespace FBoothApp.Classes
                     attachment.ContentType.Name = Path.GetFileName(photoDirectoryPath);
                     mail.Attachments.Add(attachment);
 
-                    // Add the image to the body
-                    sbBody.AppendLine($"<img src=\"cid:{contentId}\" alt=\"Photo\" style=\"width:100%; max-width:600px;\"/>");
+                    sbBody.AppendLine($"<img src=\"cid:{contentId}\" alt=\"Photo\">");
                 }
 
-                // Add the printed photo to the email
+                // Add the printed photo
                 if (!string.IsNullOrEmpty(printedPhotoPath) && File.Exists(printedPhotoPath))
                 {
                     string printedContentId = Guid.NewGuid().ToString();
@@ -89,13 +110,20 @@ namespace FBoothApp.Classes
                     printedAttachment.ContentType.Name = Path.GetFileName(printedPhotoPath);
                     mail.Attachments.Add(printedAttachment);
 
-                    // Add the printed photo to the body
-                    sbBody.AppendLine($"<h2>Your Printed Photo:</h2>");
-                    sbBody.AppendLine($"<img src=\"cid:{printedContentId}\" alt=\"Printed Photo\" style=\"width:100%; max-width:600px;\"/>");
+                    sbBody.AppendLine("<h2>Your Printed Photo:</h2>");
+                    sbBody.AppendLine($"<img src=\"cid:{printedContentId}\" alt=\"Printed Photo\">");
                 }
 
                 sbBody.AppendLine("<p>Best regards,</p>");
                 sbBody.AppendLine("<p>FBooth Team</p>");
+                sbBody.AppendLine("</div>");
+
+                // Footer section
+                sbBody.AppendLine("<div class=\"footer\">");
+                sbBody.AppendLine("<p>&copy; 2023 FBooth. All rights reserved.</p>");
+                sbBody.AppendLine("</div>");
+
+                sbBody.AppendLine("</div>");
                 sbBody.AppendLine("</body>");
                 sbBody.AppendLine("</html>");
 
@@ -114,7 +142,6 @@ namespace FBoothApp.Classes
                 Report.Error("An error occurred while sending the email.", true);
                 Debug.WriteLine(ex.ToString());
             }
-
         }
 
 

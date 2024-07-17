@@ -192,8 +192,8 @@
             BorderThickness="0"
             FontFamily="Arial"
             FontSize="35"
-            Foreground="White"
-            Text="Hello"
+            Foreground="Black"
+            Text="Welcome to FBooth! Please enter your code to continute and enjoy the experience!"
             TextWrapping="Wrap"
             Visibility="Visible" />
 
