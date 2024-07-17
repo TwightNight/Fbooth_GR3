@@ -56,13 +56,14 @@ namespace FBoothApp.Classes
                 sbBody.AppendLine("<style type=\"text/css\">");
                 sbBody.AppendLine("body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }");
                 sbBody.AppendLine(".container { width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 10px; }");
-                sbBody.AppendLine(".header { text-align: center; padding: 20px; background-color: #90c9ff; border-top-left-radius: 10px; border-top-right-radius: 10px; }");
+                sbBody.AppendLine(".header { text-align: center; padding: 20px; background-color: #0084ff; border-top-left-radius: 10px; border-top-right-radius: 10px; }");
                 sbBody.AppendLine(".header img { width: 100px; height: auto; }");
                 sbBody.AppendLine(".content { padding: 20px; text-align: center; }");
                 sbBody.AppendLine(".content h1 { font-size: 24px; color: #333333; }");
                 sbBody.AppendLine(".content p { font-size: 16px; color: #666666; }");
                 sbBody.AppendLine(".content img { width: 100%; max-width: 500px; margin: 20px 0; border: 1px solid #dddddd; border-radius: 10px; }");
                 sbBody.AppendLine(".footer { padding: 20px; text-align: center; font-size: 12px; color: #999999; background-color: #f5f5f5; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }");
+                sbBody.AppendLine("</style>");
                 sbBody.AppendLine("</head>");
                 sbBody.AppendLine("<body>");
                 sbBody.AppendLine("<div class=\"container\">");
