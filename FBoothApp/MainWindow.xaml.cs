@@ -1019,11 +1019,13 @@ namespace FBoothApp
         {
             if (e.Key == Key.F12)
             {
+                //f12 để mở setting
                 Menu menu1 = new Menu();
                 this.Content = menu1;
             }
             if (e.Key == Key.Escape)
             {
+                //esc để thoát chương trình
                 Application.Current.Shutdown();
             }
         }
@@ -1176,26 +1178,6 @@ namespace FBoothApp
             {
                 Debug.WriteLine("inputemailsend is ok, answer is :" + inputEmailSendDialog.Answer);
                 EmailSender emailSender = new EmailSender();
-                //switch (layout.LayoutCode)
-                //{
-                //    case "foreground_1":
-                //        emailSender.SendEmail(photoNumber, 1, inputEmailSendDialog.Answer, printPath);
-                //        break;
-
-                //    case "foreground_3":
-                //        emailSender.SendEmail(photoNumber, 3, inputEmailSendDialog.Answer, printPath);
-                //        break;
-                //    case "foreground_4":
-                //        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
-                //        break;
-
-                //    case "foreground_4_paski":
-                //        emailSender.SendEmail(photoNumber, 4, inputEmailSendDialog.Answer, printPath);
-                //        break;
-                //    default:
-                //        Debug.WriteLine("bug at switch which template in email send button");
-                //        break;
-                //}
                 emailSender.SendEmail(photoNumber, layout.PhotoSlot, inputEmailSendDialog.Answer, printPath);
 
             }
@@ -1243,21 +1225,21 @@ namespace FBoothApp
         {
             if (sender is Button button && button.Tag is int photoIndex)
             {
-                RepeatJustTakenPhoto(sender, e, photoIndex);
+                RetakePhoto(sender, e, photoIndex);
             }
         }
         private bool isRetake = false;
         private int retakeIndex;
 
         //hàm chụp lại
-        public void RepeatJustTakenPhoto(object sender, RoutedEventArgs e, int photoNumberToRepeat)
+        public void RetakePhoto(object sender, RoutedEventArgs e, int photoNumberToRetake)
         {
             RepeatPhotoDialog repeatPhotoDialog = new RepeatPhotoDialog();
             if (repeatPhotoDialog.ShowDialog() == true)
             {
                 photosInTemplate--;
                 // Lưu lại số thứ tự của ảnh được chọn để chụp lại
-                photoNumberInTemplate = photoNumberToRepeat - 1;
+                photoNumberInTemplate = photoNumberToRetake - 1;
 
                 ShowPictureInlayout.Visibility = Visibility.Hidden;
                 Print.Visibility = Visibility.Hidden;
@@ -1269,7 +1251,7 @@ namespace FBoothApp
 
 
                 isRetake = true;
-                retakeIndex = photoNumberToRepeat;
+                retakeIndex = photoNumberToRetake;
 
                 StartButton_Click(sender, e);
 
