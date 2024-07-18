@@ -85,49 +85,28 @@ namespace FBoothApp
         //hàm lưu ảnh
         public static void ImageAndSave(string imagepath, int photoInTemplateNumb, Layout layout)
         {
-            byte[] imageBytes = LoadImageData(imagepath);
-
-            // Lấy thông tin kích thước và tọa độ từ layout
-            int targetWidth = layout.PhotoBoxes[photoInTemplateNumb - 1].BoxWidth;
-            int targetHeight = layout.PhotoBoxes[photoInTemplateNumb - 1].BoxHeight;
-
-            using (var ms = new MemoryStream(imageBytes))
+            try
             {
-                using (var originalImage = System.Drawing.Image.FromStream(ms))
-                {
-                    int newWidth, newHeight;
-                    if (targetWidth > targetHeight)
-                    {
-                        // Nếu chiều rộng lớn hơn chiều cao
-                        float scale = (float)targetWidth / originalImage.Width;
-                        newWidth = targetWidth;
-                        newHeight = (int)(originalImage.Height * scale);
-                    }
-                    else
-                    {
-                        // Nếu chiều cao lớn hơn chiều rộng
-                        float scale = (float)targetHeight / originalImage.Height;
-                        newHeight = targetHeight;
-                        newWidth = (int)(originalImage.Width * scale);
-                    }
+                // Lấy thông tin kích thước và tọa độ từ layout
+                int targetWidth = layout.PhotoBoxes[photoInTemplateNumb - 1].BoxWidth;
+                int targetHeight = layout.PhotoBoxes[photoInTemplateNumb - 1].BoxHeight;
 
-                    var resizedImage = new Bitmap(newWidth, newHeight);
+                // Tải dữ liệu hình ảnh từ đường dẫn
+                byte[] imageBytes = LoadImageData(imagepath);
 
-                    using (var graphics = Graphics.FromImage(resizedImage))
-                    {
-                        graphics.CompositingQuality = CompositingQuality.HighQuality;
-                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        graphics.SmoothingMode = SmoothingMode.HighQuality;
+                // Tạo ImageSource từ dữ liệu hình ảnh
+                ImageSource imageSource = CreateImage(imageBytes, targetWidth, targetHeight);
 
-                        graphics.DrawImage(originalImage, new System.Drawing.Rectangle(0, 0, newWidth, newHeight));
+                // Mã hóa dữ liệu hình ảnh
+                imageBytes = GetEncodedImageData(imageSource, ".jpg");
 
-                        var imageFormat = originalImage.RawFormat;
-                        string outputPath = naming(photoInTemplateNumb);
-                        resizedImage.Save(outputPath, imageFormat);
-                    }
-                }
+                // Lưu dữ liệu hình ảnh đã mã hóa vào đường dẫn
+                SaveImageData(imageBytes, naming(photoInTemplateNumb));
             }
-
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in ImageAndSave: {ex.Message}");
+            }
         }
 
         public static byte[] LoadImageData(string filePath)

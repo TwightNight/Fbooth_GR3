@@ -106,7 +106,6 @@
     <Compile Include="Classes\Save.cs" />
     <Compile Include="Classes\Slider.cs" />
     <Compile Include="Classes\Static.cs" />
-    <Compile Include="Classes\Templates.cs" />
     <Compile Include="Classes\WrappingStream.cs" />
     <Compile Include="EmailSendDialog.xaml.cs">
       <DependentUpon>EmailSendDialog.xaml</DependentUpon>

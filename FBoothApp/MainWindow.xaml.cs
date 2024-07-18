@@ -168,12 +168,13 @@ namespace FBoothApp
 
             }
 
-            catch (Exception ex) { Report.Error(ex.Message, false); }
-            // TODO: zamiast sleppa jakas metoda ktora sprawdza czy zdjecie juz sie zrobilio i potem kolejna linia kodu-
+            catch (Exception ex)
+            {
+                Report.Error(ex.Message + "loi chup anh", false);
+            }
 
 
             Thread.Sleep(2000);
-            //jak mam sleep 4000 to mi nie dziala
 
 
             PhotoTextBox.Visibility = Visibility.Visible;
@@ -216,7 +217,7 @@ namespace FBoothApp
             }
             else
             {
-                Debug.WriteLine("Layout not found");
+                Debug.WriteLine("Not enough photos in the layout yet");
             }
         }
 
@@ -406,7 +407,7 @@ namespace FBoothApp
                 ReSize.ImageAndSave(savedata.PhotoDirectory, photoNumberInTemplate, layout);
 
             }
-            catch (Exception ex) { Report.Error(ex.Message, false); }
+            catch (Exception ex) { Report.Error(ex.Message + "loi resize", false); }
 
             PhotoTaken = true;
 
