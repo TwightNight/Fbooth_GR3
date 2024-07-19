@@ -62,13 +62,15 @@ namespace FBoothApp
 
         public int photoNumber = 0; // Thứ tự của ảnh được chụp
         public int photoNumberInTemplate = 0;
+        int photosInTemplate = 0; //kiem tra so luong anh co dung voi slot trong layout khong
+
+
         int timeLeft = 5;
         int timeLeftCopy = 5;
-        int photosInTemplate = 0; //kiem tra so luong anh co dung voi slot trong layout khong
         int printNumber = 0;
         int maxCopies = 1;
         short actualNumberOfCopies = 1;
-        int printtime = 10;
+        int printTime = 10;
 
 
         public string SmtpServerName;
@@ -418,18 +420,24 @@ namespace FBoothApp
             string errorCode = ((int)ex).ToString("X");
             switch (errorCode)
             {
+
                 case "8D01": // TAKE_PICTURE_AF_NG
-                    if (photoNumberInTemplate != 0)
-                    {
-                        photoNumberInTemplate--;
-                    }
-                    if (photosInTemplate != 0)
-                    {
-                        photosInTemplate--;
-                    }
+                    Debug.WriteLine("Autofocus error, ignoring and continuing.");
                     PhotoTaken = true;
-                    Debug.WriteLine("Autofocus error");
                     return;
+
+                    //case "8D01": // TAKE_PICTURE_AF_NG
+                    //    if (photoNumberInTemplate != 0)
+                    //    {
+                    //        photoNumberInTemplate--;
+                    //    }
+                    //    if (photosInTemplate != 0)
+                    //    {
+                    //        photosInTemplate--;
+                    //    }
+                    //    PhotoTaken = true;
+                    //    Debug.WriteLine("Autofocus error");
+                    //    return;
             }
             Report.Error($"SDK Error code: {ex} ({((int)ex).ToString("X")})", false);
         }
@@ -995,7 +1003,7 @@ namespace FBoothApp
                 secondprinter = actualSettings.Root.Element("secondPrinter").Value;
                 maxCopies = System.Convert.ToInt32(actualSettings.Root.Element("maxNumberOfCopies").Value);
                 timeLeft = System.Convert.ToInt32(actualSettings.Root.Element("timeBetweenPhotos").Value);
-                printtime = System.Convert.ToInt32(actualSettings.Root.Element("printingTime").Value);
+                printTime = System.Convert.ToInt32(actualSettings.Root.Element("printingTime").Value);
                 printerName = FBoothApp.Printing.ActualPrinter(layout.LayoutCode, firstprinter, secondprinter);
                 timeLeftCopy = timeLeft;
 
