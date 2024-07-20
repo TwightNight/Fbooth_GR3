@@ -135,6 +135,7 @@ namespace FBoothApp
         }
 
         #region TakePhoto
+
         private void ReadyButton_Click(object sender, EventArgs e)
         {
             betweenPhotos.Start();
@@ -168,58 +169,55 @@ namespace FBoothApp
                 Debug.WriteLine("photos in template: " + photosInTemplate);
                 Debug.WriteLine("photo number: " + photoNumber);
 
-            }
+                Thread.Sleep(2000);
 
+                PhotoTextBox.Visibility = Visibility.Visible;
+                PhotoTextBox.Text = "Prepare for next Photo!";
+
+                // Waiting for photo saving 
+                while (PhotoTaken == false)
+                {
+                    Thread.Sleep(1000);
+                }
+
+                if (isRetake)
+                {
+                    UpdatePhotoAfterRetake();
+                }
+                else
+                {
+                    ShowPhotoThumbnail();
+                }
+
+
+                var layouts = await _apiServices.GetLayoutsAsync();
+                var currentLayout = layouts.FirstOrDefault(l => l.LayoutCode == layout.LayoutCode);
+
+                if (Control.photoTemplate(photosInTemplate, layout.PhotoSlot))
+                {
+                    if (currentLayout != null)
+                    {
+                        var printdata = new SavePrints(printNumber);
+                        printPath = printdata.PrintDirectory;
+                        LayoutProcessing.ProcessLayout(currentLayout, printPath);
+                        printNumber++;
+                        RetakePhotoMenu();
+
+                        if (isRetake)
+                        {
+                            UpdatePhotoAfterRetake();
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("Not enough photos in the layout yet");
+                }
+
+            }
             catch (Exception ex)
             {
                 Report.Error(ex.Message + "loi chup anh", false);
-            }
-
-
-            Thread.Sleep(2000);
-
-
-            PhotoTextBox.Visibility = Visibility.Visible;
-            PhotoTextBox.Text = "Prepare for next Photo!";
-
-            // Waiting for photo saving 
-            while (PhotoTaken == false)
-            {
-                Thread.Sleep(1000);
-            }
-
-            if (isRetake)
-            {
-                UpdatePhotoAfterRetake();
-            }
-            else
-            {
-                ShowPhotoThumbnail();
-            }
-
-
-            var layouts = await _apiServices.GetLayoutsAsync();
-            var currentLayout = layouts.FirstOrDefault(l => l.LayoutCode == layout.LayoutCode);
-
-            if (Control.photoTemplate(photosInTemplate, layout.PhotoSlot))
-            {
-                if (currentLayout != null)
-                {
-                    var printdata = new SavePrints(printNumber);
-                    printPath = printdata.PrintDirectory;
-                    LayoutProcessing.ProcessLayout(currentLayout, printPath);
-                    printNumber++;
-                    RetakePhotoMenu();
-
-                    if (isRetake)
-                    {
-                        UpdatePhotoAfterRetake();
-                    }
-                }
-            }
-            else
-            {
-                Debug.WriteLine("Not enough photos in the layout yet");
             }
         }
 
@@ -312,17 +310,17 @@ namespace FBoothApp
             }
         }
 
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            sliderTimer.Start();
-            //TODO OR NOT WHEN NO CAMERA CONNECTED WILL CAUSE BUG WHILE CLICK STOP IN FOREGRUND MENU
-            MainCamera.StopLiveView();
-            photosInTemplate = 0;
-            photoNumberInTemplate = 0;
-            if (turnOnTemplateMenu) StartAllForegroundsWelcomeMenu();
-            else StartWelcomeMenu();
-            TurnOffForegroundMenu();
-        }
+        //private void StopButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    sliderTimer.Start();
+        //    //TODO OR NOT WHEN NO CAMERA CONNECTED WILL CAUSE BUG WHILE CLICK STOP IN FOREGRUND MENU
+        //    MainCamera.StopLiveView();
+        //    photosInTemplate = 0;
+        //    photoNumberInTemplate = 0;
+        //    if (turnOnTemplateMenu) StartLayoutsWelcomeMenu();
+        //    else StartWelcomeMenu();
+        //    TurnOffForegroundMenu();
+        //}
 
 
 
@@ -463,7 +461,7 @@ namespace FBoothApp
             InputGrid.Visibility = Visibility.Hidden;
 
             ReadyButton.Visibility = Visibility.Visible;
-            StopButton.Visibility = Visibility.Visible;
+            //StopButton.Visibility = Visibility.Visible;
             PhotoTextBox.Visibility = Visibility.Visible;
 
 
@@ -587,7 +585,7 @@ namespace FBoothApp
             photoNumberInTemplate = 0;
             Printing.Print(printPath, printerName, actualNumberOfCopies);
             actualNumberOfCopies = 1;
-            if (turnOnTemplateMenu) StartAllForegroundsWelcomeMenu();
+            if (turnOnTemplateMenu) StartLayoutsWelcomeMenu();
             else StartWelcomeMenu();
         }
 
@@ -820,7 +818,7 @@ namespace FBoothApp
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
-            StopButton.Visibility = Visibility.Hidden;
+            //StopButton.Visibility = Visibility.Hidden;
             LiveViewImage.Visibility = Visibility.Hidden;
             GridCanvasLiveViewImage.Visibility = Visibility.Hidden;
 
@@ -843,17 +841,9 @@ namespace FBoothApp
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
-            StopButton.Visibility = Visibility.Hidden;
+            //StopButton.Visibility = Visibility.Hidden;
             NextButtonBackGround.Visibility = Visibility.Hidden;
             ShowPictureInlayout.Visibility = Visibility.Hidden;
-
-            //FirstThumbnail.Visibility = Visibility.Hidden;
-            //SecondThumbnail.Visibility = Visibility.Hidden;
-            //ThirdThumbnail.Visibility = Visibility.Hidden;
-            //FourthThumbnail.Visibility = Visibility.Hidden;
-            //LeftThumbnail.Visibility = Visibility.Hidden;
-            //CenterThumbnail.Visibility = Visibility.Hidden;
-            //RightThumbnail.Visibility = Visibility.Hidden;
 
             BackgroundsWrapPanel.Visibility = Visibility.Visible;
             NextButtonSticker.Visibility = Visibility.Visible;
@@ -912,7 +902,7 @@ namespace FBoothApp
 
 
             ShowPrint.Visibility = Visibility.Visible;
-            StopButton.Visibility = Visibility.Visible;
+            //StopButton.Visibility = Visibility.Visible;
             //        CreateDynamicBorder(ShowPrint.ActualWidth, ShowPrint.ActualHeight);
         }
 
@@ -1071,24 +1061,18 @@ namespace FBoothApp
             SliderBorder.Visibility = Visibility.Hidden;
             InputGrid.Visibility = Visibility.Hidden;
 
-            //Foreground_1_button.Visibility = Visibility.Visible;
-            //Foreground_3_button.Visibility = Visibility.Visible;
-            //Foreground_4_button.Visibility = Visibility.Visible;
-            //Foreground_4_paski_button.Visibility = Visibility.Visible;
             LoadLayouts();
-            StopButton.Visibility = Visibility.Visible;
 
         }
         public void TurnOffForegroundMenu()
         {
             LayoutsWrapPanel.Visibility = Visibility.Hidden;
             LayoutScrollViewer.Visibility = Visibility.Hidden;
-            //Foreground_1_button.Visibility = Visibility.Hidden;
-            //Foreground_3_button.Visibility = Visibility.Hidden;
-            //Foreground_4_button.Visibility = Visibility.Hidden;
-            //Foreground_4_paski_button.Visibility = Visibility.Hidden;
+
+            LayoutScrollViewer.Visibility = Visibility.Hidden;
+            LayoutsWrapPanel.Visibility = Visibility.Hidden;
         }
-        public void StartAllForegroundsWelcomeMenu()
+        public void StartLayoutsWelcomeMenu()
         {
             PhotoTextBox.Visibility = Visibility.Visible;
             PhotoTextBox.Text = "Hello";
@@ -1099,7 +1083,7 @@ namespace FBoothApp
             Slider.Visibility = Visibility.Visible;
             sliderTimer.Start();
 
-            StopButton.Visibility = Visibility.Hidden;
+            //StopButton.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
             Print.Visibility = Visibility.Hidden;
             ShowPrint.Visibility = Visibility.Hidden;
@@ -1108,17 +1092,9 @@ namespace FBoothApp
             MinusOneCopyButton.Visibility = Visibility.Hidden;
             SendEmailButton.Visibility = Visibility.Hidden;
 
-
-            //FirstThumbnail.Visibility = Visibility.Hidden;
-            //SecondThumbnail.Visibility = Visibility.Hidden;
-            //ThirdThumbnail.Visibility = Visibility.Hidden;
-            //FourthThumbnail.Visibility = Visibility.Hidden;
-            //LeftThumbnail.Visibility = Visibility.Hidden;
-            //CenterThumbnail.Visibility = Visibility.Hidden;
-            //RightThumbnail.Visibility = Visibility.Hidden;
-
-            //SliderBorderTakingphoto.Visibility = Visibility.Hidden;
-            //SliderTakingPhoto.Visibility = Visibility.Hidden;
+            ThumbnailDockPanel.Visibility = Visibility.Hidden;
+            SliderBorder.Visibility = Visibility.Hidden;
+            Slider.Visibility = Visibility.Hidden;
         }
         public void CheckTemplate()
         {
@@ -1157,7 +1133,7 @@ namespace FBoothApp
             Slider.Visibility = Visibility.Visible;
             StartButton.Visibility = Visibility.Visible;
 
-            StopButton.Visibility = Visibility.Hidden;
+            //StopButton.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
             Print.Visibility = Visibility.Hidden;
             ShowPrint.Visibility = Visibility.Hidden;
@@ -1166,6 +1142,8 @@ namespace FBoothApp
             MinusOneCopyButton.Visibility = Visibility.Hidden;
             SendEmailButton.Visibility = Visibility.Hidden;
 
+
+            ThumbnailDockPanel.Visibility = Visibility.Hidden;
             //FirstThumbnail.Visibility = Visibility.Hidden;
             //SecondThumbnail.Visibility = Visibility.Hidden;
             //ThirdThumbnail.Visibility = Visibility.Hidden;

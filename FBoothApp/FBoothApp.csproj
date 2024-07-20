@@ -176,12 +176,6 @@
     <Resource Include="backgrounds\StopButton.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\foreground_1.png" />
-    <Resource Include="backgrounds\foreground_3.png" />
-    <Resource Include="backgrounds\foreground_4.png" />
-    <Resource Include="backgrounds\foreground_4_paski.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgrounds\background_2.jpg" />
     <Resource Include="backgrounds\background_3.jpg" />
   </ItemGroup>
