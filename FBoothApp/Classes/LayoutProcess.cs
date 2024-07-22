@@ -15,7 +15,7 @@ using System.Net;
 
 namespace FBoothApp
 {
-    class LayoutProcessing
+    class LayoutProcess
     {
         public static void ProcessLayout(Layout layout, string printPath)
         {
