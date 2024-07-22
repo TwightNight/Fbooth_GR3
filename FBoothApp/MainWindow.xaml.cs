@@ -1,45 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Printing;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
-using System.Linq.Expressions;
 using EOSDigital.API;
 using EOSDigital.SDK;
 using System.Threading;
-using System.Windows.Interop;
 using System.Xml;
 using System.Xml.Linq;
 using FBoothApp.Classes;
 using Image = System.Windows.Controls.Image;
 using Path = System.IO.Path;
-using Point = System.Drawing.Point;
-using System.Drawing.Imaging;
 using FBoothApp.Entity;
-using System.Drawing.Drawing2D;
 using FBoothApp.Services;
 using System.Windows.Media.Animation;
 
 
 namespace FBoothApp
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public System.Windows.Threading.DispatcherTimer sliderTimer;
@@ -54,7 +42,7 @@ namespace FBoothApp
         Action<BitmapImage> SetImageAction;
         List<Camera> CamList;
         PrintDialog pdialog = new PrintDialog();
-        ImageProcess imageProcess;
+        BackGroundProcess backGroundProcess;
 
 
         XDocument actualSettings = new XDocument();
@@ -94,7 +82,7 @@ namespace FBoothApp
         {
             layout = new Layout();
             _apiServices = new FetchApiServices();
-            imageProcess = new ImageProcess();
+            backGroundProcess = new BackGroundProcess();
             InitializeComponent();
             FillSavedData();
             ActivateTimers();
@@ -138,6 +126,8 @@ namespace FBoothApp
 
         private void ReadyButton_Click(object sender, EventArgs e)
         {
+            ReadyButton.Visibility = Visibility.Hidden;
+
             betweenPhotos.Start();
             secondCounter.Start();
         }
@@ -146,6 +136,8 @@ namespace FBoothApp
         {
             try
             {
+                SetThumbnailButtonsEnabled(false);
+
                 photoNumberInTemplate++;
                 photosInTemplate++;
                 // MainCamera.TakePhotoAsync();
@@ -161,6 +153,7 @@ namespace FBoothApp
                 secondCounter.Stop();
 
                 PhotoTextBox.Visibility = Visibility.Hidden;
+                ReadyButton.Visibility = Visibility.Visible;
 
                 timeLeftCopy = timeLeft;
 
@@ -195,12 +188,21 @@ namespace FBoothApp
 
                 if (Control.photoTemplate(photosInTemplate, layout.PhotoSlot))
                 {
+
+                    // Show loading screen
+                    LoadingGrid.Visibility = Visibility.Visible;
+                    PhotoTextBox.Visibility = Visibility.Hidden;
+                    ReadyButton.Visibility = Visibility.Hidden;
+
                     if (currentLayout != null)
                     {
-                        var printdata = new SavePrints(printNumber);
-                        printPath = printdata.PrintDirectory;
-                        LayoutProcessing.ProcessLayout(currentLayout, printPath);
-                        printNumber++;
+                        await Task.Run(() =>
+                        {
+                            var printdata = new SavePrints(printNumber);
+                            printPath = printdata.PrintDirectory;
+                            LayoutProcess.ProcessLayout(currentLayout, printPath);
+                            printNumber++;
+                        });
                         RetakePhotoMenu();
 
                         if (isRetake)
@@ -208,6 +210,9 @@ namespace FBoothApp
                             UpdatePhotoAfterRetake();
                         }
                     }
+                    // Hide loading screen
+                    LoadingGrid.Visibility = Visibility.Hidden;
+                    PhotoTextBox.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -242,26 +247,19 @@ namespace FBoothApp
                     Tag = layout, // Store the layout ID in the Tag property
                     Margin = new Thickness(5)
                 };
-                image.MouseLeftButtonDown += Image_Click;
+                image.MouseLeftButtonDown += Layout_Click;
 
                 viewBox.Child = image;
                 LayoutsWrapPanel.Children.Add(viewBox);
             }
         }
 
-        private void Image_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Layout_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            //Image clickedImage = sender as Image;
-            //if (clickedImage != null)
-            //{
-            //    string layoutID = clickedImage.Tag as string;
-            //    // Implement interaction logic here. For example, open a new window to interact with the selected layout.
-            //    MessageBox.Show($"Selected layout ID: {layoutID}");
-            //}
-            Image clickedImage = sender as Image;
-            if (clickedImage != null)
+            Image clickedLayout = sender as Image;
+            if (clickedLayout != null)
             {
-                var layoutChoosen = clickedImage.Tag as Layout;
+                var layoutChoosen = clickedLayout.Tag as Layout;
                 layout = layoutChoosen;
                 StartButton_Click(sender, e);
             }
@@ -452,7 +450,8 @@ namespace FBoothApp
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             sliderTimer.Stop();
-            TurnOffForegroundMenu();
+            TurnOffLayoutMenu();
+
             SliderBorder.Visibility = Visibility.Hidden;
             Slider.Visibility = Visibility.Hidden;
             StartButton.Visibility = Visibility.Hidden;
@@ -548,49 +547,167 @@ namespace FBoothApp
 
         #endregion
 
-        #region Printing
 
-        private void LoadAndPrint(string printPath)
+        #region Layout_Menu
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            var bi = new BitmapImage();
-            bi.BeginInit();
-            bi.CacheOption = BitmapCacheOption.OnLoad;
-            bi.UriSource = new Uri(printPath);
-            bi.EndInit();
+            TurnOnLayoutMenu();
+        }
 
-            var vis = new DrawingVisual();
-            var dc = vis.RenderOpen();
-            dc.DrawImage(bi, new Rect { Width = bi.Width, Height = bi.Height });
-            dc.Close();
+        public void TurnOnLayoutMenu()
+        {
+            PhotoTextBox.Text = "Please select a layout to get started.";
+            sliderTimer.Stop();
+            Slider.Visibility = Visibility.Hidden;
+            SliderBorder.Visibility = Visibility.Hidden;
+            InputGrid.Visibility = Visibility.Hidden;
 
+            LayoutsWrapPanel.Visibility = Visibility.Visible;
+            LayoutScrollViewer.Visibility = Visibility.Visible;
 
-            var printerSettings = new PrinterSettings();
-            var labelPaperSize = new PaperSize
+            LoadLayouts();
+
+        }
+        public void TurnOffLayoutMenu()
+        {
+            LayoutsWrapPanel.Visibility = Visibility.Hidden;
+            LayoutScrollViewer.Visibility = Visibility.Hidden;
+        }
+        public void StartLayoutsWelcomeMenu()
+        {
+            PhotoTextBox.Visibility = Visibility.Visible;
+            PhotoTextBox.Text = "Hello";
+            SliderBorder.Visibility = Visibility.Visible;
+
+            //StartButtonMenu.Visibility = Visibility.Visible;
+
+            Slider.Visibility = Visibility.Visible;
+            sliderTimer.Start();
+
+            //StopButton.Visibility = Visibility.Hidden;
+            ReadyButton.Visibility = Visibility.Hidden;
+            Print.Visibility = Visibility.Hidden;
+            ShowPrint.Visibility = Visibility.Hidden;
+            NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
+            AddOneCopyButton.Visibility = Visibility.Hidden;
+            MinusOneCopyButton.Visibility = Visibility.Hidden;
+            SendEmailButton.Visibility = Visibility.Hidden;
+
+            ThumbnailDockPanel.Visibility = Visibility.Hidden;
+            SliderBorder.Visibility = Visibility.Hidden;
+            Slider.Visibility = Visibility.Hidden;
+        }
+        public void CheckTemplate()
+        {
+
+            if (turnOnTemplateMenu)
             {
-                RawKind = (int)PaperKind.Custom,
-                Height = 150,
-                Width = 100
-            };
-            printerSettings.DefaultPageSettings.PaperSize = labelPaperSize;
-            printerSettings.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+                //StartButtonMenu.Visibility = Visibility.Visible;
+                SendButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                StartButton.Visibility = Visibility.Visible;
+            }
+        }
+        #endregion
 
-            //            printerSettings.Copies = actualNumberOfCopies;
-            pdialog.PrintVisual(vis, "My Image");
+
+        #region BackgroundMenu
+        private void NextButtonBackGround_Click(object sender, RoutedEventArgs e)
+        {
+            BackgroundMenu();
+        }
+
+        private void BackgroundMenu()
+        {
+            PhotoTextBox.Text = "Choose background";
+
+            Slider.Visibility = Visibility.Hidden;
+            SliderBorder.Visibility = Visibility.Hidden;
+            ReadyButton.Visibility = Visibility.Hidden;
+            NextButtonBackGround.Visibility = Visibility.Hidden;
+            ShowPictureInlayout.Visibility = Visibility.Hidden;
+            ThumbnailDockPanel.Visibility = Visibility.Hidden;
+
+            BackgoundScrollViewer.Visibility = Visibility.Visible;
+            BackgroundsWrapPanel.Visibility = Visibility.Visible;
+            NextButtonSticker.Visibility = Visibility.Visible;
+
+            NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
+
+            actualPrint = new BitmapImage();
+            actualPrint.BeginInit();
+            actualPrint.UriSource = new Uri(printPath);
+            actualPrint.EndInit();
+
+            ShowPrint.Source = actualPrint;
+
+
+            ShowPrint.Visibility = Visibility.Visible;
+            NextButtonSticker.Visibility = Visibility.Visible;
+            LoadBackgrounds();
+        }
+
+        private void LoadBackgrounds()
+        {
+            BackgroundsWrapPanel.Children.Clear(); // Xóa các phần tử cũ trước khi tải mới
+            string backgroundsDirectory = Path.Combine(Directory.GetCurrentDirectory(), $"Backgrounds\\{layout.LayoutCode}");
+            string[] backgroundFiles = Directory.GetFiles(backgroundsDirectory, "*.png");
+
+            foreach (string file in backgroundFiles)
+            {
+                Image backgroundImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(file)),
+                    Stretch = Stretch.Uniform,
+                    Margin = new Thickness(10),
+                    Width = 200, // Đặt kích thước cố định
+                    Height = 200 // Đặt kích thước cố định
+                };
+                backgroundImage.MouseLeftButtonDown += Background_MouseLeftButtonDown;
+                BackgroundsWrapPanel.Children.Add(backgroundImage);
+            }
+        }
+        private void Background_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Image clickedBackground = sender as Image;
+            string fileName = System.IO.Path.GetFileName(((BitmapImage)clickedBackground.Source).UriSource.LocalPath);
+            Bitmap background = new Bitmap(Path.Combine(Directory.GetCurrentDirectory(), "Backgrounds", layout.LayoutCode, fileName));
+
+            Bitmap result = backGroundProcess.OverlayBackground(actualPrint, background);
+            ShowPrint.Source = backGroundProcess.ConvertToBitmapImage(result);
         }
 
 
-        private void Print_Click(object sender, RoutedEventArgs e)
+        #endregion
+
+
+        #region StickerMenu
+
+        private void NextButtonSticker_Click(object sender, RoutedEventArgs e)
         {
-            photosInTemplate = 0;
-            photoNumberInTemplate = 0;
-            Printing.Print(printPath, printerName, actualNumberOfCopies);
-            actualNumberOfCopies = 1;
-            if (turnOnTemplateMenu) StartLayoutsWelcomeMenu();
-            else StartWelcomeMenu();
+            StickerMenu();
+        }
+
+        private void StickerMenu()
+        {
+            BackgoundScrollViewer.Visibility = Visibility.Hidden;
+            BackgroundsWrapPanel.Visibility = Visibility.Hidden;
+            NextButtonSticker.Visibility = Visibility.Hidden;
+            PhotoTextBox.Text = "Choose sticker";
+
+            // Hiển thị StickerWrapPanel
+            StickerScrollViewer.Visibility = Visibility.Visible;
+            StickerWrapPanel.Visibility = Visibility.Visible;
+            NextButtonPrinting.Visibility = Visibility.Visible;
+            LoadSticker();
         }
 
         private async void LoadSticker()
         {
+            StickerWrapPanel.Children.Clear();
             var stickerFiles = await _apiServices.GetStickersAsync();
 
             foreach (var stickerFile in stickerFiles)
@@ -633,7 +750,7 @@ namespace FBoothApp
             sticker.MouseLeftButtonUp += Sticker_MouseLeftButtonUp;
             sticker.MouseMove += Sticker_MouseMove;
 
-            canvasSticker.Children.Add(sticker);
+            CanvasSticker.Children.Add(sticker);
 
             AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(sticker);
             if (adornerLayer != null)
@@ -700,7 +817,7 @@ namespace FBoothApp
                 dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
 
                 // Tạo một VisualBrush từ canvasSticker và vẽ nó lên DrawingContext
-                VisualBrush stickerBrush = new VisualBrush(canvasSticker);
+                VisualBrush stickerBrush = new VisualBrush(CanvasSticker);
                 dc.DrawRectangle(stickerBrush, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
             }
 
@@ -709,6 +826,189 @@ namespace FBoothApp
 
             // Cập nhật ShowPrint để hiển thị hình ảnh đã được render kèm sticker
             ShowPrint.Source = renderTargetBitmap;
+        }
+
+        #endregion
+
+        #region RetakePhotoMenu
+
+        //private void LoadAndPrint(string printPath)
+        //{
+        //    var bi = new BitmapImage();
+        //    bi.BeginInit();
+        //    bi.CacheOption = BitmapCacheOption.OnLoad;
+        //    bi.UriSource = new Uri(printPath);
+        //    bi.EndInit();
+
+        //    var vis = new DrawingVisual();
+        //    var dc = vis.RenderOpen();
+        //    dc.DrawImage(bi, new Rect { Width = bi.Width, Height = bi.Height });
+        //    dc.Close();
+
+
+        //    var printerSettings = new PrinterSettings();
+        //    var labelPaperSize = new PaperSize
+        //    {
+        //        RawKind = (int)PaperKind.Custom,
+        //        Height = 150,
+        //        Width = 100
+        //    };
+        //    printerSettings.DefaultPageSettings.PaperSize = labelPaperSize;
+        //    printerSettings.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+
+        //    //            printerSettings.Copies = actualNumberOfCopies;
+        //    pdialog.PrintVisual(vis, "My Image");
+        //}
+
+
+        private void RetakePhotoMenu()
+        {
+            Slider.Visibility = Visibility.Hidden;
+            SliderBorder.Visibility = Visibility.Hidden;
+            ReadyButton.Visibility = Visibility.Hidden;
+            //StopButton.Visibility = Visibility.Hidden;
+            LiveViewImage.Visibility = Visibility.Hidden;
+            GridCanvasLiveViewImage.Visibility = Visibility.Hidden;
+
+            PhotoTextBox.Text = "Choose a thumbnail below to retake the picture";
+
+            actualPrint = new BitmapImage();
+            actualPrint.BeginInit();
+            actualPrint.UriSource = new Uri(printPath);
+            actualPrint.EndInit();
+
+            ShowPictureInlayout.Source = actualPrint;
+            ShowPictureInlayout.Visibility = Visibility.Visible;
+
+            NextButtonBackGround.Visibility = Visibility.Visible;
+
+            SetThumbnailButtonsEnabled(true);
+        }
+
+
+        public void ShowPhotoThumbnail()
+        {
+            // Xóa các nút hiện tại trong DockPanel
+            ThumbnailDockPanel.Children.Clear();
+            var getImageThumbnail = new GetImageThumbnail();
+
+            // Tạo các nút hình thu nhỏ dựa trên số lượng ảnh đã chụp
+            for (int i = 1; i <= photosInTemplate; i++)
+            {
+                string thumbnailPath = getImageThumbnail.GetThumbnailPathForIndex(i);
+
+                Button thumbnailButton = new Button
+                {
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    BorderThickness = new Thickness(0),
+                    Visibility = Visibility.Visible,
+                    Margin = new Thickness(5),
+                    Tag = i, // Lưu số thứ tự ảnh trong thuộc tính Tag
+                    IsEnabled = thumbnailsClickable
+                };
+
+                Image thumbnailImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(thumbnailPath)),
+                    Stretch = Stretch.Uniform,
+                    Margin = new Thickness(0), // Đảm bảo không có viền trắng
+                    SnapsToDevicePixels = true,
+                    Width = 200, // Đặt kích thước phù hợp
+                    Height = 200
+                };
+
+                thumbnailButton.Content = thumbnailImage;
+
+                // Thêm sự kiện click cho các nút hình thu nhỏ
+                thumbnailButton.Click += ThumbnailButton_Click;
+
+                ThumbnailDockPanel.Children.Add(thumbnailButton);
+            }
+        }
+
+        private void ThumbnailButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is int photoIndex)
+            {
+                RetakePhoto(sender, e, photoIndex);
+            }
+        }
+
+        private bool isRetake = false;
+        private int retakeIndex;
+        private bool thumbnailsClickable = false;
+
+        private void SetThumbnailButtonsEnabled(bool isEnabled)
+        {
+            foreach (Button btn in ThumbnailDockPanel.Children)
+            {
+                btn.IsEnabled = isEnabled;
+            }
+        }
+
+        //màn hình chụp lại
+        public void RetakePhoto(object sender, RoutedEventArgs e, int photoNumberToRetake)
+        {
+            RepeatPhotoDialog repeatPhotoDialog = new RepeatPhotoDialog();
+            if (repeatPhotoDialog.ShowDialog() == true)
+            {
+                SetThumbnailButtonsEnabled(false);
+                photosInTemplate--;
+                // Lưu lại số thứ tự của ảnh được chọn để chụp lại
+                photoNumberInTemplate = photoNumberToRetake - 1;
+                ReadyButton.Visibility = Visibility.Visible;
+
+                NextButtonBackGround.Visibility = Visibility.Hidden;
+                NextButtonSticker.Visibility = Visibility.Hidden;
+
+                ShowPictureInlayout.Visibility = Visibility.Hidden;
+                Print.Visibility = Visibility.Hidden;
+                ShowPrint.Visibility = Visibility.Hidden;
+                NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
+                AddOneCopyButton.Visibility = Visibility.Hidden;
+                MinusOneCopyButton.Visibility = Visibility.Hidden;
+                SendEmailButton.Visibility = Visibility.Hidden;
+
+
+                isRetake = true;
+                retakeIndex = photoNumberToRetake;
+
+                StartButton_Click(sender, e);
+
+            }
+        }
+        public void UpdatePhotoAfterRetake()
+        {
+            var getImageThumbnail = new GetImageThumbnail();
+            string newThumbnailPath = getImageThumbnail.GetLatestThumbnailPath();
+
+            // Cập nhật nút ảnh thu nhỏ tương ứng
+            foreach (Button btn in ThumbnailDockPanel.Children)
+            {
+                if ((int)btn.Tag == retakeIndex)
+                {
+                    Image thumbnailImage = (Image)btn.Content;
+                    thumbnailImage.Source = new BitmapImage(new Uri(newThumbnailPath));
+                    break;
+                }
+            }
+            isRetake = false;
+            retakeIndex = 0;
+        }
+
+
+        #endregion
+
+
+
+        #region PrintMenu
+        private void NextButtonPrinting_Click(object sender, RoutedEventArgs e)
+        {
+            RenderStickersOnImage();
+            SaveFinalImage();
+            PrintMenu();
+
+            HideStickers();
         }
 
         private void SaveFinalImage()
@@ -728,7 +1028,7 @@ namespace FBoothApp
                 dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
 
                 // Tạo một VisualBrush từ canvasSticker và vẽ nó lên DrawingContext
-                VisualBrush stickerBrush = new VisualBrush(canvasSticker);
+                VisualBrush stickerBrush = new VisualBrush(CanvasSticker);
                 dc.DrawRectangle(stickerBrush, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Size(width, height)));
             }
 
@@ -758,7 +1058,7 @@ namespace FBoothApp
 
         private void HideStickers()
         {
-            foreach (var child in canvasSticker.Children)
+            foreach (var child in CanvasSticker.Children)
             {
                 if (child is StickerServices sticker && sticker.Visibility == Visibility.Visible)
                 {
@@ -784,7 +1084,7 @@ namespace FBoothApp
 
         private void HideCloseButtons()
         {
-            foreach (var child in canvasSticker.Children)
+            foreach (var child in CanvasSticker.Children)
             {
                 if (child is StickerServices sticker)
                 {
@@ -793,89 +1093,6 @@ namespace FBoothApp
             }
         }
 
-        private void NextButtonBackGround_Click(object sender, RoutedEventArgs e)
-        {
-            BackgroundMenu();
-        }
-
-        private void NextButtonSticker_Click(object sender, RoutedEventArgs e)
-        {
-            StickerMenu();
-        }
-        private void NextButtonPrinting_Click(object sender, RoutedEventArgs e)
-        {
-
-            RenderStickersOnImage();
-            SaveFinalImage();
-            PrintMenu();
-
-            HideStickers();
-
-        }
-
-        private void RetakePhotoMenu()
-        {
-            Slider.Visibility = Visibility.Hidden;
-            SliderBorder.Visibility = Visibility.Hidden;
-            ReadyButton.Visibility = Visibility.Hidden;
-            //StopButton.Visibility = Visibility.Hidden;
-            LiveViewImage.Visibility = Visibility.Hidden;
-            GridCanvasLiveViewImage.Visibility = Visibility.Hidden;
-
-            PhotoTextBox.Text = "Choose a thumbnail below to retake the picture";
-
-            actualPrint = new BitmapImage();
-            actualPrint.BeginInit();
-            actualPrint.UriSource = new Uri(printPath);
-            actualPrint.EndInit();
-
-            ShowPictureInlayout.Source = actualPrint;
-            ShowPictureInlayout.Visibility = Visibility.Visible;
-
-            NextButtonBackGround.Visibility = Visibility.Visible;
-        }
-
-        private void BackgroundMenu()
-        {
-
-            Slider.Visibility = Visibility.Hidden;
-            SliderBorder.Visibility = Visibility.Hidden;
-            ReadyButton.Visibility = Visibility.Hidden;
-            //StopButton.Visibility = Visibility.Hidden;
-            NextButtonBackGround.Visibility = Visibility.Hidden;
-            ShowPictureInlayout.Visibility = Visibility.Hidden;
-
-            BackgroundsWrapPanel.Visibility = Visibility.Visible;
-            NextButtonSticker.Visibility = Visibility.Visible;
-
-            PhotoTextBox.Text = "Choose background";
-            NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
-
-            actualPrint = new BitmapImage();
-            actualPrint.BeginInit();
-            actualPrint.UriSource = new Uri(printPath);
-            actualPrint.EndInit();
-
-            ShowPrint.Source = actualPrint;
-
-
-            ShowPrint.Visibility = Visibility.Visible;
-            BackgroundsWrapPanel.Visibility = Visibility.Visible;
-            NextButtonSticker.Visibility = Visibility.Visible;
-            LoadBackgrounds();
-        }
-
-        private void StickerMenu()
-        {
-            BackgroundsWrapPanel.Visibility = Visibility.Hidden;
-            NextButtonSticker.Visibility = Visibility.Hidden;
-            PhotoTextBox.Text = "Choose sticker";
-
-            // Hiển thị StickerWrapPanel
-            StickerWrapPanel.Visibility = Visibility.Visible;
-            NextButtonPrinting.Visibility = Visibility.Visible;
-            LoadSticker();
-        }
 
         //cho nay hien anh de in
         private void PrintMenu()
@@ -906,41 +1123,16 @@ namespace FBoothApp
             //        CreateDynamicBorder(ShowPrint.ActualWidth, ShowPrint.ActualHeight);
         }
 
-        private void LoadBackgrounds()
+
+        private void Print_Click(object sender, RoutedEventArgs e)
         {
-            BackgroundsWrapPanel.Children.Clear(); // Xóa các phần tử cũ trước khi tải mới
-            string backgroundsDirectory = Path.Combine(Directory.GetCurrentDirectory(), $"Backgrounds\\{layout.LayoutCode}");
-            string[] backgroundFiles = Directory.GetFiles(backgroundsDirectory, "*.png");
-
-            foreach (string file in backgroundFiles)
-            {
-                Image frame = new Image
-                {
-                    Source = new BitmapImage(new Uri(file)),
-                    Stretch = Stretch.Uniform,
-                    Margin = new Thickness(10),
-                    Width = 200, // Đặt kích thước cố định
-                    Height = 200 // Đặt kích thước cố định
-                };
-                frame.MouseLeftButtonDown += Background_MouseLeftButtonDown;
-
-                BackgroundsWrapPanel.Children.Add(frame);
-            }
+            photosInTemplate = 0;
+            photoNumberInTemplate = 0;
+            Printing.Print(printPath, printerName, actualNumberOfCopies);
+            actualNumberOfCopies = 1;
+            if (turnOnTemplateMenu) StartLayoutsWelcomeMenu();
+            else StartWelcomeMenu();
         }
-        private void Background_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Image clickedBackground = sender as Image;
-            string fileName = System.IO.Path.GetFileName(((BitmapImage)clickedBackground.Source).UriSource.LocalPath);
-            Bitmap background = new Bitmap(Path.Combine(Directory.GetCurrentDirectory(), "Backgrounds", layout.LayoutCode, fileName));
-
-            // Lấy đường dẫn thư mục session hiện tại
-            var savePhoto = new SavePhoto(photoNumber);
-            string sessionDirectory = savePhoto.CurrentSessionDirectory();
-
-            Bitmap result = imageProcess.OverlayBackground(actualPrint, background);
-            ShowPrint.Source = imageProcess.ConvertToBitmapImage(result);
-        }
-
 
 
         private void MinusOneCopyButtonClick(object sender, RoutedEventArgs e)
@@ -964,7 +1156,7 @@ namespace FBoothApp
 
         #endregion
 
-        #region menu
+        #region MenuSetting
 
 
         //doc file cau hinh
@@ -1045,71 +1237,7 @@ namespace FBoothApp
             secondCounter.Interval = new TimeSpan(0, 0, 0, 0, 900);
         }
 
-        #region Foreground_Menu
-
-
-
-        //private void StartButtonMenu_Click(object sender, RoutedEventArgs e)
-        //{
-        //    TurnOnForegroundMenu();
-        //}
-        public void TurnOnForegroundMenu()
-        {
-            PhotoTextBox.Text = "Please select a layout to get started.";
-            sliderTimer.Stop();
-            Slider.Visibility = Visibility.Hidden;
-            SliderBorder.Visibility = Visibility.Hidden;
-            InputGrid.Visibility = Visibility.Hidden;
-
-            LoadLayouts();
-
-        }
-        public void TurnOffForegroundMenu()
-        {
-            LayoutsWrapPanel.Visibility = Visibility.Hidden;
-            LayoutScrollViewer.Visibility = Visibility.Hidden;
-
-            LayoutScrollViewer.Visibility = Visibility.Hidden;
-            LayoutsWrapPanel.Visibility = Visibility.Hidden;
-        }
-        public void StartLayoutsWelcomeMenu()
-        {
-            PhotoTextBox.Visibility = Visibility.Visible;
-            PhotoTextBox.Text = "Hello";
-            SliderBorder.Visibility = Visibility.Visible;
-
-            //StartButtonMenu.Visibility = Visibility.Visible;
-
-            Slider.Visibility = Visibility.Visible;
-            sliderTimer.Start();
-
-            //StopButton.Visibility = Visibility.Hidden;
-            ReadyButton.Visibility = Visibility.Hidden;
-            Print.Visibility = Visibility.Hidden;
-            ShowPrint.Visibility = Visibility.Hidden;
-            NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
-            AddOneCopyButton.Visibility = Visibility.Hidden;
-            MinusOneCopyButton.Visibility = Visibility.Hidden;
-            SendEmailButton.Visibility = Visibility.Hidden;
-
-            ThumbnailDockPanel.Visibility = Visibility.Hidden;
-            SliderBorder.Visibility = Visibility.Hidden;
-            Slider.Visibility = Visibility.Hidden;
-        }
-        public void CheckTemplate()
-        {
-
-            if (turnOnTemplateMenu)
-            {
-                //StartButtonMenu.Visibility = Visibility.Visible;
-                SendButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                StartButton.Visibility = Visibility.Visible;
-            }
-        }
-        #endregion
+        
         #region frontend
         private void CreateDynamicBorder(double width, double height)
         {
@@ -1133,7 +1261,6 @@ namespace FBoothApp
             Slider.Visibility = Visibility.Visible;
             StartButton.Visibility = Visibility.Visible;
 
-            //StopButton.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
             Print.Visibility = Visibility.Hidden;
             ShowPrint.Visibility = Visibility.Hidden;
@@ -1144,13 +1271,6 @@ namespace FBoothApp
 
 
             ThumbnailDockPanel.Visibility = Visibility.Hidden;
-            //FirstThumbnail.Visibility = Visibility.Hidden;
-            //SecondThumbnail.Visibility = Visibility.Hidden;
-            //ThirdThumbnail.Visibility = Visibility.Hidden;
-            //FourthThumbnail.Visibility = Visibility.Hidden;
-            //LeftThumbnail.Visibility = Visibility.Hidden;
-            //CenterThumbnail.Visibility = Visibility.Hidden;
-            //RightThumbnail.Visibility = Visibility.Hidden;
         }
         #endregion
 
@@ -1169,98 +1289,6 @@ namespace FBoothApp
             }
         }
 
-
-        public void ShowPhotoThumbnail()
-        {
-            // Xóa các nút hiện tại trong DockPanel
-            ThumbnailDockPanel.Children.Clear();
-            var getImageThumbnail = new GetImageThumbnail();
-
-            // Tạo các nút hình thu nhỏ dựa trên số lượng ảnh đã chụp
-            for (int i = 1; i <= photosInTemplate; i++)
-            {
-                string thumbnailPath = getImageThumbnail.GetThumbnailPathForIndex(i);
-
-                Button thumbnailButton = new Button
-                {
-                    Background = System.Windows.Media.Brushes.Transparent,
-                    BorderThickness = new Thickness(0),
-                    Visibility = Visibility.Visible,
-                    Margin = new Thickness(5),
-                    Tag = i // Lưu số thứ tự ảnh trong thuộc tính Tag
-                };
-
-                Image thumbnailImage = new Image
-                {
-                    Source = new BitmapImage(new Uri(thumbnailPath)),
-                    Stretch = Stretch.Uniform,
-                    Width = 200, // Đặt kích thước phù hợp
-                    Height = 200
-                };
-
-                thumbnailButton.Content = thumbnailImage;
-
-                // Thêm sự kiện click cho các nút hình thu nhỏ
-                thumbnailButton.Click += ThumbnailButton_Click;
-
-                ThumbnailDockPanel.Children.Add(thumbnailButton);
-            }
-        }
-
-        private void ThumbnailButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.Tag is int photoIndex)
-            {
-                RetakePhoto(sender, e, photoIndex);
-            }
-        }
-        private bool isRetake = false;
-        private int retakeIndex;
-
-        //hàm chụp lại
-        public void RetakePhoto(object sender, RoutedEventArgs e, int photoNumberToRetake)
-        {
-            RepeatPhotoDialog repeatPhotoDialog = new RepeatPhotoDialog();
-            if (repeatPhotoDialog.ShowDialog() == true)
-            {
-                photosInTemplate--;
-                // Lưu lại số thứ tự của ảnh được chọn để chụp lại
-                photoNumberInTemplate = photoNumberToRetake - 1;
-
-                ShowPictureInlayout.Visibility = Visibility.Hidden;
-                Print.Visibility = Visibility.Hidden;
-                ShowPrint.Visibility = Visibility.Hidden;
-                NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
-                AddOneCopyButton.Visibility = Visibility.Hidden;
-                MinusOneCopyButton.Visibility = Visibility.Hidden;
-                SendEmailButton.Visibility = Visibility.Hidden;
-
-
-                isRetake = true;
-                retakeIndex = photoNumberToRetake;
-
-                StartButton_Click(sender, e);
-
-            }
-        }
-        public void UpdatePhotoAfterRetake()
-        {
-            var getImageThumbnail = new GetImageThumbnail();
-            string newThumbnailPath = getImageThumbnail.GetLatestThumbnailPath();
-
-            // Cập nhật nút ảnh thu nhỏ tương ứng
-            foreach (Button btn in ThumbnailDockPanel.Children)
-            {
-                if ((int)btn.Tag == retakeIndex)
-                {
-                    Image thumbnailImage = (Image)btn.Content;
-                    thumbnailImage.Source = new BitmapImage(new Uri(newThumbnailPath));
-                    break;
-                }
-            }
-            isRetake = false;
-            retakeIndex = 0;
-        }
 
 
         private void RoundedTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -1295,11 +1323,6 @@ namespace FBoothApp
                 SendButton.IsEnabled = true;
                 SendButton.Opacity = 1.0;
             }
-        }
-
-        private void SendButton_Click(object sender, RoutedEventArgs e)
-        {
-            TurnOnForegroundMenu();
         }
 
     }

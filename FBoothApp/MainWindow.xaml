@@ -24,6 +24,30 @@
                 To="1"
                 Duration="0:0:1" />
         </Storyboard>
+
+        <Style x:Key="NoHighlightButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
 
     <Window.Background>
@@ -34,14 +58,14 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
             <RowDefinition Height="2*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="1.5*" />
             <ColumnDefinition Width="1.5*" />
-            <ColumnDefinition Width="0.375*" />
-            <ColumnDefinition Width="0.375*" />
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="0.5*" />
         </Grid.ColumnDefinitions>
 
         <ContentControl
@@ -62,6 +86,7 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="StartButton_Click"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
             <Image Source="backgrounds/StartButton.png" />
         </Button>
@@ -138,6 +163,25 @@
         </Button>-->
 
         <Button
+            x:Name="ReadyButton"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="ReadyButton_Click"
+            Style="{StaticResource NoHighlightButtonStyle}"
+            Visibility="Hidden">
+            <Image
+                Width="100"
+                Height="100"
+                Source="backgrounds/ReadyButton.png" />
+        </Button>
+
+        <Button
             x:Name="NextButtonBackGround"
             Grid.Row="3"
             Grid.Column="3"
@@ -147,8 +191,12 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="NextButtonBackGround_Click"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
-            <Image Source="backgrounds/NextButton.png" />
+            <Image
+                Width="200"
+                Height="200"
+                Source="backgrounds/NextButton.png" />
         </Button>
 
         <Button
@@ -161,8 +209,12 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="NextButtonSticker_Click"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
-            <Image Source="backgrounds/NextButton.png" />
+            <Image
+                Width="200"
+                Height="200"
+                Source="backgrounds/NextButton.png" />
         </Button>
 
         <Button
@@ -175,8 +227,12 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="NextButtonPrinting_Click"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
-            <Image Source="backgrounds/NextButton.png" />
+            <Image
+                Width="200"
+                Height="200"
+                Source="backgrounds/NextButton.png" />
         </Button>
 
         <ListBox x:Name="CameraListBox" Visibility="Hidden" />
@@ -199,23 +255,6 @@
             TextWrapping="Wrap"
             Visibility="Visible" />
 
-        <Button
-            x:Name="ReadyButton"
-            Grid.Row="3"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Background="{x:Null}"
-            BorderThickness="0"
-            Click="ReadyButton_Click"
-            Visibility="Hidden">
-            <Image
-                Width="354"
-                Height="88"
-                Source="backgrounds/ReadyButton.png" />
-        </Button>
-
         <Image
             x:Name="ShowPictureInlayout"
             Grid.Row="1"
@@ -230,7 +269,7 @@
         <Grid
             Grid.Row="1"
             Grid.RowSpan="2"
-            Grid.Column="0"
+            Grid.Column="1"
             Grid.ColumnSpan="2">
             <Image
                 x:Name="ShowPrint"
@@ -239,7 +278,7 @@
                 Visibility="Hidden" />
 
             <Canvas
-                Name="canvasSticker"
+                Name="CanvasSticker"
                 Width="{Binding ActualWidth, ElementName=ShowPrint}"
                 Height="{Binding ActualHeight, ElementName=ShowPrint}"
                 HorizontalAlignment="Center"
@@ -255,7 +294,8 @@
             Grid.ColumnSpan="5"
             HorizontalScrollBarVisibility="Disabled"
             PanningMode="VerticalOnly"
-            VerticalScrollBarVisibility="Hidden">
+            VerticalScrollBarVisibility="Hidden"
+            Visibility="Hidden">
             <WrapPanel
                 x:Name="LayoutsWrapPanel"
                 Margin="10"
@@ -301,10 +341,11 @@
                         Background="Transparent"
                         BorderThickness="0"
                         Click="SendButton_Click"
-                        IsEnabled="False">
+                        IsEnabled="False"
+                        Style="{StaticResource NoHighlightButtonStyle}">
                         <Image
-                            Width="30"
-                            Height="30"
+                            Width="35"
+                            Height="35"
                             Source="backgrounds/send.png">
                             <Image.Style>
                                 <Style TargetType="Image">
@@ -323,37 +364,48 @@
         </Grid>
 
         <!--  chỗ load background  -->
-
-        <WrapPanel
-            x:Name="BackgroundsWrapPanel"
+        <ScrollViewer
+            x:Name="BackgoundScrollViewer"
             Grid.Row="1"
             Grid.RowSpan="2"
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="Visible" />
-
+            Grid.Column="0"
+            HorizontalScrollBarVisibility="Disabled"
+            PanningMode="VerticalOnly"
+            VerticalScrollBarVisibility="Hidden"
+            Visibility="Hidden">
+            <WrapPanel
+                x:Name="BackgroundsWrapPanel"
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </ScrollViewer>
 
 
         <!--  chỗ load Sticker  -->
-        <WrapPanel
-            x:Name="StickerWrapPanel"
+        <ScrollViewer
+            x:Name="StickerScrollViewer"
             Grid.Row="1"
             Grid.RowSpan="2"
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="Hidden" />
-        <Canvas
+            Grid.Column="0"
+            HorizontalScrollBarVisibility="Disabled"
+            PanningMode="VerticalOnly"
+            VerticalScrollBarVisibility="Hidden"
+            Visibility="Hidden">
+            <WrapPanel
+                x:Name="StickerWrapPanel"
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </ScrollViewer>
+
+        <!--<Canvas
             x:Name="StickerCanvas"
             Grid.Row="1"
             Grid.RowSpan="2"
             Grid.Column="2"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center" />
+            VerticalAlignment="Center" />-->
 
         <!--  show nut in  -->
         <Button
@@ -366,6 +418,7 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="Print_Click"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
             <Image Source="backgrounds/PrintButton.png" />
         </Button>
@@ -384,6 +437,7 @@
             Content="Send Email"
             FontSize="35"
             Foreground="White"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden" />
 
         <!--  show so luong anh muon in  -->
@@ -413,6 +467,7 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="AddOneCopyButtonClick"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
             <Image Source="backgrounds/PlusButton.png" />
         </Button>
@@ -426,6 +481,7 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="MinusOneCopyButtonClick"
+            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
             <Image Source="backgrounds/MinusButton.png" />
         </Button>
@@ -436,9 +492,22 @@
             Grid.Column="1"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
-            Visibility="Visible">
-            <!--  Placeholder for dynamically added buttons  -->
-        </DockPanel>
+            Background="Transparent"
+            Visibility="Visible" />
+
+        <Grid
+            x:Name="LoadingGrid"
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="5"
+            Background="#AA000000"
+            Visibility="Hidden">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="30"
+                Foreground="White"
+                Text="Processing, please wait..." />
+        </Grid>
 
     </Grid>
 </Window>

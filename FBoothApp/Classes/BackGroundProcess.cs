@@ -12,7 +12,7 @@ using FBoothApp.Entity;
 
 namespace FBoothApp.Classes
 {
-    public class ImageProcess
+    public class BackGroundProcess
     {
         public Bitmap OverlayBackground(BitmapImage photo, Bitmap background)
         {

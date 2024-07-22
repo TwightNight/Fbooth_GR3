@@ -8,51 +8,72 @@
     Title="RepeatPhotoDialog"
     Width="300"
     Height="200"
+    AllowsTransparency="True"
+    Background="Transparent"
     WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
     mc:Ignorable="d">
+    <Border
+        Background="#FFF"
+        BorderBrush="#333"
+        BorderThickness="2"
+        CornerRadius="10">
+        <Grid Margin="15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
 
-    <Grid Margin="15">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        </Grid.RowDefinitions>
+            <Label
+                Name="labelRepeatPhotoQuestion"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="16"
+                FontWeight="Bold"
+                Foreground="#333">
+                Do you want to repeat the photo?
+            </Label>
 
-        <Label
-            Name="labelRepeatPhotoQuestion"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-            Do you want to repeat the photo?
-        </Label>
-
-        <WrapPanel
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-            <Button
-                Name="RepeatPhotoButtonOK"
-                MinWidth="100"
-                MinHeight="50"
-                Margin="0,0,50,0"
-                Click="RepeatPhotoButtonOK_OnClick"
-                IsDefault="True">
-                _Ok
-            </Button>
-            <Button
-                MinWidth="100"
-                MinHeight="50"
-                IsCancel="True">
-                _Cancel
-            </Button>
-        </WrapPanel>
-    </Grid>
+            <WrapPanel
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <Button
+                    Name="RepeatPhotoButtonOK"
+                    MinWidth="100"
+                    MinHeight="50"
+                    Margin="0,0,50,0"
+                    Background="#4CAF50"
+                    BorderBrush="#388E3C"
+                    BorderThickness="2"
+                    Click="RepeatPhotoButtonOK_OnClick"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    IsDefault="True">
+                    _Ok
+                </Button>
+                <Button
+                    MinWidth="100"
+                    MinHeight="50"
+                    Background="#F44336"
+                    BorderBrush="#D32F2F"
+                    BorderThickness="2"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    IsCancel="True">
+                    _Cancel
+                </Button>
+            </WrapPanel>
+        </Grid>
+    </Border>
 </Window>

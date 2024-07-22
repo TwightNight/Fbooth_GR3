@@ -88,7 +88,7 @@
     </ApplicationDefinition>
     <Compile Include="Classes\EmailSender.cs" />
     <Compile Include="Classes\GetImageThumbnail.cs" />
-    <Compile Include="Classes\ImageProcess.cs" />
+    <Compile Include="Classes\BackGroundProcess.cs" />
     <Compile Include="Classes\ResizeAdorner.cs" />
     <Compile Include="Entity\AppSettings.cs" />
     <Compile Include="Entity\Background.cs" />
@@ -97,7 +97,7 @@
     <Compile Include="Entity\Sticker.cs" />
     <Compile Include="Entity\StickerServices.cs" />
     <Compile Include="Menu\UserSettings.cs" />
-    <Compile Include="Classes\LayoutProcessing.cs" />
+    <Compile Include="Classes\LayoutProcess.cs" />
     <Compile Include="Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>
@@ -172,7 +172,6 @@
   <ItemGroup>
     <Resource Include="backgrounds\background_1.jpg" />
     <Resource Include="backgrounds\PrintButton.png" />
-    <Resource Include="backgrounds\ReadyButton.png" />
     <Resource Include="backgrounds\StopButton.png" />
   </ItemGroup>
   <ItemGroup>
@@ -187,10 +186,13 @@
     <Resource Include="backgrounds\logo.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="backgrounds\send.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="backgrounds\NextButton.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\send.png" />
+    <Resource Include="backgrounds\ReadyButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
