@@ -6,44 +6,83 @@
     xmlns:local="clr-namespace:FBoothApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Email Dialog"
+    AllowsTransparency="True"
+    Background="Transparent"
     ContentRendered="Window_ContentRendered"
     SizeToContent="WidthAndHeight"
     WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
     mc:Ignorable="d">
-    <Grid Margin="15">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
 
-        <Label Name="labelEmailQuestion" Grid.Column="1">Question:</Label>
-        <TextBox
-            Name="textBoxEmailAnswer"
-            Grid.Row="1"
-            Grid.Column="1"
-            MinWidth="250">
-            Answer
-        </TextBox>
+    <Border
+        Background="White"
+        BorderBrush="Gray"
+        BorderThickness="1"
+        CornerRadius="10">
+        <Grid Margin="15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <WrapPanel
-            Grid.Row="2"
-            Grid.ColumnSpan="2"
-            Margin="0,15,0,0"
-            HorizontalAlignment="Right">
-            <Button
-                Name="btnDialogOk"
-                MinWidth="80"
-                Margin="0,0,10,0"
-                Click="btnDialogOk_Click"
-                IsDefault="True">
-                _Ok
-            </Button>
-            <Button MinWidth="80" IsCancel="True">_Cancel</Button>
-        </WrapPanel>
-    </Grid>
+            <TextBlock
+                Grid.ColumnSpan="2"
+                Margin="0,0,0,10"
+                FontSize="16"
+                FontWeight="Bold"
+                Text="Enter Your Email" />
+
+            <Label
+                Grid.Row="1"
+                VerticalAlignment="Center"
+                Content="Email:"
+                FontStyle="Italic" />
+            <TextBox
+                Name="textBoxEmailAnswer"
+                Grid.Row="1"
+                Grid.Column="1"
+                MinWidth="250"
+                Margin="5,0,0,0"
+                Padding="5"
+                VerticalContentAlignment="Center"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                TextChanged="textBoxEmailAnswer_TextChanged" />
+
+            <WrapPanel
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Margin="0,15,0,0"
+                HorizontalAlignment="Right">
+                <Button
+                    Name="btnDialogOk"
+                    MinWidth="80"
+                    Margin="0,0,10,0"
+                    Padding="5"
+                    Background="#007ACC"
+                    BorderThickness="0"
+                    Click="btnDialogOk_Click"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    IsDefault="True">
+                    OK
+                </Button>
+                <Button
+                    MinWidth="80"
+                    Padding="5"
+                    Background="#E81123"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    IsCancel="True">
+                    Cancel
+                </Button>
+            </WrapPanel>
+        </Grid>
+    </Border>
 </Window>

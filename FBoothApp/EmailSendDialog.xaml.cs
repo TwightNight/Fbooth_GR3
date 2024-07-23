@@ -26,7 +26,6 @@ namespace FBoothApp
         public EmailSendDialog(string question, string defaultAnswer = "")
         {
             InitializeComponent();
-            labelEmailQuestion.Content = question;
             textBoxEmailAnswer.Text = defaultAnswer;
 
         }
@@ -56,6 +55,20 @@ namespace FBoothApp
         {
             textBoxEmailAnswer.SelectAll();
             textBoxEmailAnswer.Focus();
+        }
+
+        private void textBoxEmailAnswer_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (IsValidEmail(textBoxEmailAnswer.Text))
+            {
+                btnDialogOk.IsEnabled = true;
+                btnDialogOk.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#007ACC"));
+            }
+            else
+            {
+                btnDialogOk.IsEnabled = false;
+                btnDialogOk.Background = new SolidColorBrush(Colors.Gray);
+            }
         }
 
         public string Answer
