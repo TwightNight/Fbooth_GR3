@@ -736,7 +736,7 @@ namespace FBoothApp
         private void AddStickerToCanvas(BitmapImage stickerImageSource)
         {
 
-            StickerServices sticker = new StickerServices
+            StickerProcess sticker = new StickerProcess
             {
                 Width = 100,
                 Height = 100,
@@ -762,7 +762,7 @@ namespace FBoothApp
 
         private void Sticker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is StickerServices clickedSticker)
+            if (sender is StickerProcess clickedSticker)
             {
                 clickedSticker.CaptureMouse();
             }
@@ -770,7 +770,7 @@ namespace FBoothApp
 
         private void Sticker_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is StickerServices clickedSticker)
+            if (sender is StickerProcess clickedSticker)
             {
                 clickedSticker.ReleaseMouseCapture();
             }
@@ -780,7 +780,7 @@ namespace FBoothApp
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                StickerServices clickedSticker = sender as StickerServices;
+                StickerProcess clickedSticker = sender as StickerProcess;
                 if (clickedSticker != null)
                 {
                     var position = e.GetPosition(ShowPrint);
@@ -1060,7 +1060,7 @@ namespace FBoothApp
         {
             foreach (var child in CanvasSticker.Children)
             {
-                if (child is StickerServices sticker && sticker.Visibility == Visibility.Visible)
+                if (child is StickerProcess sticker && sticker.Visibility == Visibility.Visible)
                 {
                     // Ẩn sticker
                     sticker.Visibility = Visibility.Hidden;
@@ -1086,7 +1086,7 @@ namespace FBoothApp
         {
             foreach (var child in CanvasSticker.Children)
             {
-                if (child is StickerServices sticker)
+                if (child is StickerProcess sticker)
                 {
                     sticker.HideCloseButton();
                 }
