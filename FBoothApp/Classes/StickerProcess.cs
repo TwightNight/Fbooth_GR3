@@ -1,28 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows;
+using System.Windows.Media;
 
 namespace FBoothApp.Entity
 {
-    public class StickerServices : ContentControl
+    public class StickerProcess : ContentControl
     {
         private readonly Thumb _moveThumb;
         private readonly Button _closeButton;
         private readonly Image _image;
 
-        public StickerServices()
+        public StickerProcess()
         {
             _moveThumb = new Thumb { Width = 0, Height = 0 }; // Invisible thumb for moving
-            _closeButton = new Button { Content = "X", Width = 20, Height = 20 };
+            _closeButton = new Button
+            {
+                Width = 24,
+                Height = 24,
+                Background = Brushes.Transparent,
+                BorderBrush = Brushes.Transparent,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0)
+            };
+
             _image = new Image();
 
+            var closeImage = new Image
+            {
+                Source = new BitmapImage(new Uri("pack://application:,,,/backgrounds/close.png")),
+                Width = 16,
+                Height = 16
+            };
+
+            _closeButton.Content = closeImage;
             _closeButton.Click += CloseButton_Click;
 
             var visualContainer = new Grid();

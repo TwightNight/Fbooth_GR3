@@ -165,6 +165,7 @@ namespace FBoothApp
                 Thread.Sleep(2000);
 
                 PhotoTextBox.Visibility = Visibility.Visible;
+                PhotoTextBox.FontSize = 24;
                 PhotoTextBox.Text = "Prepare for next Photo!";
 
                 // Waiting for photo saving 
@@ -324,10 +325,35 @@ namespace FBoothApp
 
         public void ShowTimeLeft(object sender, EventArgs e)
         {
+            if (timeLeftCopy > 0)
+            {
+                PhotoTextBox.Text = timeLeftCopy.ToString();
+                PhotoTextBox.FontSize = 80;
 
-            PhotoTextBox.Text = timeLeftCopy.ToString();
-            timeLeftCopy--;
+                // Tạo hoạt ảnh mờ dần và rõ dần
+                DoubleAnimation fadeInOutAnimation = new DoubleAnimation
+                {
+                    From = 1.0,
+                    To = 0.0,
+                    Duration = new Duration(TimeSpan.FromSeconds(1)),
+                    AutoReverse = true,
+                    RepeatBehavior = new RepeatBehavior(1)
+                };
+
+                // Bắt đầu hoạt ảnh
+                PhotoTextBox.BeginAnimation(UIElement.OpacityProperty, fadeInOutAnimation);
+
+                timeLeftCopy--;
+            }
+            else
+            {
+                // Khi đếm ngược kết thúc, đặt lại Opacity của PhotoTextBox về 1 và hiển thị thông điệp chuẩn bị chụp ảnh
+                PhotoTextBox.Opacity = 1;
+                PhotoTextBox.FontSize = 24;
+                secondCounter.Stop();
+            }
         }
+
         #endregion
 
         #region slider
@@ -464,7 +490,7 @@ namespace FBoothApp
             PhotoTextBox.Visibility = Visibility.Visible;
 
 
-            PhotoTextBox.Text = "Are you ready for taking picture?";
+            PhotoTextBox.Text = "Click the lens to start capturing photos!";
 
             try
             {
@@ -477,16 +503,16 @@ namespace FBoothApp
             }
             try
             {
-
                 //Slider.Background = liveView;
                 DrawGridLines();
                 MainCamera.StartLiveView();
                 LiveViewImage.Visibility = Visibility.Visible;
                 GridCanvasLiveViewImage.Visibility = Visibility.Visible;
-
-
             }
-            catch (Exception ex) { Report.Error(ex.Message, false); }
+            catch (Exception ex)
+            { 
+                Report.Error(ex.Message, false); 
+            }
         }
 
         #endregion
@@ -557,7 +583,7 @@ namespace FBoothApp
 
         public void TurnOnLayoutMenu()
         {
-            PhotoTextBox.Text = "Please select a layout to get started.";
+            PhotoTextBox.Text = "Choose a Layout to Begin Your Experience!";
             sliderTimer.Stop();
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
@@ -622,7 +648,7 @@ namespace FBoothApp
 
         private void BackgroundMenu()
         {
-            PhotoTextBox.Text = "Choose background";
+            PhotoTextBox.Text = "Choose a Background to Enhance Your Photo";
 
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
@@ -693,10 +719,12 @@ namespace FBoothApp
 
         private void StickerMenu()
         {
+            PhotoTextBox.Text = "Select a fun sticker to personalize your photo!";
+
+
             BackgoundScrollViewer.Visibility = Visibility.Hidden;
             BackgroundsWrapPanel.Visibility = Visibility.Hidden;
             NextButtonSticker.Visibility = Visibility.Hidden;
-            PhotoTextBox.Text = "Choose sticker";
 
             // Hiển thị StickerWrapPanel
             StickerScrollViewer.Visibility = Visibility.Visible;
@@ -736,7 +764,7 @@ namespace FBoothApp
         private void AddStickerToCanvas(BitmapImage stickerImageSource)
         {
 
-            StickerServices sticker = new StickerServices
+            StickerProcess sticker = new StickerProcess
             {
                 Width = 100,
                 Height = 100,
@@ -762,7 +790,7 @@ namespace FBoothApp
 
         private void Sticker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is StickerServices clickedSticker)
+            if (sender is StickerProcess clickedSticker)
             {
                 clickedSticker.CaptureMouse();
             }
@@ -770,7 +798,7 @@ namespace FBoothApp
 
         private void Sticker_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is StickerServices clickedSticker)
+            if (sender is StickerProcess clickedSticker)
             {
                 clickedSticker.ReleaseMouseCapture();
             }
@@ -780,7 +808,7 @@ namespace FBoothApp
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                StickerServices clickedSticker = sender as StickerServices;
+                StickerProcess clickedSticker = sender as StickerProcess;
                 if (clickedSticker != null)
                 {
                     var position = e.GetPosition(ShowPrint);
@@ -863,14 +891,14 @@ namespace FBoothApp
 
         private void RetakePhotoMenu()
         {
+            PhotoTextBox.Text = "Pick a thumbnail below to retake your photo!";
+
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
             //StopButton.Visibility = Visibility.Hidden;
             LiveViewImage.Visibility = Visibility.Hidden;
             GridCanvasLiveViewImage.Visibility = Visibility.Hidden;
-
-            PhotoTextBox.Text = "Choose a thumbnail below to retake the picture";
 
             actualPrint = new BitmapImage();
             actualPrint.BeginInit();
@@ -1060,7 +1088,7 @@ namespace FBoothApp
         {
             foreach (var child in CanvasSticker.Children)
             {
-                if (child is StickerServices sticker && sticker.Visibility == Visibility.Visible)
+                if (child is StickerProcess sticker && sticker.Visibility == Visibility.Visible)
                 {
                     // Ẩn sticker
                     sticker.Visibility = Visibility.Hidden;
@@ -1086,7 +1114,7 @@ namespace FBoothApp
         {
             foreach (var child in CanvasSticker.Children)
             {
-                if (child is StickerServices sticker)
+                if (child is StickerProcess sticker)
                 {
                     sticker.HideCloseButton();
                 }
@@ -1100,7 +1128,7 @@ namespace FBoothApp
             StickerWrapPanel.Visibility = Visibility.Hidden;
             NextButtonPrinting.Visibility = Visibility.Hidden;
 
-            PhotoTextBox.Text = "Press button to continue";
+            //PhotoTextBox.Text = "Press button to continue";
             NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
 
             actualPrint = new BitmapImage();
@@ -1237,7 +1265,7 @@ namespace FBoothApp
             secondCounter.Interval = new TimeSpan(0, 0, 0, 0, 900);
         }
 
-        
+
         #region frontend
         private void CreateDynamicBorder(double width, double height)
         {
@@ -1254,7 +1282,7 @@ namespace FBoothApp
         private void StartWelcomeMenu()
         {
             PhotoTextBox.Visibility = Visibility.Visible;
-            PhotoTextBox.Text = "Hello";
+            PhotoTextBox.Text = "Welcome! Get ready to have some fun!";
 
             sliderTimer.Start();
             SliderBorder.Visibility = Visibility.Visible;

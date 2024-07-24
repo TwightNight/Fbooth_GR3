@@ -17,6 +17,7 @@
     mc:Ignorable="d">
 
     <Window.Resources>
+
         <Storyboard x:Key="ImageTransitionStoryboard">
             <DoubleAnimation
                 Storyboard.TargetProperty="Opacity"
@@ -431,14 +432,51 @@
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Background="{x:Null}"
             BorderThickness="0"
             Click="SendEmailButtonClick"
-            Content="Send Email"
             FontSize="35"
-            Foreground="White"
-            Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden" />
+            Visibility="Hidden">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="border"
+                                    Padding="10"
+                                    Background="White"
+                                    CornerRadius="15">
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                        <Image
+                                            Width="40"
+                                            Height="40"
+                                            Source="/backgrounds/gmail.png" />
+                                        <TextBlock
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="24"
+                                            FontWeight="Bold"
+                                            Foreground="Black"
+                                            Text="Send Email" />
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                        <Setter Property="Cursor" Value="Hand" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
+
+
+
 
         <!--  show so luong anh muon in  -->
         <TextBox
