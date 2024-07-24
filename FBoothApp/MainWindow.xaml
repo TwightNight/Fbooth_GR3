@@ -17,6 +17,7 @@
     mc:Ignorable="d">
 
     <Window.Resources>
+
         <Storyboard x:Key="ImageTransitionStoryboard">
             <DoubleAnimation
                 Storyboard.TargetProperty="Opacity"
