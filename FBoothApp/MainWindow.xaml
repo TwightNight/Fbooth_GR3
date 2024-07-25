@@ -9,6 +9,7 @@
     Width="{x:Static SystemParameters.PrimaryScreenWidth}"
     Height="{x:Static SystemParameters.PrimaryScreenHeight}"
     Closing="Window_Closing"
+    FontFamily="Poppins"
     KeyDown="Window_KeyDown"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
@@ -17,6 +18,115 @@
     mc:Ignorable="d">
 
     <Window.Resources>
+        <!--  Colors  -->
+        <SolidColorBrush x:Key="PrimaryBlueColor" Color="#348EF6" />
+        <SolidColorBrush x:Key="SecundaryBlueColor" Color="#EFF2FF" />
+
+        <SolidColorBrush x:Key="PrimaryTextColor" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SecundaryTextColor" Color="#BBC1D1" />
+
+        <SolidColorBrush x:Key="PrimaryGrayColor" Color="#BBC1D1" />
+        <SolidColorBrush x:Key="BlackColor" Color="#000000" />
+
+        <!--  Start: Styles  -->
+        <Style x:Key="TabItemStyle" TargetType="TabItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource BlackColor}" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Margin" Value="0,0,5,0" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Padding" Value="10,10" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid SnapsToDevicePixels="True">
+                            <Border
+                                Margin="{TemplateBinding Margin}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+                                <ContentPresenter
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    ContentSource="Header"
+                                    Focusable="False"
+                                    RecognizesAccessKey="True"
+                                    SnapsToDevicePixels="True" />
+                            </Border>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SecundaryBlueColor}" />
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryGrayColor}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource PrimaryBlueColor}" />
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  End: Styles  -->
+
+        <!--  Start: TabControl Style  -->
+        <Style x:Key="TabControlStyle" TargetType="TabControl">
+            <Setter Property="Background" Value="{DynamicResource SecundaryBlueColor}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid SnapsToDevicePixels="True">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <TabPanel
+                                Grid.Row="0"
+                                HorizontalAlignment="Left"
+                                Background="Transparent"
+                                IsItemsHost="True" />
+                            <Border
+                                Grid.Row="1"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+                                <ContentPresenter
+                                    Margin="{TemplateBinding Padding}"
+                                    ContentSource="SelectedContent"
+                                    SnapsToDevicePixels="True" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--  End: TabControl Style  -->
+
+
+
+        <Storyboard x:Key="TextChangeAnimation">
+            <DoubleAnimation
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:0.5" />
+        </Storyboard>
 
         <Storyboard x:Key="ImageTransitionStoryboard">
             <DoubleAnimation
@@ -52,8 +162,9 @@
     </Window.Resources>
 
     <Window.Background>
-        <ImageBrush ImageSource="backgrounds/background_3.jpg" />
+        <ImageBrush ImageSource="backgrounds/background_2.jpg" />
     </Window.Background>
+
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -68,6 +179,8 @@
             <ColumnDefinition Width="0.5*" />
             <ColumnDefinition Width="0.5*" />
         </Grid.ColumnDefinitions>
+
+        <ListBox x:Name="CameraListBox" Visibility="Hidden" />
 
         <ContentControl
             x:Name="contentFrame"
@@ -195,8 +308,8 @@
             Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
             <Image
-                Width="200"
-                Height="200"
+                Width="70"
+                Height="70"
                 Source="backgrounds/NextButton.png" />
         </Button>
 
@@ -213,8 +326,8 @@
             Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
             <Image
-                Width="200"
-                Height="200"
+                Width="70"
+                Height="70"
                 Source="backgrounds/NextButton.png" />
         </Button>
 
@@ -231,12 +344,11 @@
             Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
             <Image
-                Width="200"
-                Height="200"
+                Width="70"
+                Height="70"
                 Source="backgrounds/NextButton.png" />
         </Button>
 
-        <ListBox x:Name="CameraListBox" Visibility="Hidden" />
 
         <TextBox
             x:Name="PhotoTextBox"
@@ -287,22 +399,72 @@
                 Background="Transparent" />
         </Grid>
 
-        <ScrollViewer
-            x:Name="LayoutScrollViewer"
+
+        <Grid
+            x:Name="LayoutTabControlGrid"
             Grid.Row="1"
             Grid.RowSpan="2"
             Grid.Column="0"
             Grid.ColumnSpan="5"
-            HorizontalScrollBarVisibility="Disabled"
-            PanningMode="VerticalOnly"
-            VerticalScrollBarVisibility="Hidden"
             Visibility="Hidden">
-            <WrapPanel
-                x:Name="LayoutsWrapPanel"
-                Margin="10"
+            <Border
+                Padding="30"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center" />
-        </ScrollViewer>
+                VerticalAlignment="Center"
+                Background="{DynamicResource PrimaryTextColor}"
+                CornerRadius="10">
+                <TabControl
+                    x:Name="LayoutTabControl"
+                    Width="886"
+                    Height="512"
+                    Background="#3D3C42"
+                    Style="{DynamicResource TabControlStyle}">
+                    <!--<TabItem Header="Home" Style="{DynamicResource TabItemStyle}">
+                        <Grid>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource SecundaryTextColor}"
+                                Text="Home" />
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Home" Style="{DynamicResource TabItemStyle}">
+                        <Grid>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource SecundaryTextColor}"
+                                Text="Home" />
+                        </Grid>
+                    </TabItem>-->
+                </TabControl>
+            </Border>
+        </Grid>
+
+
+
+        <Button
+            x:Name="NextButtonTakingPhoto"
+            Grid.Row="3"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Click="NextButtonTakingPhoto_Click"
+            Style="{StaticResource NoHighlightButtonStyle}"
+            Visibility="Hidden">
+            <Image
+                Width="70"
+                Height="70"
+                Source="backgrounds/NextButton.png" />
+        </Button>
 
 
         <Grid
@@ -408,22 +570,6 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />-->
 
-        <!--  show nut in  -->
-        <Button
-            x:Name="Print"
-            Grid.Row="1"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Background="{x:Null}"
-            BorderThickness="0"
-            Click="Print_Click"
-            Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden">
-            <Image Source="backgrounds/PrintButton.png" />
-        </Button>
-
         <!--  show nut goi email  -->
         <Button
             x:Name="SendEmailButton"
@@ -477,52 +623,127 @@
 
 
 
-
-        <!--  show so luong anh muon in  -->
-        <TextBox
-            x:Name="NumberOfCopiesTextBox"
-            Grid.Row="2"
+        <Grid
+            x:Name="PrintMenuGrid"
+            Grid.Row="1"
             Grid.Column="3"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Background="{x:Null}"
-            BorderThickness="0"
-            FontFamily="Arial"
-            FontSize="35"
-            Foreground="White"
-            Text="1"
-            TextWrapping="Wrap"
-            Visibility="Hidden" />
-
-        <!--  show nut +- so luong anh in  -->
-        <Button
-            x:Name="AddOneCopyButton"
-            Grid.Row="2"
-            Grid.Column="3"
-            HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Background="{x:Null}"
-            BorderThickness="0"
-            Click="AddOneCopyButtonClick"
-            Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Hidden">
-            <Image Source="backgrounds/PlusButton.png" />
-        </Button>
+            <StackPanel
+                x:Name="PrintMenuStackPanel"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Vertical"
+                Visibility="Hidden">
 
-        <Button
-            x:Name="MinusOneCopyButton"
-            Grid.Row="2"
-            Grid.Column="4"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Background="{x:Null}"
-            BorderThickness="0"
-            Click="MinusOneCopyButtonClick"
-            Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden">
-            <Image Source="backgrounds/MinusButton.png" />
-        </Button>
+                <!--  Nút in  -->
+                <Button
+                    x:Name="PrintButton"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Click="Print_Click"
+                    FontSize="35"
+                    Visibility="Hidden">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border
+                                            x:Name="border"
+                                            Padding="10"
+                                            Background="White"
+                                            CornerRadius="15">
+                                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                <Image
+                                                    Width="40"
+                                                    Height="40"
+                                                    Source="/backgrounds/Print.png" />
+                                                <TextBlock
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="24"
+                                                    FontWeight="Bold"
+                                                    Foreground="Black"
+                                                    Text="Print" />
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                <Setter Property="Cursor" Value="Hand" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!--  TextBox và Nút tăng giảm số lượng  -->
+                <StackPanel
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+
+                    <Button
+                        x:Name="AddOneCopyButton"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="{x:Null}"
+                        BorderThickness="0"
+                        Click="AddOneCopyButtonClick"
+                        Style="{StaticResource NoHighlightButtonStyle}"
+                        Visibility="Hidden">
+                        <Image
+                            Width="30"
+                            Height="30"
+                            Source="backgrounds/plus.png" />
+                    </Button>
+
+                    <TextBox
+                        x:Name="NumberOfCopiesTextBox"
+                        Width="60"
+                        Height="60"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="{x:Null}"
+                        BorderThickness="0"
+                        FontFamily="Arial"
+                        FontSize="35"
+                        Foreground="White"
+                        Text="1"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        Visibility="Hidden" />
+
+                    <Button
+                        x:Name="MinusOneCopyButton"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="{x:Null}"
+                        BorderThickness="0"
+                        Click="MinusOneCopyButtonClick"
+                        Style="{StaticResource NoHighlightButtonStyle}"
+                        Visibility="Hidden">
+                        <Image
+                            Width="30"
+                            Height="30"
+                            Source="backgrounds/minus.png" />
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+
 
         <DockPanel
             x:Name="ThumbnailDockPanel"

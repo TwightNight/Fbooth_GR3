@@ -24,6 +24,7 @@ using Path = System.IO.Path;
 using FBoothApp.Entity;
 using FBoothApp.Services;
 using System.Windows.Media.Animation;
+using Brushes = System.Drawing.Brushes;
 
 
 namespace FBoothApp
@@ -232,41 +233,137 @@ namespace FBoothApp
         private async void LoadLayouts()
         {
             var layouts = await _apiServices.GetLayoutsAsync();
-            foreach (var layout in layouts)
+            var photoSlots = layouts.GroupBy(layout => layout.PhotoSlot).OrderBy(group => group.Key);
+
+            foreach (var photoSlot in photoSlots)
             {
-                // Create a ViewBox to maintain aspect ratio and fit within WrapPanel
-                var viewBox = new Viewbox
+                var tabItem = new TabItem
                 {
-                    Width = 400, // Set desired width
-                    Height = 500, // Set desired height
-                    Stretch = System.Windows.Media.Stretch.Uniform // Maintain aspect ratio
+                    Header = $"{photoSlot.Key} - Spot Frame",
+                    Style = (Style)FindResource("TabItemStyle") // Apply the TabItemStyle
                 };
 
-                var image = new Image
+                var scrollViewer = new ScrollViewer
                 {
-                    Source = new BitmapImage(new Uri(layout.LayoutURL)),
-                    Tag = layout, // Store the layout ID in the Tag property
-                    Margin = new Thickness(5)
+                    HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Hidden
                 };
-                image.MouseLeftButtonDown += Layout_Click;
 
-                viewBox.Child = image;
-                LayoutsWrapPanel.Children.Add(viewBox);
+                var wrapPanel = new WrapPanel
+                {
+                    Margin = new Thickness(10),
+                    HorizontalAlignment = HorizontalAlignment.Left, // Align items to the left
+                    VerticalAlignment = VerticalAlignment.Top, // Align items to the top
+                    Width = double.NaN, // Auto size to fill parent
+                    Height = double.NaN, // Auto size to fill parent
+                    Orientation = Orientation.Horizontal
+                };
+
+                foreach (var layout in photoSlot)
+                {
+                    var image = new Image
+                    {
+                        Source = new BitmapImage(new Uri(layout.LayoutURL)),
+                        Tag = layout, // Store the layout ID in the Tag property
+                        Margin = new Thickness(5),
+                        Width = 150, // Set desired width
+                        Height = 150, // Set desired height
+                        Stretch = System.Windows.Media.Stretch.Uniform // Maintain aspect ratio
+                    };
+                    image.MouseLeftButtonDown += Layout_Click;
+
+                    var tickImage = new Image
+                    {
+                        Source = new BitmapImage(new Uri("pack://application:,,,/backgrounds/check.png")),
+                        Width = 30,
+                        Height = 30,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Visibility = Visibility.Hidden // Initially hidden
+                    };
+
+                    var grid = new Grid();
+                    grid.Children.Add(image);
+                    grid.Children.Add(tickImage);
+
+                    var border = new Border
+                    {
+                        Child = grid,
+                        BorderBrush = System.Windows.Media.Brushes.Transparent,
+                        BorderThickness = new Thickness(3)
+                    };
+
+                    wrapPanel.Children.Add(border);
+                }
+
+                scrollViewer.Content = wrapPanel;
+                tabItem.Content = scrollViewer;
+                LayoutTabControl.Items.Add(tabItem);
             }
         }
 
+
+        private Border selectedBorder;
         private void Layout_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Image clickedLayout = sender as Image;
-            if (clickedLayout != null)
+            var clickedImage = sender as Image;
+            if (clickedImage != null)
             {
-                var layoutChoosen = clickedLayout.Tag as Layout;
+                var layoutChoosen = clickedImage.Tag as Layout;
                 layout = layoutChoosen;
-                StartButton_Click(sender, e);
-            }
 
+                var parentGrid = clickedImage.Parent as Grid;
+                var tickImage = parentGrid?.Children.OfType<Image>().FirstOrDefault(img => img.Source.ToString().Contains("check.png"));
+
+                if (tickImage != null)
+                {
+                    // If the layout is already selected, deselect it
+                    if (tickImage.Visibility == Visibility.Visible)
+                    {
+                        tickImage.Visibility = Visibility.Hidden;
+                        if (selectedBorder != null)
+                        {
+                            selectedBorder.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                        }
+                        selectedBorder = null;
+                        NextButtonTakingPhoto.Visibility = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        // Remove the previous selection border if any
+                        if (selectedBorder != null)
+                        {
+                            var previousGrid = selectedBorder.Child as Grid;
+                            var previousTickImage = previousGrid?.Children.OfType<Image>().FirstOrDefault(img => img.Source.ToString().Contains("check.png"));
+                            if (previousTickImage != null)
+                            {
+                                previousTickImage.Visibility = Visibility.Hidden;
+                            }
+                            selectedBorder.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                        }
+
+                        // Select the new layout
+                        tickImage.Visibility = Visibility.Visible;
+                        selectedBorder = parentGrid.Parent as Border;
+                        if (selectedBorder != null)
+                        {
+                            selectedBorder.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                        }
+
+                        // Show the NextButtonTakingPhoto button
+                        NextButtonTakingPhoto.Visibility = Visibility.Visible;
+                    }
+                }
+            }
         }
 
+
+        private void NextButtonTakingPhoto_Click(object sender, RoutedEventArgs e)
+        {
+            // Add your logic here for what happens when the next button is clicked
+            NextButtonTakingPhoto.Visibility = Visibility.Hidden;
+            StartButton_Click(sender, e);
+        }
 
         private void DrawGridLines()
         {
@@ -328,7 +425,7 @@ namespace FBoothApp
             if (timeLeftCopy > 0)
             {
                 PhotoTextBox.Text = timeLeftCopy.ToString();
-                PhotoTextBox.FontSize = 80;
+                PhotoTextBox.FontSize = 100;
 
                 // Tạo hoạt ảnh mờ dần và rõ dần
                 DoubleAnimation fadeInOutAnimation = new DoubleAnimation
@@ -510,8 +607,8 @@ namespace FBoothApp
                 GridCanvasLiveViewImage.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
-            { 
-                Report.Error(ex.Message, false); 
+            {
+                Report.Error(ex.Message, false);
             }
         }
 
@@ -589,16 +686,21 @@ namespace FBoothApp
             SliderBorder.Visibility = Visibility.Hidden;
             InputGrid.Visibility = Visibility.Hidden;
 
-            LayoutsWrapPanel.Visibility = Visibility.Visible;
-            LayoutScrollViewer.Visibility = Visibility.Visible;
+            //LayoutsWrapPanel.Visibility = Visibility.Visible;
+            //LayoutScrollViewer.Visibility = Visibility.Visible;
+            LayoutTabControlGrid.Visibility = Visibility.Visible;
+            LayoutTabControl.Visibility = Visibility.Visible;
+            
 
             LoadLayouts();
 
         }
         public void TurnOffLayoutMenu()
         {
-            LayoutsWrapPanel.Visibility = Visibility.Hidden;
-            LayoutScrollViewer.Visibility = Visibility.Hidden;
+            //LayoutsWrapPanel.Visibility = Visibility.Hidden;
+            //LayoutScrollViewer.Visibility = Visibility.Hidden;
+            LayoutTabControlGrid.Visibility = Visibility.Hidden;
+            LayoutTabControl.Visibility = Visibility.Hidden;
         }
         public void StartLayoutsWelcomeMenu()
         {
@@ -613,7 +715,7 @@ namespace FBoothApp
 
             //StopButton.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
-            Print.Visibility = Visibility.Hidden;
+            PrintButton.Visibility = Visibility.Hidden;
             ShowPrint.Visibility = Visibility.Hidden;
             NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
             AddOneCopyButton.Visibility = Visibility.Hidden;
@@ -637,6 +739,8 @@ namespace FBoothApp
                 StartButton.Visibility = Visibility.Visible;
             }
         }
+
+
         #endregion
 
 
@@ -990,7 +1094,7 @@ namespace FBoothApp
                 NextButtonSticker.Visibility = Visibility.Hidden;
 
                 ShowPictureInlayout.Visibility = Visibility.Hidden;
-                Print.Visibility = Visibility.Hidden;
+                PrintButton.Visibility = Visibility.Hidden;
                 ShowPrint.Visibility = Visibility.Hidden;
                 NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
                 AddOneCopyButton.Visibility = Visibility.Hidden;
@@ -1138,11 +1242,13 @@ namespace FBoothApp
 
             ShowPrint.Source = actualPrint;
 
-
-            Print.Visibility = Visibility.Visible;
+            PrintMenuGrid.Visibility = Visibility.Visible;
+            PrintMenuStackPanel.Visibility = Visibility.Visible;
+            PrintButton.Visibility = Visibility.Visible;
             NumberOfCopiesTextBox.Visibility = Visibility.Visible;
             AddOneCopyButton.Visibility = Visibility.Visible;
             MinusOneCopyButton.Visibility = Visibility.Visible;
+
             SendEmailButton.Visibility = Visibility.Visible;
 
 
@@ -1156,8 +1262,10 @@ namespace FBoothApp
         {
             photosInTemplate = 0;
             photoNumberInTemplate = 0;
+
             Printing.Print(printPath, printerName, actualNumberOfCopies);
             actualNumberOfCopies = 1;
+
             if (turnOnTemplateMenu) StartLayoutsWelcomeMenu();
             else StartWelcomeMenu();
         }
@@ -1169,6 +1277,7 @@ namespace FBoothApp
             {
                 --actualNumberOfCopies;
                 NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
+                TriggerTextBoxAnimation();
             }
 
         }
@@ -1179,7 +1288,14 @@ namespace FBoothApp
             {
                 ++actualNumberOfCopies;
                 NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
+                TriggerTextBoxAnimation();
             }
+        }
+        private void TriggerTextBoxAnimation()
+        {
+            Storyboard storyboard = (Storyboard)this.Resources["TextChangeAnimation"];
+            Storyboard.SetTarget(storyboard, NumberOfCopiesTextBox);
+            storyboard.Begin();
         }
 
         #endregion
@@ -1290,7 +1406,7 @@ namespace FBoothApp
             StartButton.Visibility = Visibility.Visible;
 
             ReadyButton.Visibility = Visibility.Hidden;
-            Print.Visibility = Visibility.Hidden;
+            PrintButton.Visibility = Visibility.Hidden;
             ShowPrint.Visibility = Visibility.Hidden;
             NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
             AddOneCopyButton.Visibility = Visibility.Hidden;

@@ -171,7 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\background_1.jpg" />
-    <Resource Include="backgrounds\PrintButton.png" />
     <Resource Include="backgrounds\StopButton.png" />
   </ItemGroup>
   <ItemGroup>
@@ -179,17 +178,10 @@
     <Resource Include="backgrounds\background_3.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\MinusButton.png" />
-    <Resource Include="backgrounds\PlusButton.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgrounds\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\send.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="backgrounds\NextButton.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\ReadyButton.png" />
@@ -199,6 +191,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\gmail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\NextButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\check.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
