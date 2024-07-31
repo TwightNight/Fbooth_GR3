@@ -522,9 +522,41 @@
                             </Image.Style>
                         </Image>
                     </Button>
+                    <Border
+                        x:Name="LoadingProgressBarContainer"
+                        Width="50"
+                        Height="50"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Visibility="Collapsed">
+                        <Grid>
+                            <Ellipse
+                                Width="50"
+                                Height="50"
+                                Fill="Transparent"
+                                Opacity="0.5"
+                                Stroke="#FFFFFF"
+                                StrokeThickness="5" />
+                            <Ellipse
+                                Width="50"
+                                Height="50"
+                                Fill="Transparent"
+                                Stroke="#61F2F5"
+                                StrokeDashArray="25,75"
+                                StrokeDashCap="Round"
+                                StrokeThickness="5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform x:Name="LoadingRotateTransform" CenterX="25" CenterY="25" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                        </Grid>
+                    </Border>
                 </Grid>
             </Border>
         </Grid>
+
 
         <!--  chỗ load background  -->
         <ScrollViewer

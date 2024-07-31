@@ -25,6 +25,9 @@ using FBoothApp.Entity;
 using FBoothApp.Services;
 using System.Windows.Media.Animation;
 using Brushes = System.Drawing.Brushes;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
 
 
 namespace FBoothApp
@@ -673,9 +676,66 @@ namespace FBoothApp
 
         #region Layout_Menu
 
-        private void SendButton_Click(object sender, RoutedEventArgs e)
+        private async void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            TurnOnLayoutMenu();
+            SendButton.IsEnabled = false;
+            SendButton.Visibility = Visibility.Hidden;
+            LoadingProgressBarContainer.Visibility = Visibility.Visible;
+            StartLoadingAnimation();
+
+            try
+            {
+                var checkinCode = long.Parse(RoundedTextBox.Text);
+
+                var request = new CheckinRequest
+                {
+                    BoothID = BoothID,
+                    Code = checkinCode
+                };
+
+                var response = await _apiServices.CheckinAsync(request);
+
+                // Handle the response (e.g., show a message, update the UI)
+                var successMessageBox = new CustomMessageBox("Check-in successful!");
+                successMessageBox.ShowDialog();
+
+                // Process the response (e.g., show booking details)
+                //ProcessBookingResponse(response);
+
+                // Turn on layout menu after successful check-in
+                TurnOnLayoutMenu();
+            }
+            catch (Exception ex)
+            {
+                // Show the error message returned by the API
+                var errorMessageBox = new CustomMessageBox(ex.Message);
+                errorMessageBox.ShowDialog();
+            }
+            finally
+            {
+                SendButton.IsEnabled = true;
+                LoadingProgressBarContainer.Visibility = Visibility.Collapsed;
+                SendButton.Visibility = Visibility.Visible;
+                StopLoadingAnimation();
+            }
+        }
+
+        private void StartLoadingAnimation()
+        {
+            var rotateAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 360,
+                Duration = new Duration(TimeSpan.FromSeconds(1)),
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+
+            LoadingRotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+        }
+
+        private void StopLoadingAnimation()
+        {
+            LoadingRotateTransform.BeginAnimation(RotateTransform.AngleProperty, null);
         }
 
         public void TurnOnLayoutMenu()
@@ -690,7 +750,7 @@ namespace FBoothApp
             //LayoutScrollViewer.Visibility = Visibility.Visible;
             LayoutTabControlGrid.Visibility = Visibility.Visible;
             LayoutTabControl.Visibility = Visibility.Visible;
-            
+
 
             LoadLayouts();
 
@@ -1304,6 +1364,7 @@ namespace FBoothApp
 
 
         //doc file cau hinh
+        private Guid BoothID;
         private void FillSavedData()
         {
             string firstprinter;
@@ -1338,7 +1399,7 @@ namespace FBoothApp
                 EmailHostAddress = actualSettings.Root.Element("EmailHostAddress").Value;
                 EmailHostPassword = actualSettings.Root.Element("EmailHostPassword").Value;
 
-
+                BoothID = Guid.Parse(actualSettings.Root.Element("BoothID").Value);
             }
             catch (XmlException e)
             {

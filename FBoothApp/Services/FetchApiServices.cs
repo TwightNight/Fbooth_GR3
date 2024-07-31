@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -15,6 +16,7 @@ namespace FBoothApp.Services
     public class FetchApiServices
     {
         private readonly HttpClient _httpClient;
+        private readonly string _apiBaseUrl;
         private readonly string _layoutsFolderPath;
         private readonly string _backgroundsFolderPath;
         private readonly string _stickersFolderPath;
@@ -26,8 +28,10 @@ namespace FBoothApp.Services
         public FetchApiServices()
         {
             _httpClient = new HttpClient();
-            _initialLoadTask = _httpClient.GetStringAsync("https://localhost:7156/api/layout");
-            _initialStickerLoadTask = _httpClient.GetStringAsync("https://localhost:7156/api/sticker");
+            _apiBaseUrl = "https://localhost:7156/api";
+            _initialLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/layout");
+            _initialStickerLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/sticker");
+
 
             _layoutsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Layouts");
             _backgroundsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Backgrounds");
@@ -219,7 +223,7 @@ namespace FBoothApp.Services
             {
                 var encoder = GetEncoder(ImageFormat.Png);
                 var encoderParameters = new EncoderParameters(1);
-                encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
+                encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L);
 
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
@@ -239,5 +243,33 @@ namespace FBoothApp.Services
             var fileInfo = new FileInfo(filePath);
             return lastModified.HasValue && fileInfo.LastWriteTime < lastModified.Value;
         }
+
+        public async Task<BookingResponse> CheckinAsync(CheckinRequest request)
+        {
+            var jsonRequest = JsonConvert.SerializeObject(request);
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/booking/checkin-booking", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Đọc thông báo lỗi từ phản hồi của API
+                var errorResponse = await response.Content.ReadAsStringAsync();
+
+                // Giải mã chuỗi JSON để chỉ lấy phần thông báo lỗi
+                var errorObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
+                if (errorObject != null && errorObject.TryGetValue("message", out var errorMessage))
+                {
+                    throw new Exception(errorMessage);
+                }
+
+                // Nếu không có trường "message", ném lỗi chung chung
+                throw new Exception("An unknown error occurred.");
+            }
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<BookingResponse>(jsonResponse);
+        }
+
     }
 }

@@ -15,21 +15,16 @@ using System.Windows.Shapes;
 namespace FBoothApp
 {
     /// <summary>
-    /// Interaction logic for RepeatPhotoDialog.xaml
+    /// Interaction logic for CustomMessageBox.xaml
     /// </summary>
-    public partial class RepeatPhotoDialog : Window
+    public partial class CustomMessageBox : Window
     {
-        public RepeatPhotoDialog()
+        public CustomMessageBox(string message)
         {
             InitializeComponent();
+            MessageText.Text = message;
         }
-
-        private void RepeatPhotoButtonOK_OnClick(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-        }
-
-        private void RepeatPhotoButtonCancel_OnClick(object sender, RoutedEventArgs e)
+        private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }

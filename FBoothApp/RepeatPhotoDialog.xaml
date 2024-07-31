@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:FBoothApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="RepeatPhotoDialog"
-    Width="300"
+    Width="350"
     Height="150"
     AllowsTransparency="True"
     Background="Transparent"
@@ -17,7 +17,7 @@
         Background="#FFF"
         BorderBrush="#333"
         BorderThickness="2"
-        CornerRadius="10">
+        CornerRadius="15">
         <Grid Margin="15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -27,7 +27,6 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
-
             </Grid.RowDefinitions>
 
             <Label
@@ -48,31 +47,101 @@
                 Grid.ColumnSpan="2"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
-                <Button
-                    Name="RepeatPhotoButtonOK"
-                    MinWidth="100"
-                    MinHeight="50"
-                    Margin="0,0,50,0"
+                <Border
+                    Padding="0"
                     Background="#4CAF50"
-                    BorderBrush="#388E3C"
-                    BorderThickness="2"
-                    Click="RepeatPhotoButtonOK_OnClick"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    IsDefault="True">
-                    _Ok
-                </Button>
-                <Button
-                    MinWidth="100"
-                    MinHeight="50"
+                    CornerRadius="5">
+                    <Button
+                        Name="RepeatPhotoButtonOK"
+                        Width="80"
+                        Height="30"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Click="RepeatPhotoButtonOK_OnClick"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Content="OK">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                CornerRadius="5">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#4CAF50" />
+                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#4CAF50" />
+                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Border>
+
+                <Border
+                    Padding="0"
                     Background="#F44336"
-                    BorderBrush="#D32F2F"
-                    BorderThickness="2"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    IsCancel="True">
-                    _Cancel
-                </Button>
+                    CornerRadius="5"
+                    Margin="10,0,0,0">
+                    <Button
+                        Width="80"
+                        Height="30"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Click="RepeatPhotoButtonCancel_OnClick"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Content="Cancel">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                CornerRadius="5">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F44336" />
+                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#F44336" />
+                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Border>
             </WrapPanel>
         </Grid>
     </Border>

@@ -90,8 +90,14 @@
     <Compile Include="Classes\GetImageThumbnail.cs" />
     <Compile Include="Classes\BackGroundProcess.cs" />
     <Compile Include="Classes\ResizeAdorner.cs" />
+    <Compile Include="CustomMessageBox.xaml.cs">
+      <DependentUpon>CustomMessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Entity\AppSettings.cs" />
     <Compile Include="Entity\Background.cs" />
+    <Compile Include="Entity\BookingResponse.cs" />
+    <Compile Include="Entity\BookingServiceResponse.cs" />
+    <Compile Include="Entity\CheckinRequest.cs" />
     <Compile Include="Entity\Layout.cs" />
     <Compile Include="Entity\PhotoBox.cs" />
     <Compile Include="Entity\Sticker.cs" />
@@ -114,6 +120,10 @@
       <DependentUpon>RepeatPhotoDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\FetchApiServices.cs" />
+    <Page Include="CustomMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -206,6 +216,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\warning.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

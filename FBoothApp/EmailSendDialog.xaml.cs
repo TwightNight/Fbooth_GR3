@@ -75,5 +75,10 @@ namespace FBoothApp
         {
             get { return textBoxEmailAnswer.Text; }
         }
+
+        private void ButtonCancel_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }
