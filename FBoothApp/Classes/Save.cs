@@ -16,11 +16,14 @@ namespace FBoothApp
         public string FolderDirectory { get; set; }
         public string PhotoName { get; set; }
         public string PhotoDirectory { get; set; }
+        public Guid BookingID { get; set; }
 
 
-        public SavePhoto(int numb)
+
+        public SavePhoto(int numb, Guid bookingID)
         {
             PhotoNumber = numb;
+            BookingID = bookingID;
             FolderDirectory = CurrentSessionDirectory();
             PhotoName = ActualPhotoName();
             PhotoDirectory = NewPhotoDirectory();
@@ -38,16 +41,14 @@ namespace FBoothApp
                 string p1 = Environment.CurrentDirectory;
                 string p2 = Actual.DateNow();
                 string sessionFolder = $"Session_{DateTime.Now.ToString("HH_mm")}";
-                var path = Path.Combine(p1, p2, sessionFolder);
+                var path = Path.Combine(p1, p2, BookingID.ToString(), sessionFolder);
 
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
-
                 CurrentSessionPath = path;
             }
-
             return CurrentSessionPath;
         }
 
@@ -92,18 +93,17 @@ namespace FBoothApp
     {
         public int PrintNumber { get; set; }
         public string PrintsFolderDirectory { get; set; }
-
         public string PrintName { get; set; }
-
         public string PrintDirectory { get; set; }
+        public Guid BookingID { get; set; }
 
-        public SavePrints(int numb)
+        public SavePrints(int numb, Guid bookingID)
         {
             PrintNumber = numb;
             PrintsFolderDirectory = CurrentPrintsDirectory();
             PrintName = ActualPrintName();
             PrintDirectory = NewPrintDirectory();
-
+            BookingID = bookingID;
         }
         public bool checkIfExsit(string fileName)
         {
@@ -114,7 +114,7 @@ namespace FBoothApp
         //chon folder de in
         public string CurrentPrintsDirectory()
         {
-            string sessionFolder = new SavePhoto(PrintNumber).CurrentSessionDirectory();
+            string sessionFolder = new SavePhoto(PrintNumber, BookingID).CurrentSessionDirectory();
             string printsFolder = Path.Combine(sessionFolder, "prints");
 
             if (!Directory.Exists(printsFolder))

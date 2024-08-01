@@ -25,7 +25,7 @@ namespace FBoothApp.Classes
         private XDocument settings = new XDocument();
         private string currentDirectory = Environment.CurrentDirectory;
 
-        public async void SendEmail(int photoNumber, int numberOfPhotosToSendViaEmail, string emailClientAddress, string printedPhotoPath)
+        public async void SendEmail(int photoNumber, int numberOfPhotosToSendViaEmail, string emailClientAddress, string printedPhotoPath, Guid BookingID)
         {
             try
             {
@@ -79,11 +79,11 @@ namespace FBoothApp.Classes
                 sbBody.AppendLine("<p>Thank you for using our photo booth! Here are your photos:</p>");
 
                 // Embed images
-                var instance = new SavePhoto(photoNumber);
+                var instance = new SavePhoto(photoNumber, BookingID);
                 for (int i = 0; i < numberOfPhotosToSendViaEmail; i++)
                 {
                     photoNumber = (instance.PhotoNumberJustTaken() - i);
-                    var save = new SavePhoto(photoNumber);
+                    var save = new SavePhoto(photoNumber, BookingID);
                     string photoName = save.PhotoNaming(photoNumber);
                     string photoDirectoryPath = Path.Combine(save.FolderDirectory, photoName);
 

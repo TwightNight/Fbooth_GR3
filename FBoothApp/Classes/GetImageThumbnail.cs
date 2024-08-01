@@ -20,16 +20,16 @@ namespace FBoothApp.Classes
 {
     class GetImageThumbnail
     {
-        public string GetThumbnailPathForIndex(int photoNumber)
+        public string GetThumbnailPathForIndex(int photoNumber, Guid BookingID)
         {
-            var save = new SavePhoto(photoNumber);
+            var save = new SavePhoto(photoNumber, BookingID);
             string photoName = save.PhotoNaming(photoNumber);
             return Path.Combine(save.FolderDirectory, photoName);
         }
 
-        public string GetLatestThumbnailPath()
+        public string GetLatestThumbnailPath(Guid BookingID)
         {
-            var save = new SavePhoto(1);
+            var save = new SavePhoto(1, BookingID);
             int latestPhotoNumber = save.PhotoNumberJustTaken();
             string latestPhotoName = save.PhotoNaming(latestPhotoNumber);
             return Path.Combine(save.FolderDirectory, latestPhotoName);

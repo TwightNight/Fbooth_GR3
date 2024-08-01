@@ -28,6 +28,7 @@ using Brushes = System.Drawing.Brushes;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
+using System.Windows.Threading;
 
 
 namespace FBoothApp
@@ -203,7 +204,7 @@ namespace FBoothApp
                     {
                         await Task.Run(() =>
                         {
-                            var printdata = new SavePrints(printNumber);
+                            var printdata = new SavePrints(printNumber, BookingID);
                             printPath = printdata.PrintDirectory;
                             LayoutProcess.ProcessLayout(currentLayout, printPath);
                             printNumber++;
@@ -521,7 +522,7 @@ namespace FBoothApp
             try
             {
                 photoNumber++;
-                var savedata = new SavePhoto(photoNumber);
+                var savedata = new SavePhoto(photoNumber, BookingID);
                 string dir = savedata.FolderDirectory;
 
                 Info.FileName = savedata.PhotoName;
@@ -676,6 +677,8 @@ namespace FBoothApp
 
         #region Layout_Menu
 
+        private Guid BoothID;
+        private Guid BookingID;
         private async void SendButton_Click(object sender, RoutedEventArgs e)
         {
             SendButton.IsEnabled = false;
@@ -695,12 +698,23 @@ namespace FBoothApp
 
                 var response = await _apiServices.CheckinAsync(request);
 
+                var bookingIDresponse = response.BookingID;
+                BookingID = bookingIDresponse;
+
                 // Handle the response (e.g., show a message, update the UI)
-                var successMessageBox = new CustomMessageBox("Check-in successful!");
+                // Tính toán tổng thời gian thuê và thời gian kết thúc
+                var rentalDuration = response.EndTime - response.StartTime;
+                var checkinTime = DateTime.Now;
+                var formattedDuration = $"{rentalDuration.Hours} hours and {rentalDuration.Minutes} minutes";
+                var endTimeFormatted = response.EndTime.ToString("HH:mm");
+
+                // Hiển thị thông báo thành công
+                var successMessageBox = new CustomMessageBox($"Check-in successful at: {checkinTime}!\nTotal rental time: {formattedDuration}\nRental time ends at: {endTimeFormatted}");
                 successMessageBox.ShowDialog();
 
                 // Process the response (e.g., show booking details)
-                //ProcessBookingResponse(response);
+                sessionEndTime = response.EndTime;
+                StartEndTimeCheck();
 
                 // Turn on layout menu after successful check-in
                 TurnOnLayoutMenu();
@@ -737,6 +751,45 @@ namespace FBoothApp
         {
             LoadingRotateTransform.BeginAnimation(RotateTransform.AngleProperty, null);
         }
+
+        private DispatcherTimer checkEndTimeTimer;
+        private DateTime sessionEndTime;
+
+        private void StartEndTimeCheck()
+        {
+            if (checkEndTimeTimer == null)
+            {
+                checkEndTimeTimer = new DispatcherTimer();
+                checkEndTimeTimer.Interval = TimeSpan.FromSeconds(10); // Check every 30 seconds
+                checkEndTimeTimer.Tick += CheckEndTimeTimer_Tick;
+            }
+            checkEndTimeTimer.Start();
+        }
+
+        private void CheckEndTimeTimer_Tick(object sender, EventArgs e)
+        {
+            if (DateTime.Now >= sessionEndTime)
+            {
+                checkEndTimeTimer.Stop();
+                var endMessageBox = new CustomMessageBox("Your session has ended. The application will now close.");
+                endMessageBox.ShowDialog();
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void HideAllElementsRecursive(DependencyObject parent)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i) as UIElement;
+                if (child != null)
+                {
+                    child.Visibility = Visibility.Collapsed;
+                    HideAllElementsRecursive(child);
+                }
+            }
+        }
+
 
         public void TurnOnLayoutMenu()
         {
@@ -1087,7 +1140,7 @@ namespace FBoothApp
             // Tạo các nút hình thu nhỏ dựa trên số lượng ảnh đã chụp
             for (int i = 1; i <= photosInTemplate; i++)
             {
-                string thumbnailPath = getImageThumbnail.GetThumbnailPathForIndex(i);
+                string thumbnailPath = getImageThumbnail.GetThumbnailPathForIndex(i, BookingID);
 
                 Button thumbnailButton = new Button
                 {
@@ -1172,7 +1225,7 @@ namespace FBoothApp
         public void UpdatePhotoAfterRetake()
         {
             var getImageThumbnail = new GetImageThumbnail();
-            string newThumbnailPath = getImageThumbnail.GetLatestThumbnailPath();
+            string newThumbnailPath = getImageThumbnail.GetLatestThumbnailPath(BookingID);
 
             // Cập nhật nút ảnh thu nhỏ tương ứng
             foreach (Button btn in ThumbnailDockPanel.Children)
@@ -1232,7 +1285,7 @@ namespace FBoothApp
             encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
             // Tạo đối tượng SavePrints để lấy đường dẫn lưu ảnh
-            var savePrints = new SavePrints(printNumber);
+            var savePrints = new SavePrints(printNumber, BookingID);
             string filePath = savePrints.PrintDirectory;
 
             // Tăng số thứ tự của ảnh in để lần lưu tiếp theo không bị trùng tên
@@ -1287,6 +1340,13 @@ namespace FBoothApp
 
 
         //cho nay hien anh de in
+        private void PhotoLibraryMenu()
+        {
+            StickerWrapPanel.Visibility = Visibility.Hidden;
+            NextButtonPrinting.Visibility = Visibility.Hidden;
+
+        }
+
         private void PrintMenu()
         {
             StickerWrapPanel.Visibility = Visibility.Hidden;
@@ -1364,7 +1424,7 @@ namespace FBoothApp
 
 
         //doc file cau hinh
-        private Guid BoothID;
+        
         private void FillSavedData()
         {
             string firstprinter;
@@ -1489,7 +1549,7 @@ namespace FBoothApp
             {
                 Debug.WriteLine("inputemailsend is ok, answer is :" + inputEmailSendDialog.Answer);
                 EmailSender emailSender = new EmailSender();
-                emailSender.SendEmail(photoNumber, layout.PhotoSlot, inputEmailSendDialog.Answer, printPath);
+                emailSender.SendEmail(photoNumber, layout.PhotoSlot, inputEmailSendDialog.Answer, printPath, BookingID);
 
             }
         }
