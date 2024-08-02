@@ -129,11 +129,11 @@
         </Storyboard>
 
         <Storyboard x:Key="ImageTransitionStoryboard">
-            <DoubleAnimation
+            <!--<DoubleAnimation
                 Storyboard.TargetProperty="Opacity"
                 From="0"
                 To="1"
-                Duration="0:0:1" />
+                Duration="0:0:1" />-->
         </Storyboard>
 
         <Style x:Key="NoHighlightButtonStyle" TargetType="Button">
@@ -181,6 +181,251 @@
         </Grid.ColumnDefinitions>
 
         <ListBox x:Name="CameraListBox" Visibility="Hidden" />
+
+
+        <StackPanel
+            Name="HomeText"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="60"
+            VerticalAlignment="Center">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="100" Height="100">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="backgrounds/logo.jpg" Stretch="UniformToFill" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock
+                        Margin="20,0,0,0"
+                        VerticalAlignment="Center"
+                        FontFamily="Fonts/#Dosis"
+                        FontSize="70"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Text="FBooth">
+                        <TextBlock.Effect>
+                            <DropShadowEffect
+                                BlurRadius="10"
+                                ShadowDepth="4"
+                                Color="Gray" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </StackPanel>
+
+                <TextBlock
+                    FontFamily="Fonts/#Dosis"
+                    FontSize="80"
+                    FontWeight="Medium"
+                    Foreground="White"
+                    Text="Capture">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="10"
+                            ShadowDepth="2"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+
+                <TextBlock
+                    FontFamily="Fonts/#Dosis"
+                    FontSize="80"
+                    FontWeight="Medium"
+                    Foreground="White"
+                    Text="Your">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="10"
+                            ShadowDepth="2"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+
+                <TextBlock
+                    FontFamily="Fonts/#Dosis"
+                    FontSize="80"
+                    FontWeight="Medium"
+                    Foreground="White"
+                    Text="Moments">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="10"
+                            ShadowDepth="2"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+
+                <TextBlock
+                    Margin="0,20,0,0"
+                    FontFamily="Fonts/#Dosis"
+                    FontSize="30"
+                    FontWeight="Medium"
+                    Foreground="White"
+                    Text="Step into our photo booth and create lasting memories with friends and family. Our state-of-the-art technology ensures high-quality prints and a fun experience for everyone."
+                    TextWrapping="Wrap">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="10"
+                            ShadowDepth="2"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+            </StackPanel>
+
+            <Grid x:Name="InputGrid">
+                <StackPanel Margin="0,30,0,0" Orientation="Horizontal">
+                    <Border
+                        Padding="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Background="White"
+                        CornerRadius="15">
+                        <Grid>
+                            <TextBox
+                                x:Name="RoundedTextBox"
+                                Width="822"
+                                Padding="10"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontSize="30"
+                                FontStyle="Italic"
+                                Foreground="Gray"
+                                GotFocus="RoundedTextBox_GotFocus"
+                                LostFocus="RoundedTextBox_LostFocus"
+                                Text="Enter your code here!"
+                                TextChanged="RoundedTextBox_TextChanged" />
+                            <Button
+                                x:Name="SendButton"
+                                Width="50"
+                                Height="50"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="SendButton_Click"
+                                IsEnabled="False"
+                                Style="{StaticResource NoHighlightButtonStyle}">
+                                <Image
+                                    Width="35"
+                                    Height="35"
+                                    Source="backgrounds/send.png">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsEnabled, ElementName=SendButton}" Value="True">
+                                                    <Setter Property="Opacity" Value="1.0" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Button>
+                            <Border
+                                x:Name="LoadingProgressBarContainer"
+                                Width="50"
+                                Height="50"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Visibility="Collapsed">
+                                <Grid>
+                                    <Ellipse
+                                        Width="50"
+                                        Height="50"
+                                        Fill="Transparent"
+                                        Opacity="0.5"
+                                        Stroke="#FFFFFF"
+                                        StrokeThickness="5" />
+                                    <Ellipse
+                                        Width="50"
+                                        Height="50"
+                                        Fill="Transparent"
+                                        Stroke="#61F2F5"
+                                        StrokeDashArray="25,75"
+                                        StrokeDashCap="Round"
+                                        StrokeThickness="5">
+                                        <Ellipse.RenderTransform>
+                                            <RotateTransform x:Name="LoadingRotateTransform" CenterX="25" CenterY="25" />
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+
+        <Grid
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="2"
+            Grid.ColumnSpan="4"
+            Margin="160,-365,-610,85"
+            Panel.ZIndex="-1">
+            <Grid.RenderTransform>
+                <RotateTransform Angle="50" />
+            </Grid.RenderTransform>
+
+            <StackPanel Margin="-350,250,-255,-250" Orientation="Horizontal">
+
+                <StackPanel>
+                    <Border
+                        Width="1000"
+                        Height="70"
+                        Margin="150,0,0,0"
+                        Background="#19A7CE"
+                        CornerRadius="40" />
+
+                    <Border
+                        Width="1000"
+                        Height="70"
+                        Margin="0,15,0,0"
+                        Background="#146C94"
+                        CornerRadius="40" />
+
+                    <Border
+                        Width="1000"
+                        Height="70"
+                        Margin="75,15,0,0"
+                        Background="#000000"
+                        CornerRadius="40" />
+                </StackPanel>
+
+                <StackPanel>
+                    <Border
+                        Width="1000"
+                        Height="70"
+                        Margin="150,0,0,0"
+                        Background="#19A7CE"
+                        CornerRadius="40" />
+
+                    <Border
+                        Width="1000"
+                        Height="70"
+                        Margin="0,15,0,0"
+                        Background="#146C94"
+                        CornerRadius="40" />
+
+                    <Border
+                        Width="1000"
+                        Height="70"
+                        Margin="75,15,0,0"
+                        Background="#000000"
+                        CornerRadius="40" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+
+
+
 
         <ContentControl
             x:Name="contentFrame"
@@ -245,22 +490,30 @@
         <Border
             x:Name="SliderBorder"
             Grid.Row="1"
-            Grid.RowSpan="2"
             Grid.Column="1"
-            Grid.ColumnSpan="2"
+            Margin="138,30,138,30"
             BorderBrush="AliceBlue"
-            BorderThickness="0">
-            <Canvas
-                x:Name="Slider"
-                Grid.Row="1"
-                Grid.RowSpan="2"
-                Grid.Column="1"
-                Grid.ColumnSpan="2">
-                <Canvas.Background>
-                    <ImageBrush ImageSource="backgrounds/logo.png" Stretch="Uniform" />
-                </Canvas.Background>
+            BorderThickness="0"
+            CornerRadius="30"
+            Visibility="Visible">
+            <Canvas x:Name="Slider">
+                <Border
+                    x:Name="ImageBorder"
+                    Canvas.Left="-40"
+                    Canvas.Top="10"
+                    Width="380"
+                    Height="380"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    ClipToBounds="True"
+                    CornerRadius="30">
+                    <Border.Background>
+                        <ImageBrush ImageSource="backgrounds/logo.jpg" Stretch="UniformToFill" />
+                    </Border.Background>
+                </Border>
             </Canvas>
         </Border>
+
 
         <!--<Button
             x:Name="StopButton"
@@ -364,9 +617,7 @@
             FontSize="30"
             FontWeight="Bold"
             Foreground="Black"
-            Text="Welcome to FBooth! Please enter your code to continute and enjoy the experience!"
-            TextWrapping="Wrap"
-            Visibility="Visible" />
+            TextWrapping="Wrap" />
 
         <Image
             x:Name="ShowPictureInlayout"
@@ -467,7 +718,7 @@
         </Button>
 
 
-        <Grid
+        <!--<Grid
             x:Name="InputGrid"
             Grid.Row="4"
             Grid.Column="1"
@@ -481,7 +732,7 @@
                 CornerRadius="15">
                 <Grid>
                     <TextBox
-                        x:Name="RoundedTextBox"
+                        x:Name="RoundedTextBoxs"
                         Width="1143"
                         Padding="10"
                         HorizontalAlignment="Left"
@@ -496,7 +747,7 @@
                         Text="Enter your code here!"
                         TextChanged="RoundedTextBox_TextChanged" />
                     <Button
-                        x:Name="SendButton"
+                        x:Name="SendButtons"
                         Width="50"
                         Height="50"
                         HorizontalAlignment="Right"
@@ -523,7 +774,7 @@
                         </Image>
                     </Button>
                     <Border
-                        x:Name="LoadingProgressBarContainer"
+                        x:Name="LoadingProgressBarContainers"
                         Width="50"
                         Height="50"
                         HorizontalAlignment="Right"
@@ -548,14 +799,14 @@
                                 StrokeDashCap="Round"
                                 StrokeThickness="5">
                                 <Ellipse.RenderTransform>
-                                    <RotateTransform x:Name="LoadingRotateTransform" CenterX="25" CenterY="25" />
+                                    <RotateTransform x:Name="LoadingRotateTransforms" CenterX="25" CenterY="25" />
                                 </Ellipse.RenderTransform>
                             </Ellipse>
                         </Grid>
                     </Border>
                 </Grid>
             </Border>
-        </Grid>
+        </Grid>-->
 
 
         <!--  chỗ load background  -->
@@ -799,6 +1050,55 @@
                 Foreground="White"
                 Text="Processing, please wait..." />
         </Grid>
+
+
+        <Grid
+            x:Name="BookingPhotoThumbnailGrid"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="5"
+            Margin="20"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="#AAFFFFFF"
+            Visibility="Hidden">
+            <Border
+                Padding="10"
+                Background="White"
+                BorderBrush="#CCCCCC"
+                BorderThickness="1"
+                CornerRadius="15">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Text="Photo Library" />
+                    <ScrollViewer
+                        Grid.Row="1"
+                        Margin="10"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto">
+                        <UniformGrid
+                            x:Name="BookingPhotoThumbnailWrapPanel"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Columns="3" />
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+
+
 
     </Grid>
 </Window>

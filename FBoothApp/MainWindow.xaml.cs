@@ -464,17 +464,15 @@ namespace FBoothApp
 
             ImageBrush slide = new ImageBrush();
             slide.ImageSource = new BitmapImage(new Uri(sliderData.imagePath));
-            slide.Stretch = Stretch.Uniform; // Nếu muốn sử dụng Stretch
+            slide.Stretch = Stretch.UniformToFill;
 
-            // Tạo hiệu ứng mờ dần
-            Slider.BeginAnimation(OpacityProperty, null); // Hủy bỏ bất kỳ hiệu ứng nào trước đó
-            Slider.Opacity = 0; // Đặt độ mờ ban đầu thành 0
-            Slider.Background = slide;
+            // Apply the ImageBrush to the nested Border's background
+            ImageBorder.Background = slide;
 
             var storyboard = (Storyboard)FindResource("ImageTransitionStoryboard");
             storyboard.Begin(Slider);
-
         }
+
 
 
         #endregion
@@ -1251,7 +1249,9 @@ namespace FBoothApp
         {
             RenderStickersOnImage();
             SaveFinalImage();
-            PrintMenu();
+            //PrintMenu();
+
+            PhotoBookingLibraryMenu();
 
             HideStickers();
         }
@@ -1340,11 +1340,137 @@ namespace FBoothApp
 
 
         //cho nay hien anh de in
-        private void PhotoLibraryMenu()
+        private void PhotoBookingLibraryMenu()
         {
             StickerWrapPanel.Visibility = Visibility.Hidden;
             NextButtonPrinting.Visibility = Visibility.Hidden;
+            ShowPrint.Visibility = Visibility.Hidden;
 
+            ShowBookingPhotoThumbnail(BookingID);
+
+
+        }
+
+        public void ShowBookingPhotoThumbnail(Guid bookingID)
+        {
+            // Xóa các nút hiện tại trong WrapPanel
+            BookingPhotoThumbnailWrapPanel.Children.Clear();
+
+            // Đường dẫn tới thư mục gốc của booking cụ thể
+            string bookingFolderPath = Path.Combine(Environment.CurrentDirectory, Actual.DateNow(), bookingID.ToString());
+
+            // Kiểm tra xem thư mục có tồn tại không
+            if (!Directory.Exists(bookingFolderPath))
+            {
+                MessageBox.Show("No photos found for this booking.");
+                return;
+            }
+
+            // Lấy tất cả các thư mục session
+            string[] sessionFolders = Directory.GetDirectories(bookingFolderPath, "Session_*");
+
+            // Lấy ảnh có số thứ tự lớn nhất từ thư mục "prints" của các session
+            List<string> photoFiles = new List<string>();
+            foreach (var sessionFolder in sessionFolders)
+            {
+                string printsFolderPath = Path.Combine(sessionFolder, "prints");
+                if (Directory.Exists(printsFolderPath))
+                {
+                    var files = Directory.GetFiles(printsFolderPath, "*.jpg");
+                    if (files.Length > 0)
+                    {
+                        var maxFile = files.OrderByDescending(f => int.Parse(Path.GetFileNameWithoutExtension(f).Split('_')[1])).FirstOrDefault();
+                        photoFiles.Add(maxFile);
+                    }
+                }
+            }
+
+            if (photoFiles.Count == 0)
+            {
+                MessageBox.Show("No photos found for this booking.");
+                return;
+            }
+
+            // Duyệt qua từng file ảnh và tạo nút hình thu nhỏ
+            foreach (var photoFile in photoFiles)
+            {
+                // Tạo Image cho ảnh
+                Image thumbnailImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(photoFile)),
+                    Stretch = Stretch.Uniform,
+                    Margin = new Thickness(5), // Đảm bảo không có viền trắng
+                    SnapsToDevicePixels = true,
+                    Width = 200, // Đặt kích thước phù hợp
+                    Height = 200
+                };
+
+                // Tạo Image cho dấu tick
+                Image tickImage = new Image
+                {
+                    Source = new BitmapImage(new Uri("pack://application:,,,/backgrounds/check.png")),
+                    Width = 30,
+                    Height = 30,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Visibility = Visibility.Hidden // Initially hidden
+                };
+
+                // Tạo Grid để chứa cả thumbnailImage và tickImage
+                Grid grid = new Grid();
+                grid.Children.Add(thumbnailImage);
+                grid.Children.Add(tickImage);
+
+                // Tạo Border cho Grid
+                Border border = new Border
+                {
+                    Child = grid,
+                    BorderBrush = System.Windows.Media.Brushes.Transparent,
+                    BorderThickness = new Thickness(0),
+                    Margin = new Thickness(5),
+                    Tag = photoFile // Lưu đường dẫn file ảnh trong thuộc tính Tag
+                };
+
+                // Thêm sự kiện click cho Border
+                border.MouseLeftButtonDown += ThumbnailBooking_Click;
+
+                BookingPhotoThumbnailWrapPanel.Children.Add(border);
+            }
+
+            // Hiển thị BookingPhotoThumbnailGrid
+            BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
+        }
+
+        private void ThumbnailBooking_Click(object sender, MouseButtonEventArgs e)
+        {
+            var clickedBorder = sender as Border;
+            if (clickedBorder != null)
+            {
+                var parentGrid = clickedBorder.Child as Grid;
+                var tickImage = parentGrid?.Children.OfType<Image>().FirstOrDefault(img => img.Source.ToString().Contains("check.png"));
+
+                if (tickImage != null)
+                {
+                    // Nếu ảnh đã được chọn, bỏ chọn
+                    if (tickImage.Visibility == Visibility.Visible)
+                    {
+                        tickImage.Visibility = Visibility.Hidden;
+                        clickedBorder.BorderBrush = System.Windows.Media.Brushes.Transparent;
+                    }
+                    else
+                    {
+                        // Nếu ảnh chưa được chọn, chọn ảnh
+                        tickImage.Visibility = Visibility.Visible;
+                        clickedBorder.BorderBrush = System.Windows.Media.Brushes.Green;
+                    }
+                }
+            }
+        }
+
+        private void HideBookingPhotoThumbnailGrid()
+        {
+            BookingPhotoThumbnailGrid.Visibility = Visibility.Hidden;
+            BookingPhotoThumbnailWrapPanel.Children.Clear();
         }
 
         private void PrintMenu()
