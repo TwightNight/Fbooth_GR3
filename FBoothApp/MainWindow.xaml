@@ -193,7 +193,7 @@
     </Window.Resources>
 
     <Window.Background>
-        <ImageBrush ImageSource="backgrounds/background_2.jpg" />
+        <ImageBrush ImageSource="pack://application:,,,/backgrounds/background_2.jpg" />
     </Window.Background>
 
     <Grid x:Name="MainGrid">
@@ -213,7 +213,6 @@
 
         <ListBox x:Name="CameraListBox" Visibility="Hidden" />
 
-
         <StackPanel
             Name="HomeText"
             Grid.Row="0"
@@ -222,17 +221,43 @@
             Grid.ColumnSpan="2"
             Margin="30"
             VerticalAlignment="Center">
+
+            <!--  Move SliderBorder to the top of HomeText StackPanel  -->
+            <Border
+                x:Name="SliderBorder"
+                BorderBrush="AliceBlue"
+                BorderThickness="0"
+                CornerRadius="30"
+                Visibility="Visible">
+                <Canvas x:Name="Slider">
+                    <Border
+                        x:Name="ImageBorder"
+                        Canvas.Top="-18"
+                        Canvas.Right="-20"
+                        Width="310"
+                        Height="310"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        ClipToBounds="True"
+                        CornerRadius="30">
+                        <Border.Background>
+                            <ImageBrush ImageSource="pack://application:,,,/backgrounds/logo.jpg" Stretch="UniformToFill" />
+                        </Border.Background>
+                    </Border>
+                </Canvas>
+            </Border>
+
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Ellipse Width="100" Height="100">
                         <Ellipse.Fill>
-                            <ImageBrush ImageSource="backgrounds/logo.jpg" Stretch="UniformToFill" />
+                            <ImageBrush ImageSource="pack://application:,,,/backgrounds/logo.jpg" Stretch="UniformToFill" />
                         </Ellipse.Fill>
                     </Ellipse>
                     <TextBlock
                         Margin="30,0,0,0"
                         VerticalAlignment="Center"
-                        FontFamily="Fonts/#Dosis"
+                        FontFamily="pack://application:,,,/Fonts/#Dosis"
                         FontSize="70"
                         FontWeight="Bold"
                         Foreground="Black"
@@ -248,7 +273,7 @@
 
                 <TextBlock
                     Margin="0,10,0,0"
-                    FontFamily="Fonts/#Dosis"
+                    FontFamily="pack://application:,,,/Fonts/#Dosis"
                     FontSize="80"
                     FontWeight="Medium"
                     Foreground="White"
@@ -262,7 +287,7 @@
                 </TextBlock>
 
                 <TextBlock
-                    FontFamily="Fonts/#Dosis"
+                    FontFamily="pack://application:,,,/Fonts/#Dosis"
                     FontSize="80"
                     FontWeight="Medium"
                     Foreground="White"
@@ -276,7 +301,7 @@
                 </TextBlock>
 
                 <TextBlock
-                    FontFamily="Fonts/#Dosis"
+                    FontFamily="pack://application:,,,/Fonts/#Dosis"
                     FontSize="80"
                     FontWeight="Medium"
                     Foreground="White"
@@ -291,7 +316,7 @@
 
                 <TextBlock
                     Margin="0,20,0,0"
-                    FontFamily="Fonts/#Dosis"
+                    FontFamily="pack://application:,,,/Fonts/#Dosis"
                     FontSize="26"
                     FontWeight="Bold"
                     Foreground="Black"
@@ -313,11 +338,11 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Background="White"
-                        CornerRadius="15">
+                        CornerRadius="20">
                         <Grid>
                             <TextBox
                                 x:Name="RoundedTextBox"
-                                Width="690"
+                                Width="700"
                                 Padding="10"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
@@ -344,7 +369,7 @@
                                 <Image
                                     Width="35"
                                     Height="35"
-                                    Source="backgrounds/send.png">
+                                    Source="pack://application:,,,/backgrounds/send.png">
                                     <Image.Style>
                                         <Style TargetType="Image">
                                             <Setter Property="Opacity" Value="0.5" />
@@ -393,6 +418,7 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
+
 
         <Grid
             x:Name="BorderPanel"
@@ -456,10 +482,6 @@
             </StackPanel>
         </Grid>
 
-
-
-
-
         <ContentControl
             x:Name="contentFrame"
             Grid.Row="0"
@@ -467,7 +489,8 @@
             Grid.Column="0"
             Grid.ColumnSpan="4"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
+            VerticalAlignment="Stretch"
+            Visibility="Collapsed" />
 
         <Button
             x:Name="StartButton"
@@ -479,7 +502,7 @@
             BorderThickness="0"
             Click="StartButton_Click"
             Visibility="Collapsed">
-            <Image Source="backgrounds/StartButton.png" />
+            <Image Source="pack://application:,,,/backgrounds/StartButton.png" />
         </Button>
 
         <!--<Button
@@ -492,7 +515,7 @@
             BorderThickness="0"
             Click="StartButtonMenu_Click"
             Visibility="Hidden">
-            <Image Source="backgrounds/StartButton.png" />
+            <Image Source="pack://application:,,,/backgrounds/StartButton.png" />
         </Button>-->
 
         <Image
@@ -504,7 +527,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Stretch="UniformToFill"
-            Visibility="Visible" />
+            Visibility="Collapsed" />
 
         <!--  kẻ lưới trong tấm ảnh chụp  -->
         <Canvas
@@ -519,7 +542,7 @@
             <!--  Grid lines will be added dynamically in code-behind  -->
         </Canvas>
 
-        <Border
+        <!--<Border
             x:Name="SliderBorder"
             Grid.Row="1"
             Grid.Column="1"
@@ -531,21 +554,20 @@
             <Canvas x:Name="Slider">
                 <Border
                     x:Name="ImageBorder"
-                    Canvas.Left="10"
-                    Canvas.Top="-31"
-                    Width="300"
-                    Height="300"
+                    Canvas.Left="-20"
+                    Canvas.Top="-18"
+                    Width="310"
+                    Height="310"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     ClipToBounds="True"
                     CornerRadius="30">
                     <Border.Background>
-                        <ImageBrush ImageSource="backgrounds/logo.jpg" Stretch="UniformToFill" />
+                        <ImageBrush ImageSource="pack://application:,,,/backgrounds/logo.jpg" Stretch="UniformToFill" />
                     </Border.Background>
                 </Border>
             </Canvas>
-        </Border>
-
+        </Border>-->
 
         <!--<Button
             x:Name="StopButton"
@@ -558,7 +580,7 @@
             BorderThickness="0"
             Click="StopButton_Click"
             Visibility="Hidden">
-            <Image Source="backgrounds/StopButton.png" />
+            <Image Source="pack://application:,,,/backgrounds/StopButton.png" />
         </Button>-->
 
         <Button
@@ -577,7 +599,7 @@
             <Image
                 Width="100"
                 Height="100"
-                Source="backgrounds/ReadyButton.png" />
+                Source="pack://application:,,,/backgrounds/ReadyButton.png" />
         </Button>
 
         <Button
@@ -595,7 +617,7 @@
             <Image
                 Width="70"
                 Height="70"
-                Source="backgrounds/NextButton.png" />
+                Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
 
         <Button
@@ -613,7 +635,7 @@
             <Image
                 Width="70"
                 Height="70"
-                Source="backgrounds/NextButton.png" />
+                Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
 
         <Button
@@ -631,9 +653,8 @@
             <Image
                 Width="70"
                 Height="70"
-                Source="backgrounds/NextButton.png" />
+                Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
-
 
         <TextBox
             x:Name="PhotoTextBox"
@@ -682,7 +703,6 @@
                 Background="Transparent" />
         </Grid>
 
-
         <Grid
             x:Name="LayoutTabControlGrid"
             Grid.Row="1"
@@ -729,8 +749,6 @@
             </Border>
         </Grid>
 
-
-
         <Button
             x:Name="NextButtonTakingPhoto"
             Grid.Row="3"
@@ -746,9 +764,8 @@
             <Image
                 Width="70"
                 Height="70"
-                Source="backgrounds/NextButton.png" />
+                Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
-
 
         <!--<Grid
             x:Name="InputGrid"
@@ -792,7 +809,7 @@
                         <Image
                             Width="35"
                             Height="35"
-                            Source="backgrounds/send.png">
+                            Source="pack://application:,,,/backgrounds/send.png">
                             <Image.Style>
                                 <Style TargetType="Image">
                                     <Setter Property="Opacity" Value="0.5" />
@@ -840,7 +857,6 @@
             </Border>
         </Grid>-->
 
-
         <!--  chỗ load background  -->
         <ScrollViewer
             x:Name="BackgoundScrollViewer"
@@ -857,7 +873,6 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center" />
         </ScrollViewer>
-
 
         <!--  chỗ load Sticker  -->
         <ScrollViewer
@@ -913,7 +928,7 @@
                                         <Image
                                             Width="40"
                                             Height="40"
-                                            Source="/backgrounds/gmail.png" />
+                                            Source="pack://application:,,,/backgrounds/gmail.png" />
                                         <TextBlock
                                             Margin="10,0,0,0"
                                             VerticalAlignment="Center"
@@ -935,8 +950,6 @@
                 </Style>
             </Button.Style>
         </Button>
-
-
 
         <Grid
             x:Name="PrintMenuGrid"
@@ -978,7 +991,7 @@
                                                 <Image
                                                     Width="40"
                                                     Height="40"
-                                                    Source="/backgrounds/Print.png" />
+                                                    Source="pack://application:,,,/backgrounds/Print.png" />
                                                 <TextBlock
                                                     Margin="10,0,0,0"
                                                     VerticalAlignment="Center"
@@ -1020,7 +1033,7 @@
                         <Image
                             Width="30"
                             Height="30"
-                            Source="backgrounds/plus.png" />
+                            Source="pack://application:,,,/backgrounds/plus.png" />
                     </Button>
 
                     <TextBox
@@ -1052,13 +1065,11 @@
                         <Image
                             Width="30"
                             Height="30"
-                            Source="backgrounds/minus.png" />
+                            Source="pack://application:,,,/backgrounds/minus.png" />
                     </Button>
                 </StackPanel>
             </StackPanel>
         </Grid>
-
-
 
         <DockPanel
             x:Name="ThumbnailDockPanel"
@@ -1082,7 +1093,6 @@
                 Foreground="White"
                 Text="Processing, please wait..." />
         </Grid>
-
 
         <Grid
             x:Name="BookingPhotoThumbnailGrid"
@@ -1129,11 +1139,5 @@
             </Border>
         </Grid>
 
-
-
-
     </Grid>
 </Window>
-
-
-
