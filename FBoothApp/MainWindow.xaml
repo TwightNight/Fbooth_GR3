@@ -359,7 +359,7 @@
             </TextBlock>
 
             <Border
-                Grid.Row="6"
+                Grid.Row="5"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Margin="0,30,0,0"
