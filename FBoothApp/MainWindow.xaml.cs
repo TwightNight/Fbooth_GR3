@@ -583,6 +583,8 @@ namespace FBoothApp
 
             //StartButtonMenu.Visibility = Visibility.Hidden;
             InputGrid.Visibility = Visibility.Hidden;
+            HomeText.Visibility = Visibility.Hidden;
+            BorderPanel.Visibility = Visibility.Hidden;
 
             ReadyButton.Visibility = Visibility.Visible;
             //StopButton.Visibility = Visibility.Visible;
@@ -796,6 +798,8 @@ namespace FBoothApp
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
             InputGrid.Visibility = Visibility.Hidden;
+            HomeText.Visibility = Visibility.Hidden;
+            BorderPanel.Visibility = Visibility.Hidden;
 
             //LayoutsWrapPanel.Visibility = Visibility.Visible;
             //LayoutScrollViewer.Visibility = Visibility.Visible;

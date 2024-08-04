@@ -143,21 +143,52 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Grid>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Grid>
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="MouseOverStoryboard">
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                    To="1.1"
+                                    Duration="0:0:0.1" />
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                    To="1.1"
+                                    Duration="0:0:0.1" />
+                            </Storyboard>
+                            <Storyboard x:Key="MouseLeaveStoryboard">
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                    To="1.0"
+                                    Duration="0:0:0.1" />
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                    To="1.0"
+                                    Duration="0:0:0.1" />
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource MouseOverStoryboard}" />
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource MouseLeaveStoryboard}" />
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1.0" ScaleY="1.0" />
+                </Setter.Value>
+            </Setter>
         </Style>
+
 
     </Window.Resources>
 
@@ -189,7 +220,7 @@
             Grid.RowSpan="4"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="60"
+            Margin="30"
             VerticalAlignment="Center">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
@@ -199,7 +230,7 @@
                         </Ellipse.Fill>
                     </Ellipse>
                     <TextBlock
-                        Margin="20,0,0,0"
+                        Margin="30,0,0,0"
                         VerticalAlignment="Center"
                         FontFamily="Fonts/#Dosis"
                         FontSize="70"
@@ -210,12 +241,13 @@
                             <DropShadowEffect
                                 BlurRadius="10"
                                 ShadowDepth="4"
-                                Color="Gray" />
+                                Color="White" />
                         </TextBlock.Effect>
                     </TextBlock>
                 </StackPanel>
 
                 <TextBlock
+                    Margin="0,10,0,0"
                     FontFamily="Fonts/#Dosis"
                     FontSize="80"
                     FontWeight="Medium"
@@ -260,16 +292,16 @@
                 <TextBlock
                     Margin="0,20,0,0"
                     FontFamily="Fonts/#Dosis"
-                    FontSize="30"
-                    FontWeight="Medium"
-                    Foreground="White"
-                    Text="Step into our photo booth and create lasting memories with friends and family. Our state-of-the-art technology ensures high-quality prints and a fun experience for everyone."
+                    FontSize="26"
+                    FontWeight="Bold"
+                    Foreground="Black"
+                    Text="Please enter your check-in code from the email to start your photo session."
                     TextWrapping="Wrap">
                     <TextBlock.Effect>
                         <DropShadowEffect
                             BlurRadius="10"
                             ShadowDepth="2"
-                            Color="Black" />
+                            Color="White" />
                     </TextBlock.Effect>
                 </TextBlock>
             </StackPanel>
@@ -285,7 +317,7 @@
                         <Grid>
                             <TextBox
                                 x:Name="RoundedTextBox"
-                                Width="822"
+                                Width="690"
                                 Padding="10"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
@@ -363,11 +395,12 @@
         </StackPanel>
 
         <Grid
+            x:Name="BorderPanel"
             Grid.Row="0"
-            Grid.RowSpan="4"
+            Grid.RowSpan="3"
             Grid.Column="2"
-            Grid.ColumnSpan="4"
-            Margin="160,-365,-610,85"
+            Grid.ColumnSpan="3"
+            Margin="242,-445,-692,21"
             Panel.ZIndex="-1">
             <Grid.RenderTransform>
                 <RotateTransform Angle="50" />
@@ -445,8 +478,7 @@
             Background="{x:Null}"
             BorderThickness="0"
             Click="StartButton_Click"
-            Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden">
+            Visibility="Collapsed">
             <Image Source="backgrounds/StartButton.png" />
         </Button>
 
@@ -499,11 +531,11 @@
             <Canvas x:Name="Slider">
                 <Border
                     x:Name="ImageBorder"
-                    Canvas.Left="-40"
-                    Canvas.Top="10"
-                    Width="380"
-                    Height="380"
-                    HorizontalAlignment="Center"
+                    Canvas.Left="10"
+                    Canvas.Top="-31"
+                    Width="300"
+                    Height="300"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     ClipToBounds="True"
                     CornerRadius="30">
