@@ -213,18 +213,35 @@
 
         <ListBox x:Name="CameraListBox" Visibility="Hidden" />
 
-        <StackPanel
-            Name="HomeText"
-            Grid.Row="0"
-            Grid.RowSpan="4"
+
+        <Grid
+            x:Name="HomeText"
+            Grid.Row="1"
+            Grid.RowSpan="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="30"
-            VerticalAlignment="Center">
+            Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-            <!--  Move SliderBorder to the top of HomeText StackPanel  -->
             <Border
                 x:Name="SliderBorder"
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="0,10,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
                 BorderBrush="AliceBlue"
                 BorderThickness="0"
                 CornerRadius="30"
@@ -232,12 +249,8 @@
                 <Canvas x:Name="Slider">
                     <Border
                         x:Name="ImageBorder"
-                        Canvas.Top="-18"
-                        Canvas.Right="-20"
                         Width="310"
                         Height="310"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
                         ClipToBounds="True"
                         CornerRadius="30">
                         <Border.Background>
@@ -247,177 +260,193 @@
                 </Canvas>
             </Border>
 
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Ellipse Width="100" Height="100">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="pack://application:,,,/backgrounds/logo.jpg" Stretch="UniformToFill" />
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <TextBlock
-                        Margin="30,0,0,0"
-                        VerticalAlignment="Center"
-                        FontFamily="pack://application:,,,/Fonts/#Dosis"
-                        FontSize="70"
-                        FontWeight="Bold"
-                        Foreground="Black"
-                        Text="FBooth">
-                        <TextBlock.Effect>
-                            <DropShadowEffect
-                                BlurRadius="10"
-                                ShadowDepth="4"
-                                Color="White" />
-                        </TextBlock.Effect>
-                    </TextBlock>
-                </StackPanel>
+            <Ellipse
+                Grid.Row="1"
+                Grid.Column="0"
+                Width="100"
+                Height="100">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="pack://application:,,,/backgrounds/logo.jpg" Stretch="UniformToFill" />
+                </Ellipse.Fill>
+            </Ellipse>
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                VerticalAlignment="Center"
+                FontFamily="pack://application:,,,/Fonts/#Dosis"
+                FontSize="70"
+                FontWeight="Bold"
+                Foreground="Black"
+                Text="FBooth">
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        BlurRadius="10"
+                        ShadowDepth="4"
+                        Color="White" />
+                </TextBlock.Effect>
+            </TextBlock>
 
-                <TextBlock
-                    Margin="0,10,0,0"
-                    FontFamily="pack://application:,,,/Fonts/#Dosis"
-                    FontSize="80"
-                    FontWeight="Medium"
-                    Foreground="White"
-                    Text="Capture">
-                    <TextBlock.Effect>
-                        <DropShadowEffect
-                            BlurRadius="10"
-                            ShadowDepth="2"
-                            Color="Black" />
-                    </TextBlock.Effect>
-                </TextBlock>
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="0,10,0,0"
+                FontFamily="pack://application:,,,/Fonts/#Dosis"
+                FontSize="80"
+                FontWeight="Medium"
+                Foreground="White"
+                Text="Capture">
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        BlurRadius="10"
+                        ShadowDepth="2"
+                        Color="Black" />
+                </TextBlock.Effect>
+            </TextBlock>
 
-                <TextBlock
-                    FontFamily="pack://application:,,,/Fonts/#Dosis"
-                    FontSize="80"
-                    FontWeight="Medium"
-                    Foreground="White"
-                    Text="Your">
-                    <TextBlock.Effect>
-                        <DropShadowEffect
-                            BlurRadius="10"
-                            ShadowDepth="2"
-                            Color="Black" />
-                    </TextBlock.Effect>
-                </TextBlock>
+            <TextBlock
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                FontFamily="pack://application:,,,/Fonts/#Dosis"
+                FontSize="80"
+                FontWeight="Medium"
+                Foreground="White"
+                Text="Your">
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        BlurRadius="10"
+                        ShadowDepth="2"
+                        Color="Black" />
+                </TextBlock.Effect>
+            </TextBlock>
 
-                <TextBlock
-                    FontFamily="pack://application:,,,/Fonts/#Dosis"
-                    FontSize="80"
-                    FontWeight="Medium"
-                    Foreground="White"
-                    Text="Moments">
-                    <TextBlock.Effect>
-                        <DropShadowEffect
-                            BlurRadius="10"
-                            ShadowDepth="2"
-                            Color="Black" />
-                    </TextBlock.Effect>
-                </TextBlock>
+            <TextBlock
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                FontFamily="pack://application:,,,/Fonts/#Dosis"
+                FontSize="80"
+                FontWeight="Medium"
+                Foreground="White"
+                Text="Moments">
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        BlurRadius="10"
+                        ShadowDepth="2"
+                        Color="Black" />
+                </TextBlock.Effect>
+            </TextBlock>
 
-                <TextBlock
-                    Margin="0,20,0,0"
-                    FontFamily="pack://application:,,,/Fonts/#Dosis"
-                    FontSize="26"
-                    FontWeight="Bold"
-                    Foreground="Black"
-                    Text="Please enter your check-in code from the email to start your photo session."
-                    TextWrapping="Wrap">
-                    <TextBlock.Effect>
-                        <DropShadowEffect
-                            BlurRadius="10"
-                            ShadowDepth="2"
-                            Color="White" />
-                    </TextBlock.Effect>
-                </TextBlock>
-            </StackPanel>
+            <TextBlock
+                Grid.Row="5"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="0,20,0,0"
+                FontFamily="pack://application:,,,/Fonts/#Dosis"
+                FontSize="26"
+                FontWeight="Bold"
+                Foreground="Black"
+                Text="Please enter your check-in code from the email to start your photo session."
+                TextWrapping="Wrap">
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        BlurRadius="10"
+                        ShadowDepth="2"
+                        Color="White" />
+                </TextBlock.Effect>
+            </TextBlock>
 
-            <Grid x:Name="InputGrid">
-                <StackPanel Margin="0,30,0,0" Orientation="Horizontal">
-                    <Border
-                        Padding="5"
+            <Border
+                Grid.Row="6"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="0,30,0,0"
+                Padding="5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Background="White"
+                CornerRadius="20">
+                <Grid>
+                    <TextBox
+                        x:Name="RoundedTextBox"
+                        Padding="10"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
-                        Background="White"
-                        CornerRadius="20">
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="30"
+                        FontStyle="Italic"
+                        Foreground="Gray"
+                        GotFocus="RoundedTextBox_GotFocus"
+                        LostFocus="RoundedTextBox_LostFocus"
+                        Text="Enter your code here!"
+                        TextChanged="RoundedTextBox_TextChanged" />
+                    <Button
+                        x:Name="SendButton"
+                        Width="50"
+                        Height="50"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="SendButton_Click"
+                        IsEnabled="False"
+                        Style="{StaticResource NoHighlightButtonStyle}">
+                        <Image
+                            Width="35"
+                            Height="35"
+                            Source="pack://application:,,,/backgrounds/send.png">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Opacity" Value="0.5" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEnabled, ElementName=SendButton}" Value="True">
+                                            <Setter Property="Opacity" Value="1.0" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </Button>
+                    <Border
+                        x:Name="LoadingProgressBarContainer"
+                        Width="50"
+                        Height="50"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Visibility="Collapsed">
                         <Grid>
-                            <TextBox
-                                x:Name="RoundedTextBox"
-                                Width="700"
-                                Padding="10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                FontSize="30"
-                                FontStyle="Italic"
-                                Foreground="Gray"
-                                GotFocus="RoundedTextBox_GotFocus"
-                                LostFocus="RoundedTextBox_LostFocus"
-                                Text="Enter your code here!"
-                                TextChanged="RoundedTextBox_TextChanged" />
-                            <Button
-                                x:Name="SendButton"
+                            <Ellipse
                                 Width="50"
                                 Height="50"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Click="SendButton_Click"
-                                IsEnabled="False"
-                                Style="{StaticResource NoHighlightButtonStyle}">
-                                <Image
-                                    Width="35"
-                                    Height="35"
-                                    Source="pack://application:,,,/backgrounds/send.png">
-                                    <Image.Style>
-                                        <Style TargetType="Image">
-                                            <Setter Property="Opacity" Value="0.5" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsEnabled, ElementName=SendButton}" Value="True">
-                                                    <Setter Property="Opacity" Value="1.0" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                            </Button>
-                            <Border
-                                x:Name="LoadingProgressBarContainer"
+                                Fill="Transparent"
+                                Opacity="0.5"
+                                Stroke="#FFFFFF"
+                                StrokeThickness="5" />
+                            <Ellipse
                                 Width="50"
                                 Height="50"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Visibility="Collapsed">
-                                <Grid>
-                                    <Ellipse
-                                        Width="50"
-                                        Height="50"
-                                        Fill="Transparent"
-                                        Opacity="0.5"
-                                        Stroke="#FFFFFF"
-                                        StrokeThickness="5" />
-                                    <Ellipse
-                                        Width="50"
-                                        Height="50"
-                                        Fill="Transparent"
-                                        Stroke="#61F2F5"
-                                        StrokeDashArray="25,75"
-                                        StrokeDashCap="Round"
-                                        StrokeThickness="5">
-                                        <Ellipse.RenderTransform>
-                                            <RotateTransform x:Name="LoadingRotateTransform" CenterX="25" CenterY="25" />
-                                        </Ellipse.RenderTransform>
-                                    </Ellipse>
-                                </Grid>
-                            </Border>
+                                Fill="Transparent"
+                                Stroke="#61F2F5"
+                                StrokeDashArray="25,75"
+                                StrokeDashCap="Round"
+                                StrokeThickness="5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform x:Name="LoadingRotateTransform" CenterX="25" CenterY="25" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
                         </Grid>
                     </Border>
-                </StackPanel>
-            </Grid>
-        </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+
+
 
 
         <Grid
@@ -680,7 +709,7 @@
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="Hidden" />
+            Visibility="Collapsed" />
 
         <!--  Show tam anh de chuan bi in  -->
         <Grid
@@ -692,7 +721,7 @@
                 x:Name="ShowPrint"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Visibility="Hidden" />
+                Visibility="Collapsed" />
 
             <Canvas
                 Name="CanvasSticker"
