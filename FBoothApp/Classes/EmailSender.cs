@@ -11,6 +11,7 @@ using System.Xml;
 using System.Xml.Linq;
 using EOSDigital.SDK;
 using System.Net.Mime;
+using System.Collections.Generic;
 
 
 namespace FBoothApp.Classes
@@ -25,7 +26,7 @@ namespace FBoothApp.Classes
         private XDocument settings = new XDocument();
         private string currentDirectory = Environment.CurrentDirectory;
 
-        public async void SendEmail(int photoNumber, int numberOfPhotosToSendViaEmail, string emailClientAddress, string printedPhotoPath, Guid BookingID)
+        public async void SendEmail(string emailClientAddress, List<string> photoPaths)
         {
             try
             {
@@ -79,40 +80,21 @@ namespace FBoothApp.Classes
                 sbBody.AppendLine("<p>Thank you for using our photo booth! Here are your photos:</p>");
 
                 // Embed images
-                var instance = new SavePhoto(photoNumber, BookingID);
-                for (int i = 0; i < numberOfPhotosToSendViaEmail; i++)
+                foreach (var photoPath in photoPaths)
                 {
-                    photoNumber = (instance.PhotoNumberJustTaken() - i);
-                    var save = new SavePhoto(photoNumber, BookingID);
-                    string photoName = save.PhotoNaming(photoNumber);
-                    string photoDirectoryPath = Path.Combine(save.FolderDirectory, photoName);
+                    if (!string.IsNullOrEmpty(photoPath) && File.Exists(photoPath))
+                    {
+                        string contentId = Guid.NewGuid().ToString();
+                        Attachment attachment = new Attachment(photoPath);
+                        attachment.ContentDisposition.Inline = true;
+                        attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
+                        attachment.ContentId = contentId;
+                        attachment.ContentType.MediaType = "image/jpeg";
+                        attachment.ContentType.Name = Path.GetFileName(photoPath);
+                        mail.Attachments.Add(attachment);
 
-                    string contentId = Guid.NewGuid().ToString();
-                    Attachment attachment = new Attachment(photoDirectoryPath);
-                    attachment.ContentDisposition.Inline = true;
-                    attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
-                    attachment.ContentId = contentId;
-                    attachment.ContentType.MediaType = "image/jpeg";
-                    attachment.ContentType.Name = Path.GetFileName(photoDirectoryPath);
-                    mail.Attachments.Add(attachment);
-
-                    sbBody.AppendLine($"<img src=\"cid:{contentId}\" alt=\"Photo\">");
-                }
-
-                // Add the printed photo
-                if (!string.IsNullOrEmpty(printedPhotoPath) && File.Exists(printedPhotoPath))
-                {
-                    string printedContentId = Guid.NewGuid().ToString();
-                    Attachment printedAttachment = new Attachment(printedPhotoPath);
-                    printedAttachment.ContentDisposition.Inline = true;
-                    printedAttachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
-                    printedAttachment.ContentId = printedContentId;
-                    printedAttachment.ContentType.MediaType = "image/jpeg";
-                    printedAttachment.ContentType.Name = Path.GetFileName(printedPhotoPath);
-                    mail.Attachments.Add(printedAttachment);
-
-                    sbBody.AppendLine("<h2>Your Printed Photo:</h2>");
-                    sbBody.AppendLine($"<img src=\"cid:{printedContentId}\" alt=\"Printed Photo\">");
+                        sbBody.AppendLine($"<img src=\"cid:{contentId}\" alt=\"Photo\">");
+                    }
                 }
 
                 sbBody.AppendLine("<p>Best regards,</p>");

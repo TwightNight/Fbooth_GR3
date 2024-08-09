@@ -28,7 +28,8 @@ namespace FBoothApp.Services
         public FetchApiServices()
         {
             _httpClient = new HttpClient();
-            _apiBaseUrl = "https://localhost:7156/api";
+            //_apiBaseUrl = "https://localhost:7156/api";
+            _apiBaseUrl = "https://fboothapi.azurewebsites.net/api";
             _initialLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/layout");
             _initialStickerLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/sticker");
 

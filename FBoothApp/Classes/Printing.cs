@@ -24,7 +24,7 @@ namespace FBoothApp
                 PrintDocument pd = new PrintDocument
                 {
                     PrintController = new StandardPrintController(),
-                    DefaultPageSettings = { Margins = new Margins(0, 0, 0, 0) },
+                    DefaultPageSettings = { Margins = new Margins(100, 100, 100, 100) }, // Set margin here
                     PrinterSettings = { PrinterName = actualPrinter, Copies = actualNumberOfCopies }
                 };
 
@@ -32,23 +32,24 @@ namespace FBoothApp
                 {
                     using (Image i = Image.FromFile(printPath))
                     {
-                        i.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        Rectangle m = args.MarginBounds;
-
-                        if ((double)i.Width / i.Height > (double)m.Width / m.Height)
+                        // Calculate image dimensions preserving aspect ratio
+                        Rectangle printArea = args.MarginBounds;
+                        float aspectRatio = (float)i.Width / i.Height;
+                        if (aspectRatio > (float)printArea.Width / printArea.Height)
                         {
-                            m.Height = (int)((double)i.Height / i.Width * m.Width);
+                            printArea.Height = (int)(printArea.Width / aspectRatio);
                         }
                         else
                         {
-                            m.Width = (int)((double)i.Width / i.Height * m.Height);
+                            printArea.Width = (int)(printArea.Height * aspectRatio);
                         }
 
-                        pd.DefaultPageSettings.Landscape = m.Height > m.Width;
-                        m.Y = (pd.DefaultPageSettings.PaperSize.Height - m.Height) / 2;
-                        m.X = (pd.DefaultPageSettings.PaperSize.Width - m.Width) / 2;
+                        // Center the image on the page
+                        printArea.X = (args.PageBounds.Width - printArea.Width) / 2;
+                        printArea.Y = (args.PageBounds.Height - printArea.Height) / 2;
 
-                        args.Graphics.DrawImage(i, m);
+                        // Draw the image
+                        args.Graphics.DrawImage(i, printArea);
                     }
                 };
 
@@ -60,10 +61,7 @@ namespace FBoothApp
                     throw new InvalidPrinterException(pd.PrinterSettings);
                 }
 
-                for (int i = 0; i < actualNumberOfCopies; i++)
-                {
-                    pd.Print();
-                }
+                pd.Print();  // In số lượng bản in đã thiết lập trong PrinterSettings
 
                 pd.Dispose();
             }
@@ -83,6 +81,8 @@ namespace FBoothApp
                 Console.WriteLine("Lỗi chung: " + ex.Message);
             }
         }
+
+
         static public string ActualPrinter(string actualForeground, string firstprinter, string secondprinter)
         {
             if ((actualForeground == "foreground_3") || (actualForeground == "foregrund_4_paski"))

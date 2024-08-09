@@ -26,6 +26,11 @@ namespace FBoothApp
         }
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
+        }
+
+        private void ButtonCancel_OnClick(object sender, RoutedEventArgs e)
+        {
             this.Close();
         }
     }

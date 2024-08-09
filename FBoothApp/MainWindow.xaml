@@ -189,24 +189,51 @@
             </Setter>
         </Style>
 
+        <LinearGradientBrush x:Key="ScrollViewerBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0.0" Color="#C7EEFF" />
+            <GradientStop Offset="1.0" Color="#0077C0" />
+        </LinearGradientBrush>
+
+        <!--  Border Style for ScrollViewer  -->
+        <Style x:Key="ScrollViewerBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Background" Value="{StaticResource ScrollViewerBackgroundBrush}" />
+        </Style>
+
+        <!--  WrapPanel Item Style  -->
+        <Style x:Key="WrapPanelItemStyle" TargetType="Border">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="5" ShadowDepth="2" />
+                </Setter.Value>
+            </Setter>
+        </Style>
 
     </Window.Resources>
 
     <Window.Background>
-        <ImageBrush ImageSource="pack://application:,,,/backgrounds/background_2.jpg" />
+        <ImageBrush ImageSource="pack://application:,,,/backgrounds/background_1.jpg" />
     </Window.Background>
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="0.5*" />
             <RowDefinition Height="2*" />
             <RowDefinition Height="2*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="1.5*" />
-            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="0.5*" />
             <ColumnDefinition Width="0.5*" />
         </Grid.ColumnDefinitions>
@@ -216,10 +243,10 @@
 
         <Grid
             x:Name="HomeText"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.RowSpan="3"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             Margin="30">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -362,7 +389,7 @@
                 Grid.Row="5"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Margin="0,30,0,0"
+                Margin="0,70,0,0"
                 Padding="5"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
@@ -445,16 +472,12 @@
             </Border>
         </Grid>
 
-
-
-
-
         <Grid
             x:Name="BorderPanel"
-            Grid.Row="0"
+            Grid.Row="1"
             Grid.RowSpan="3"
-            Grid.Column="2"
-            Grid.ColumnSpan="3"
+            Grid.Column="3"
+            Grid.ColumnSpan="4"
             Margin="242,-445,-692,21"
             Panel.ZIndex="-1">
             <Grid.RenderTransform>
@@ -468,7 +491,7 @@
                         Width="1000"
                         Height="70"
                         Margin="150,0,0,0"
-                        Background="#19A7CE"
+                        Background="#a6eefc"
                         CornerRadius="40" />
 
                     <Border
@@ -491,7 +514,7 @@
                         Width="1000"
                         Height="70"
                         Margin="150,0,0,0"
-                        Background="#19A7CE"
+                        Background="#a6eefc"
                         CornerRadius="40" />
 
                     <Border
@@ -511,7 +534,7 @@
             </StackPanel>
         </Grid>
 
-        <ContentControl
+        <!--<ContentControl
             x:Name="contentFrame"
             Grid.Row="0"
             Grid.RowSpan="4"
@@ -519,7 +542,7 @@
             Grid.ColumnSpan="4"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Visibility="Collapsed" />
+            Visibility="Visible" />-->
 
         <Button
             x:Name="StartButton"
@@ -547,12 +570,13 @@
             <Image Source="pack://application:,,,/backgrounds/StartButton.png" />
         </Button>-->
 
+        <!--  show man hinh may anh  -->
         <Image
             x:Name="LiveViewImage"
             Grid.Row="0"
-            Grid.RowSpan="4"
+            Grid.RowSpan="6"
             Grid.Column="0"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="6"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Stretch="UniformToFill"
@@ -562,41 +586,14 @@
         <Canvas
             x:Name="GridCanvasLiveViewImage"
             Grid.Row="0"
-            Grid.RowSpan="4"
+            Grid.RowSpan="6"
             Grid.Column="0"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="6"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             IsHitTestVisible="False">
             <!--  Grid lines will be added dynamically in code-behind  -->
         </Canvas>
-
-        <!--<Border
-            x:Name="SliderBorder"
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="138,30,138,30"
-            BorderBrush="AliceBlue"
-            BorderThickness="0"
-            CornerRadius="30"
-            Visibility="Visible">
-            <Canvas x:Name="Slider">
-                <Border
-                    x:Name="ImageBorder"
-                    Canvas.Left="-20"
-                    Canvas.Top="-18"
-                    Width="310"
-                    Height="310"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    ClipToBounds="True"
-                    CornerRadius="30">
-                    <Border.Background>
-                        <ImageBrush ImageSource="pack://application:,,,/backgrounds/logo.jpg" Stretch="UniformToFill" />
-                    </Border.Background>
-                </Border>
-            </Canvas>
-        </Border>-->
 
         <!--<Button
             x:Name="StopButton"
@@ -614,9 +611,9 @@
 
         <Button
             x:Name="ReadyButton"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.RowSpan="2"
-            Grid.Column="1"
+            Grid.Column="2"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
@@ -624,7 +621,7 @@
             BorderThickness="0"
             Click="ReadyButton_Click"
             Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden">
+            Visibility="Collapsed">
             <Image
                 Width="100"
                 Height="100"
@@ -633,16 +630,16 @@
 
         <Button
             x:Name="NextButtonBackGround"
-            Grid.Row="3"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
+            Grid.Row="5"
+            Grid.Column="5"
+            Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{x:Null}"
             BorderThickness="0"
             Click="NextButtonBackGround_Click"
             Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden">
+            Visibility="Collapsed">
             <Image
                 Width="70"
                 Height="70"
@@ -651,16 +648,16 @@
 
         <Button
             x:Name="NextButtonSticker"
-            Grid.Row="3"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
+            Grid.Row="5"
+            Grid.Column="5"
+            Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{x:Null}"
             BorderThickness="0"
             Click="NextButtonSticker_Click"
             Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden">
+            Visibility="Collapsed">
             <Image
                 Width="70"
                 Height="70"
@@ -669,9 +666,9 @@
 
         <Button
             x:Name="NextButtonPrinting"
-            Grid.Row="3"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
+            Grid.Row="5"
+            Grid.Column="5"
+            Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{x:Null}"
@@ -688,40 +685,143 @@
         <TextBox
             x:Name="PhotoTextBox"
             Grid.Row="0"
-            Grid.Column="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Background="{x:Null}"
             BorderThickness="0"
-            FontFamily="Arial"
+            FontFamily="Segoe UI"
             FontSize="30"
             FontWeight="Bold"
-            Foreground="Black"
-            TextWrapping="Wrap" />
-
-        <Image
-            x:Name="ShowPictureInlayout"
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
+            Foreground="White"
+            TextWrapping="Wrap"
             Visibility="Collapsed" />
 
-        <!--  Show tam anh de chuan bi in  -->
+
         <Grid
-            Grid.Row="1"
+            x:Name="GridShowPictureInlayout"
+            Grid.Row="0"
+            Grid.RowSpan="6"
+            Grid.Column="0"
+            Grid.ColumnSpan="6"
+            Panel.ZIndex="-1"
+            Visibility="Collapsed">
+
+            <Border
+                Padding="20"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="Transparent">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  Main Photo Display  -->
+                    <Border
+                        Grid.Column="0"
+                        Margin="20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="#8abcf9"
+                        CornerRadius="30">
+                        <Image
+                            x:Name="ShowPictureInlayout"
+                            Margin="20"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Stretch="Uniform" />
+                    </Border>
+
+                    <Border
+                        Grid.Column="1"
+                        Margin="20"
+                        Padding="10"
+                        Background="#63cffc"
+                        CornerRadius="30">
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="0,20,0,10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            FontFamily="Segoe UI"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="Please select the photo you want to retake."
+                            TextWrapping="Wrap" />
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid
+            x:Name="ThumbnailDockPanelGrid"
+            Grid.Row="0"
+            Grid.RowSpan="6"
+            Grid.Column="4"
+            Grid.ColumnSpan="6"
+            Margin="0,20,30,40"
+            Visibility="Collapsed">
+            <ScrollViewer
+                Padding="10"
+                Background="Transparent"
+                BorderThickness="2"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Hidden">
+                <StackPanel
+                    x:Name="ThumbnailDockPanel"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="Transparent" />
+            </ScrollViewer>
+        </Grid>
+
+
+        <!--<DockPanel
+            x:Name="ThumbnailDockPanel"
+            Grid.Row="0"
+            Grid.RowSpan="6"
+            Grid.Column="4"
+            Grid.ColumnSpan="6"
+            Margin="0,40,0,40"
+            HorizontalAlignment="Center"
+            Background="Transparent"
+            Visibility="Visible" />-->
+
+
+
+        <Grid
+            x:Name="LoadingGrid"
+            Grid.RowSpan="6"
+            Grid.ColumnSpan="6"
+            Background="#AA000000"
+            Visibility="Collapsed">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="30"
+                Foreground="White"
+                Text="Processing, please wait..." />
+        </Grid>
+
+        <!--  Show tam anh de chuan bi in  -->
+        <!--<Grid
+            x:Name="GirdShowPrintPicture"
+            Grid.Row="2"
             Grid.RowSpan="2"
-            Grid.Column="1"
-            Grid.ColumnSpan="2">
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            Visibility="Collapsed">
             <Image
                 x:Name="ShowPrint"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Visibility="Collapsed" />
+                VerticalAlignment="Center" />
 
             <Canvas
                 Name="CanvasSticker"
@@ -730,217 +830,247 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Background="Transparent" />
-        </Grid>
+        </Grid>-->
 
         <Grid
             x:Name="LayoutTabControlGrid"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.RowSpan="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="5"
-            Visibility="Hidden">
+            Grid.Column="1"
+            Grid.ColumnSpan="4"
+            Visibility="Collapsed">
             <Border
                 Padding="30"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="{DynamicResource PrimaryTextColor}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="#F7F7F7"
                 CornerRadius="10">
                 <TabControl
                     x:Name="LayoutTabControl"
-                    Width="886"
-                    Height="512"
-                    Background="#3D3C42"
-                    Style="{DynamicResource TabControlStyle}">
-                    <!--<TabItem Header="Home" Style="{DynamicResource TabItemStyle}">
-                        <Grid>
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="20"
-                                FontWeight="Bold"
-                                Foreground="{DynamicResource SecundaryTextColor}"
-                                Text="Home" />
-                        </Grid>
-                    </TabItem>
-
-                    <TabItem Header="Home" Style="{DynamicResource TabItemStyle}">
-                        <Grid>
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="20"
-                                FontWeight="Bold"
-                                Foreground="{DynamicResource SecundaryTextColor}"
-                                Text="Home" />
-                        </Grid>
-                    </TabItem>-->
-                </TabControl>
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="#303841"
+                    Style="{DynamicResource TabControlStyle}" />
             </Border>
         </Grid>
 
+
         <Button
             x:Name="NextButtonTakingPhoto"
-            Grid.Row="3"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
+            Grid.Row="5"
+            Grid.Column="5"
+            Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{x:Null}"
             BorderThickness="0"
             Click="NextButtonTakingPhoto_Click"
             Style="{StaticResource NoHighlightButtonStyle}"
-            Visibility="Hidden">
+            Visibility="Collapsed">
             <Image
                 Width="70"
                 Height="70"
                 Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
 
-        <!--<Grid
-            x:Name="InputGrid"
-            Grid.Row="4"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Margin="10">
+        <Grid
+            x:Name="showStickerAndBackGround"
+            Grid.Row="0"
+            Grid.RowSpan="6"
+            Grid.Column="0"
+            Grid.ColumnSpan="6"
+            Panel.ZIndex="-1"
+            Visibility="Collapsed">
             <Border
-                Padding="5"
+                Padding="50"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Center"
-                Background="White"
-                CornerRadius="15">
+                VerticalAlignment="Stretch"
+                Background="#D0D4CA">
                 <Grid>
-                    <TextBox
-                        x:Name="RoundedTextBoxs"
-                        Width="1143"
-                        Padding="10"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        FontSize="30"
-                        FontStyle="Italic"
-                        Foreground="Gray"
-                        GotFocus="RoundedTextBox_GotFocus"
-                        LostFocus="RoundedTextBox_LostFocus"
-                        Text="Enter your code here!"
-                        TextChanged="RoundedTextBox_TextChanged" />
-                    <Button
-                        x:Name="SendButtons"
-                        Width="50"
-                        Height="50"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Click="SendButton_Click"
-                        IsEnabled="False"
-                        Style="{StaticResource NoHighlightButtonStyle}">
-                        <Image
-                            Width="35"
-                            Height="35"
-                            Source="pack://application:,,,/backgrounds/send.png">
-                            <Image.Style>
-                                <Style TargetType="Image">
-                                    <Setter Property="Opacity" Value="0.5" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsEnabled, ElementName=SendButton}" Value="True">
-                                            <Setter Property="Opacity" Value="1.0" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
-                    </Button>
-                    <Border
-                        x:Name="LoadingProgressBarContainers"
-                        Width="50"
-                        Height="50"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Visibility="Collapsed">
-                        <Grid>
-                            <Ellipse
-                                Width="50"
-                                Height="50"
-                                Fill="Transparent"
-                                Opacity="0.5"
-                                Stroke="#FFFFFF"
-                                StrokeThickness="5" />
-                            <Ellipse
-                                Width="50"
-                                Height="50"
-                                Fill="Transparent"
-                                Stroke="#61F2F5"
-                                StrokeDashArray="25,75"
-                                StrokeDashCap="Round"
-                                StrokeThickness="5">
-                                <Ellipse.RenderTransform>
-                                    <RotateTransform x:Name="LoadingRotateTransforms" CenterX="25" CenterY="25" />
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                        </Grid>
-                    </Border>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!--  Text at the top  -->
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,0,0,10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        FontFamily="Segoe UI"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Text="Choose a Background and Sticker for Your Photo" />
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  TabControl for Layouts and Stickers  -->
+                        <TabControl
+                            x:Name="ContentTabControl"
+                            Grid.Column="0"
+                            Margin="10,0,10,10"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            SelectionChanged="TabControl_SelectionChanged"
+                            Style="{DynamicResource TabControlStyle}">
+                            <!--  TabItem for Layouts  -->
+                            <TabItem
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Stretch"
+                                Header="BackGrounds"
+                                Style="{DynamicResource TabItemStyle}">
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Border
+                                        Padding="10"
+                                        Background="#45474B"
+                                        CornerRadius="10">
+                                        <ScrollViewer
+                                            x:Name="BackgoundScrollViewer"
+                                            VerticalAlignment="Stretch"
+                                            HorizontalScrollBarVisibility="Disabled"
+                                            PanningMode="VerticalOnly"
+                                            VerticalScrollBarVisibility="Hidden"
+                                            Visibility="Visible">
+                                            <WrapPanel
+                                                x:Name="BackgroundsWrapPanel"
+                                                Margin="20"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </TabItem>
+
+                            <!--  TabItem for Stickers  -->
+                            <TabItem
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Stretch"
+                                Header="Stickers"
+                                Style="{DynamicResource TabItemStyle}">
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Border
+                                        Padding="10"
+                                        Background="#45474B"
+                                        CornerRadius="10">
+                                        <ScrollViewer
+                                            x:Name="StickerScrollViewer"
+                                            VerticalAlignment="Stretch"
+                                            HorizontalScrollBarVisibility="Disabled"
+                                            PanningMode="VerticalOnly"
+                                            VerticalScrollBarVisibility="Hidden"
+                                            Visibility="Visible">
+                                            <WrapPanel
+                                                x:Name="StickerWrapPanel"
+                                                Margin="10"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+
+                        <!--  ShowPrint area  -->
+                        <Border
+                            x:Name="GirdShowPrintPicture"
+                            Grid.Column="1"
+                            Margin="10,55,10,10"
+                            Background="Gray"
+                            CornerRadius="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Border
+                                    Margin="50"
+                                    Background="Gray"
+                                    CornerRadius="10">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image
+                                            x:Name="ShowPrint"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
+                                        <Canvas
+                                            Name="CanvasSticker"
+                                            Width="{Binding ActualWidth, ElementName=ShowPrint}"
+                                            Height="{Binding ActualHeight, ElementName=ShowPrint}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Background="Transparent" />
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
             </Border>
-        </Grid>-->
+        </Grid>
+
+
+
+
+
+
 
         <!--  chỗ load background  -->
-        <ScrollViewer
+        <!--<ScrollViewer
             x:Name="BackgoundScrollViewer"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.RowSpan="2"
             Grid.Column="0"
+            Grid.ColumnSpan="2"
             HorizontalScrollBarVisibility="Disabled"
             PanningMode="VerticalOnly"
             VerticalScrollBarVisibility="Hidden"
-            Visibility="Hidden">
-            <WrapPanel
-                x:Name="BackgroundsWrapPanel"
-                Margin="10"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center" />
+            Visibility="Collapsed">
+            <Border Style="{StaticResource ScrollViewerBorderStyle}">
+                <WrapPanel
+                    x:Name="BackgroundsWrapPanel"
+                    Margin="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Border>
         </ScrollViewer>
 
+        -->
         <!--  chỗ load Sticker  -->
+        <!--
         <ScrollViewer
             x:Name="StickerScrollViewer"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.RowSpan="2"
             Grid.Column="0"
+            Grid.ColumnSpan="2"
             HorizontalScrollBarVisibility="Disabled"
             PanningMode="VerticalOnly"
             VerticalScrollBarVisibility="Hidden"
-            Visibility="Hidden">
-            <WrapPanel
-                x:Name="StickerWrapPanel"
-                Margin="10"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center" />
-        </ScrollViewer>
-
-        <!--<Canvas
-            x:Name="StickerCanvas"
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center" />-->
+            Visibility="Collapsed">
+            <Border Style="{StaticResource ScrollViewerBorderStyle}">
+                <WrapPanel
+                    x:Name="StickerWrapPanel"
+                    Margin="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Border>
+        </ScrollViewer>-->
 
         <!--  show nut goi email  -->
         <Button
             x:Name="SendEmailButton"
-            Grid.Row="0"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
+            Grid.Row="5"
+            Grid.Column="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             BorderThickness="0"
             Click="SendEmailButtonClick"
             FontSize="35"
-            Visibility="Hidden">
+            Visibility="Collapsed">
             <Button.Style>
                 <Style TargetType="Button">
                     <Setter Property="Background" Value="Transparent" />
@@ -982,19 +1112,16 @@
 
         <Grid
             x:Name="PrintMenuGrid"
-            Grid.Row="1"
+            Grid.Row="5"
             Grid.Column="3"
-            Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="Hidden">
+            Visibility="Collapsed">
             <StackPanel
                 x:Name="PrintMenuStackPanel"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Orientation="Vertical"
-                Visibility="Hidden">
-
+                Orientation="Vertical">
                 <!--  Nút in  -->
                 <Button
                     x:Name="PrintButton"
@@ -1002,8 +1129,7 @@
                     VerticalAlignment="Center"
                     BorderThickness="0"
                     Click="Print_Click"
-                    FontSize="35"
-                    Visibility="Hidden">
+                    FontSize="35">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Background" Value="Transparent" />
@@ -1030,12 +1156,6 @@
                                                     Text="Print" />
                                             </StackPanel>
                                         </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
-                                                <Setter Property="Cursor" Value="Hand" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -1044,7 +1164,7 @@
                 </Button>
 
                 <!--  TextBox và Nút tăng giảm số lượng  -->
-                <StackPanel
+                <!--<StackPanel
                     Margin="10,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -1057,8 +1177,7 @@
                         Background="{x:Null}"
                         BorderThickness="0"
                         Click="AddOneCopyButtonClick"
-                        Style="{StaticResource NoHighlightButtonStyle}"
-                        Visibility="Hidden">
+                        Style="{StaticResource NoHighlightButtonStyle}">
                         <Image
                             Width="30"
                             Height="30"
@@ -1079,8 +1198,7 @@
                         Foreground="White"
                         Text="1"
                         TextAlignment="Center"
-                        TextWrapping="Wrap"
-                        Visibility="Hidden" />
+                        TextWrapping="Wrap" />
 
                     <Button
                         x:Name="MinusOneCopyButton"
@@ -1089,55 +1207,32 @@
                         Background="{x:Null}"
                         BorderThickness="0"
                         Click="MinusOneCopyButtonClick"
-                        Style="{StaticResource NoHighlightButtonStyle}"
-                        Visibility="Hidden">
+                        Style="{StaticResource NoHighlightButtonStyle}">
                         <Image
                             Width="30"
                             Height="30"
                             Source="pack://application:,,,/backgrounds/minus.png" />
                     </Button>
-                </StackPanel>
+                </StackPanel>-->
             </StackPanel>
         </Grid>
 
-        <DockPanel
-            x:Name="ThumbnailDockPanel"
-            Grid.Row="3"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            Background="Transparent"
-            Visibility="Visible" />
 
-        <Grid
-            x:Name="LoadingGrid"
-            Grid.RowSpan="4"
-            Grid.ColumnSpan="5"
-            Background="#AA000000"
-            Visibility="Hidden">
-            <TextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="30"
-                Foreground="White"
-                Text="Processing, please wait..." />
-        </Grid>
 
         <Grid
             x:Name="BookingPhotoThumbnailGrid"
             Grid.Row="1"
-            Grid.RowSpan="2"
+            Grid.RowSpan="4"
             Grid.Column="0"
-            Grid.ColumnSpan="5"
+            Grid.ColumnSpan="6"
             Margin="20"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Background="#AAFFFFFF"
-            Visibility="Hidden">
+            Background="Transparent"
+            Visibility="Collapsed">
             <Border
                 Padding="10"
-                Background="White"
-                BorderBrush="#CCCCCC"
+                Background="Gray"
                 BorderThickness="1"
                 CornerRadius="15">
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -1151,13 +1246,13 @@
                         VerticalAlignment="Center"
                         FontSize="24"
                         FontWeight="Bold"
-                        Foreground="Black"
+                        Foreground="White"
                         Text="Photo Library" />
                     <ScrollViewer
                         Grid.Row="1"
                         Margin="10"
                         HorizontalScrollBarVisibility="Disabled"
-                        VerticalScrollBarVisibility="Auto">
+                        VerticalScrollBarVisibility="Hidden">
                         <UniformGrid
                             x:Name="BookingPhotoThumbnailWrapPanel"
                             HorizontalAlignment="Center"
