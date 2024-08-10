@@ -31,6 +31,9 @@ namespace FBoothApp
 
                 using (Graphics grfx = Graphics.FromImage(finalImage))
                 {
+                    // Tăng kích thước ảnh lên một chút (ví dụ: 10%)
+                    float scaleFactor = 1.1f;
+
                     // Vẽ mỗi ảnh vào vị trí tương ứng trên bitmap mới
                     for (int i = 0; i < layout.PhotoSlot; i++)
                     {
@@ -40,17 +43,25 @@ namespace FBoothApp
                             var photo = System.Drawing.Image.FromFile(photoPath);
                             var coordinates = layout.PhotoBoxes[i];
 
+                            // Tính toán kích thước mới
+                            int newWidth = (int)(coordinates.BoxWidth * scaleFactor);
+                            int newHeight = (int)(coordinates.BoxHeight * scaleFactor);
+
+                            // Điều chỉnh vị trí để trung tâm hình ảnh không thay đổi
+                            int adjustedX = coordinates.CoordinatesX - (newWidth - coordinates.BoxWidth) / 2;
+                            int adjustedY = coordinates.CoordinatesY - (newHeight - coordinates.BoxHeight) / 2;
+
                             // Kiểm tra xem ảnh là ngang hay dọc
                             if (coordinates.BoxWidth > coordinates.BoxHeight)
                             {
                                 // Ảnh ngang
-                                grfx.DrawImage(photo, new Rectangle(coordinates.CoordinatesX + 1, coordinates.CoordinatesY + 1, coordinates.BoxWidth + 2, coordinates.BoxHeight + 2));
+                                grfx.DrawImage(photo, new Rectangle(adjustedX, adjustedY, newWidth, newHeight));
                             }
                             else
                             {
                                 // Ảnh dọc
                                 photo.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                                grfx.DrawImage(photo, coordinates.CoordinatesX, coordinates.CoordinatesY);
+                                grfx.DrawImage(photo, adjustedX, adjustedY, newWidth, newHeight);
                             }
 
                             photo.Dispose();
@@ -73,6 +84,7 @@ namespace FBoothApp
                 Console.WriteLine(ex.Message);
             }
         }
+
 
         private static Image DownloadImage(string url)
         {

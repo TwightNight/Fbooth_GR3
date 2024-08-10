@@ -28,8 +28,8 @@ namespace FBoothApp.Services
         public FetchApiServices()
         {
             _httpClient = new HttpClient();
-            //_apiBaseUrl = "https://localhost:7156/api";
-            _apiBaseUrl = "https://fboothapi.azurewebsites.net/api";
+            _apiBaseUrl = "https://localhost:7156/api";
+            //_apiBaseUrl = "https://fboothapi.azurewebsites.net/api";
             _initialLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/layout");
             _initialStickerLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/sticker");
 
@@ -270,6 +270,33 @@ namespace FBoothApp.Services
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<BookingResponse>(jsonResponse);
+        }
+
+        public async Task<CreatePhotoSessionRequest> CreatePhotoSessionAsync(CreatePhotoSessionRequest request)
+        {
+            var jsonRequest = JsonConvert.SerializeObject(request);
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/photo-session", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Đọc thông báo lỗi từ phản hồi của API
+                var errorResponse = await response.Content.ReadAsStringAsync();
+
+                // Giải mã chuỗi JSON để chỉ lấy phần thông báo lỗi
+                var errorObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
+                if (errorObject != null && errorObject.TryGetValue("message", out var errorMessage))
+                {
+                    throw new Exception(errorMessage);
+                }
+
+                // Nếu không có trường "message", ném lỗi chung chung
+                throw new Exception("An unknown error occurred.");
+            }
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<CreatePhotoSessionRequest>(jsonResponse);
         }
 
     }

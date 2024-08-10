@@ -1,211 +1,170 @@
 [
   {
-    "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9",
-    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074179/FBooth-Layout/sj3mhormlii8ehxw88ww.png",
-    "CouldID": "FBooth-Layout/sj3mhormlii8ehxw88ww",
-    "LayoutCode": "Orange Colorful Playful Retro 90's Good Vibes Photobooth Collage Photostrip (1)",
+    "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723025533/FBooth-Layout/jf90f2jka3crzqhfpd4q.png",
+    "CouldID": "FBooth-Layout/jf90f2jka3crzqhfpd4q",
+    "LayoutCode": "1-01",
     "Status": "Available",
-    "Height": 2000,
-    "Width": 707,
-    "PhotoSlot": 4,
-    "CreatedDate": "2024-08-08T06:43:00.17",
-    "LastModified": "2024-08-08T06:43:00.17",
+    "Height": 7090,
+    "Width": 2370,
+    "PhotoSlot": 3,
+    "CreatedDate": "2024-08-07T17:12:13.463",
+    "LastModified": "2024-08-07T17:12:13.467",
     "PhotoBoxes": [
       {
-        "BoxHeight": 373,
-        "BoxWidth": 621,
-        "CoordinatesX": 43,
-        "CoordinatesY": 72,
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
+        "BoxHeight": 1641,
+        "BoxWidth": 2111,
+        "CoordinatesX": 120,
+        "CoordinatesY": 230,
+        "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400"
       },
       {
-        "BoxHeight": 373,
-        "BoxWidth": 621,
-        "CoordinatesX": 43,
-        "CoordinatesY": 469,
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
+        "BoxHeight": 1641,
+        "BoxWidth": 2111,
+        "CoordinatesX": 120,
+        "CoordinatesY": 2000,
+        "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400"
       },
       {
-        "BoxHeight": 373,
-        "BoxWidth": 621,
-        "CoordinatesX": 43,
-        "CoordinatesY": 867,
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
-      },
-      {
-        "BoxHeight": 374,
-        "BoxWidth": 621,
-        "CoordinatesX": 43,
-        "CoordinatesY": 1264,
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
+        "BoxHeight": 1631,
+        "BoxWidth": 2111,
+        "CoordinatesX": 120,
+        "CoordinatesY": 3780,
+        "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400"
       }
     ],
-    "Backgrounds": [
-      {
-        "BackgroundID": "e76a7868-3813-4688-3310-08dcb73a3e22",
-        "BackgroundCode": "Orange Colorful Playful Retro 90's Good Vibes Photobooth Collage Photostrip.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074202/FBooth-Background/y5ylavvokdjfst3jqo3t.png",
-        "CouldID": "FBooth-Background/y5ylavvokdjfst3jqo3t",
-        "Height": 2000,
-        "Width": 707,
-        "CreatedDate": "2024-08-08T06:43:23.1040425",
-        "LastModified": "2024-08-08T06:43:23.097",
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
-      },
-      {
-        "BackgroundID": "e468e68b-c710-4a68-3311-08dcb73a3e22",
-        "BackgroundCode": "Orange Colorful Playful Retro 90's Good Vibes Photobooth Collage Photostrip (2).png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074214/FBooth-Background/rtcve2vfsytpip1mx3et.png",
-        "CouldID": "FBooth-Background/rtcve2vfsytpip1mx3et",
-        "Height": 2000,
-        "Width": 707,
-        "CreatedDate": "2024-08-08T06:43:34.4297462",
-        "LastModified": "2024-08-08T06:43:34.42",
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
-      },
-      {
-        "BackgroundID": "1bd1b3f1-e314-40a2-3312-08dcb73a3e22",
-        "BackgroundCode": "Orange Colorful Playful Retro 90's Good Vibes Photobooth Collage Photostrip (3).png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074220/FBooth-Background/puzeuqgkyu6tf7cxwui3.png",
-        "CouldID": "FBooth-Background/puzeuqgkyu6tf7cxwui3",
-        "Height": 2000,
-        "Width": 707,
-        "CreatedDate": "2024-08-08T06:43:41.0868856",
-        "LastModified": "2024-08-08T06:43:41.077",
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
-      },
-      {
-        "BackgroundID": "a79aeb17-7602-45ce-3313-08dcb73a3e22",
-        "BackgroundCode": "Orange Colorful Playful Retro 90's Good Vibes Photobooth Collage Photostrip (7).png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074226/FBooth-Background/rossg3egabazrqdqygbb.png",
-        "CouldID": "FBooth-Background/rossg3egabazrqdqygbb",
-        "Height": 2000,
-        "Width": 707,
-        "CreatedDate": "2024-08-08T06:43:47.1742807",
-        "LastModified": "2024-08-08T06:43:47.167",
-        "LayoutID": "7cb5f471-320a-4051-eaef-08dcb73a18d9"
-      }
-    ]
+    "Backgrounds": []
   },
   {
-    "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9",
-    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723073932/FBooth-Layout/pdkbgjqxxizjxgpbrvpq.png",
-    "CouldID": "FBooth-Layout/pdkbgjqxxizjxgpbrvpq",
+    "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016667/FBooth-Layout/htnfkesgonmfd54iirsc.png",
+    "CouldID": "FBooth-Layout/htnfkesgonmfd54iirsc",
     "LayoutCode": "912A0DF7-A542-4EC0-A987-F8663F83BB4C",
     "Status": "Available",
     "Height": 2827,
     "Width": 2827,
     "PhotoSlot": 1,
-    "CreatedDate": "2024-08-08T06:38:53.307",
-    "LastModified": "2024-08-08T06:38:53.307",
+    "CreatedDate": "2024-08-07T14:44:27.937",
+    "LastModified": "2024-08-07T14:44:27.94",
     "PhotoBoxes": [
       {
         "BoxHeight": 1446,
         "BoxWidth": 2479,
         "CoordinatesX": 174,
         "CoordinatesY": 403,
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       }
     ],
     "Backgrounds": [
       {
-        "BackgroundID": "78f0dba4-ff26-4a91-3307-08dcb73a3e22",
+        "BackgroundID": "ef19fb4d-5d50-41f7-c366-08dcb6b4f590",
         "BackgroundCode": "1F4D1301-7FD2-4AA9-ADE9-FE45CDA7B498.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723073995/FBooth-Background/hiefkabqd4s3gvnh8xsk.png",
-        "CouldID": "FBooth-Background/hiefkabqd4s3gvnh8xsk",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016751/FBooth-Background/zngmnnpjxfwgmy5bskii.png",
+        "CouldID": "FBooth-Background/zngmnnpjxfwgmy5bskii",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:39:55.8169552",
-        "LastModified": "2024-08-08T06:39:55.81",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:45:51.0018587",
+        "LastModified": "2024-08-07T14:45:51.033",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "4b64bc9a-a79b-4840-3308-08dcb73a3e22",
+        "BackgroundID": "535a6b6a-1e91-482d-c367-08dcb6b4f590",
         "BackgroundCode": "FFC92F50-3219-40FE-90C3-10AACFECB6A3.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074005/FBooth-Background/twa7acu1ku5pxuvyvbeb.png",
-        "CouldID": "FBooth-Background/twa7acu1ku5pxuvyvbeb",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016760/FBooth-Background/z1kporset1rgjba7qgml.png",
+        "CouldID": "FBooth-Background/z1kporset1rgjba7qgml",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:40:05.8488276",
-        "LastModified": "2024-08-08T06:40:05.84",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:46:00.5607312",
+        "LastModified": "2024-08-07T14:46:00.56",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "b6148e51-cd5d-48dc-3309-08dcb73a3e22",
+        "BackgroundID": "c617366f-a1a7-422f-c368-08dcb6b4f590",
         "BackgroundCode": "582E78D8-941F-49F3-8798-F2B62A1AA18E.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074017/FBooth-Background/p2jtmhqnebgl1ikjsimh.png",
-        "CouldID": "FBooth-Background/p2jtmhqnebgl1ikjsimh",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016768/FBooth-Background/reiiylksqwyksvsyqjtl.png",
+        "CouldID": "FBooth-Background/reiiylksqwyksvsyqjtl",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:40:18.5332514",
-        "LastModified": "2024-08-08T06:40:18.53",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:46:08.6632083",
+        "LastModified": "2024-08-07T14:46:08.66",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "6872f814-1065-445e-330a-08dcb73a3e22",
+        "BackgroundID": "e1eb5787-1a56-4249-c369-08dcb6b4f590",
+        "BackgroundCode": "582E78D8-941F-49F3-8798-F2B62A1AA18E.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016777/FBooth-Background/fhhk8krfkurwf6mp3vhz.png",
+        "CouldID": "FBooth-Background/fhhk8krfkurwf6mp3vhz",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-08-07T14:46:17.1913375",
+        "LastModified": "2024-08-07T14:46:17.19",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+      },
+      {
+        "BackgroundID": "b8eccce6-7f34-427b-c36a-08dcb6b4f590",
         "BackgroundCode": "356A33FE-A5FA-48C2-8492-3940ADC5C5D0.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074026/FBooth-Background/sjqxepfwasujol7foxja.png",
-        "CouldID": "FBooth-Background/sjqxepfwasujol7foxja",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016784/FBooth-Background/keejcpcy5kwq8yvxw2f2.png",
+        "CouldID": "FBooth-Background/keejcpcy5kwq8yvxw2f2",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:40:27.2806142",
-        "LastModified": "2024-08-08T06:40:27.273",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:46:24.7675829",
+        "LastModified": "2024-08-07T14:46:24.767",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "006b172c-45f3-4cae-330b-08dcb73a3e22",
+        "BackgroundID": "0dd251ce-772b-4701-c36b-08dcb6b4f590",
         "BackgroundCode": "CC18F434-B006-4B0E-B71C-108C62C770C5.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074035/FBooth-Background/aiirp5rtr0yify5ygbzp.png",
-        "CouldID": "FBooth-Background/aiirp5rtr0yify5ygbzp",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016796/FBooth-Background/f0ha3rdxmx4zotd9k7g2.png",
+        "CouldID": "FBooth-Background/f0ha3rdxmx4zotd9k7g2",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:40:36.1000103",
-        "LastModified": "2024-08-08T06:40:36.09",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:46:36.1985191",
+        "LastModified": "2024-08-07T14:46:36.197",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "cf462bbd-5645-403f-330c-08dcb73a3e22",
+        "BackgroundID": "70ae3efa-7d26-49c1-c36c-08dcb6b4f590",
         "BackgroundCode": "872D91FB-E4AF-4321-B520-B75251CF3BAD.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074043/FBooth-Background/lriwqos567mig2vmx0p1.png",
-        "CouldID": "FBooth-Background/lriwqos567mig2vmx0p1",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016806/FBooth-Background/zinaqrkelehz3us4aqn9.png",
+        "CouldID": "FBooth-Background/zinaqrkelehz3us4aqn9",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:40:44.7366076",
-        "LastModified": "2024-08-08T06:40:44.723",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:46:46.4742173",
+        "LastModified": "2024-08-07T14:46:46.473",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "ab3dff9e-7cfd-4c67-330d-08dcb73a3e22",
+        "BackgroundID": "a8e72c81-30b0-4274-c36d-08dcb6b4f590",
         "BackgroundCode": "B200446E-2D3D-48A0-A2FD-0B3AC2103C94.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074059/FBooth-Background/lmsuuqrrzhspuol66djo.png",
-        "CouldID": "FBooth-Background/lmsuuqrrzhspuol66djo",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016814/FBooth-Background/carueulywfmydqneo9tg.png",
+        "CouldID": "FBooth-Background/carueulywfmydqneo9tg",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:41:00.2108266",
-        "LastModified": "2024-08-08T06:41:00.203",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:46:54.5381293",
+        "LastModified": "2024-08-07T14:46:54.54",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "f158ce52-7980-426d-330e-08dcb73a3e22",
+        "BackgroundID": "654ecaf9-bdda-400b-c36e-08dcb6b4f590",
         "BackgroundCode": "4CBCB408-D304-47E1-B82E-35FBDD472C15.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074067/FBooth-Background/pqhwypouhdlni7nf4syh.png",
-        "CouldID": "FBooth-Background/pqhwypouhdlni7nf4syh",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016823/FBooth-Background/nlkg2damkil0zmpiyh6v.png",
+        "CouldID": "FBooth-Background/nlkg2damkil0zmpiyh6v",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:41:08.3918993",
-        "LastModified": "2024-08-08T06:41:08.383",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:47:02.9411919",
+        "LastModified": "2024-08-07T14:47:02.94",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       },
       {
-        "BackgroundID": "ce0088ce-e54c-4214-330f-08dcb73a3e22",
+        "BackgroundID": "15507f5f-44ca-40e2-c36f-08dcb6b4f590",
         "BackgroundCode": "AB91B123-B7D7-4FC8-A293-90717DFD757F.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723074076/FBooth-Background/h8parz2xe7rgldlkhlne.png",
-        "CouldID": "FBooth-Background/h8parz2xe7rgldlkhlne",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016829/FBooth-Background/lo0laxfnr1ck9zyt0kwz.png",
+        "CouldID": "FBooth-Background/lo0laxfnr1ck9zyt0kwz",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-08T06:41:17.6791988",
-        "LastModified": "2024-08-08T06:41:17.67",
-        "LayoutID": "e390b991-0231-43de-eaee-08dcb73a18d9"
+        "CreatedDate": "2024-08-07T14:47:09.5971018",
+        "LastModified": "2024-08-07T14:47:09.597",
+        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
       }
     ]
   }

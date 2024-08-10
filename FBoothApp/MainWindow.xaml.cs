@@ -363,7 +363,12 @@ namespace FBoothApp
 
         private void NextButtonTakingPhoto_Click(object sender, RoutedEventArgs e)
         {
-            // Add your logic here for what happens when the next button is clicked
+            // Bắt đầu hiệu ứng fade-out
+            var fadeOutStoryboard = (Storyboard)this.FindResource("FadeOutStoryboard");
+            fadeOutStoryboard.Begin();
+            Overlay.Visibility = Visibility.Collapsed;
+            Overlay.IsHitTestVisible = false;
+
             NextButtonTakingPhoto.Visibility = Visibility.Hidden;
             StartButton_Click(sender, e);
         }
@@ -535,6 +540,34 @@ namespace FBoothApp
 
         }
 
+        public async Task CreatePhotoSessionAsync(Guid bookingID, Guid layoutID, string sessionName, int totalPhotoTaken, DateTime startTime, DateTime endTime)
+        {
+            var photoSessionRequest = new CreatePhotoSessionRequest
+            {
+                SessionName = sessionName,
+                TotalPhotoTaken = totalPhotoTaken,
+                StartTime = startTime,
+                EndTime = endTime,
+                LayoutID = layoutID,
+                BookingID = bookingID
+            };
+
+            try
+            {
+                var response = await _apiServices.CreatePhotoSessionAsync(photoSessionRequest);
+
+                if (response != null)
+                {
+                    // Xử lý phản hồi nếu cần
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ nếu xảy ra lỗi
+                Console.WriteLine($"Failed to create photo session: {ex.Message}");
+            }
+        }
+
         private void ErrorHandler_NonSevereErrorHappened(object sender, ErrorCode ex)
         {
             string errorCode = ((int)ex).ToString("X");
@@ -604,9 +637,11 @@ namespace FBoothApp
             try
             {
                 //Slider.Background = liveView;
-                DrawGridLines();
+                
                 MainCamera.StartLiveView();
                 LiveViewImage.Visibility = Visibility.Visible;
+
+                DrawGridLines();
                 GridCanvasLiveViewImage.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
@@ -794,22 +829,25 @@ namespace FBoothApp
 
         public void TurnOnLayoutMenu()
         {
-            PhotoTextBox.Text = "Choose a Layout to Begin Your Experience!";
             sliderTimer.Stop();
             Slider.Visibility = Visibility.Hidden;
-            SliderBorder.Visibility = Visibility.Hidden;
-            //InputGrid.Visibility = Visibility.Hidden;
-            HomeText.Visibility = Visibility.Hidden;
-            BorderPanel.Visibility = Visibility.Hidden;
+            //SliderBorder.Visibility = Visibility.Hidden;
+            ////InputGrid.Visibility = Visibility.Hidden;
+            //HomeText.Visibility = Visibility.Hidden;
+            //BorderPanel.Visibility = Visibility.Hidden;
 
-            //LayoutsWrapPanel.Visibility = Visibility.Visible;
-            //LayoutScrollViewer.Visibility = Visibility.Visible;
+            Overlay.Visibility = Visibility.Visible;
+            Overlay.IsHitTestVisible = true;
+
+            // Bắt đầu hiệu ứng fade-in
+            var fadeInStoryboard = (Storyboard)this.FindResource("FadeInStoryboard");
+            fadeInStoryboard.Begin();
+
             LayoutTabControlGrid.Visibility = Visibility.Visible;
             LayoutTabControl.Visibility = Visibility.Visible;
 
 
             LoadLayouts();
-
         }
         public void TurnOffLayoutMenu()
         {
@@ -818,33 +856,33 @@ namespace FBoothApp
             LayoutTabControlGrid.Visibility = Visibility.Hidden;
             LayoutTabControl.Visibility = Visibility.Hidden;
         }
-        public void StartLayoutsWelcomeMenu()
-        {
-            PhotoTextBox.Visibility = Visibility.Visible;
-            PhotoTextBox.Text = "Hello";
-            SliderBorder.Visibility = Visibility.Visible;
+        //public void StartLayoutsWelcomeMenu()
+        //{
+        //    PhotoTextBox.Visibility = Visibility.Visible;
+        //    PhotoTextBox.Text = "Hello";
+        //    SliderBorder.Visibility = Visibility.Visible;
 
-            //StartButtonMenu.Visibility = Visibility.Visible;
+        //    //StartButtonMenu.Visibility = Visibility.Visible;
 
-            Slider.Visibility = Visibility.Visible;
-            sliderTimer.Start();
+        //    Slider.Visibility = Visibility.Visible;
+        //    sliderTimer.Start();
 
-            //StopButton.Visibility = Visibility.Hidden;
-            ReadyButton.Visibility = Visibility.Hidden;
-            PrintButton.Visibility = Visibility.Hidden;
-            ShowPrint.Visibility = Visibility.Hidden;
+        //    //StopButton.Visibility = Visibility.Hidden;
+        //    ReadyButton.Visibility = Visibility.Hidden;
+        //    PrintButton.Visibility = Visibility.Hidden;
+        //    ShowPrint.Visibility = Visibility.Hidden;
 
-            //NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
-            //AddOneCopyButton.Visibility = Visibility.Hidden;
-            //MinusOneCopyButton.Visibility = Visibility.Hidden;
-            PrintMenuGrid.Visibility = Visibility.Collapsed;
-            SendEmailButton.Visibility = Visibility.Hidden;
+        //    //NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
+        //    //AddOneCopyButton.Visibility = Visibility.Hidden;
+        //    //MinusOneCopyButton.Visibility = Visibility.Hidden;
+        //    PrintMenuGrid.Visibility = Visibility.Collapsed;
+        //    SendEmailButton.Visibility = Visibility.Hidden;
 
-            ThumbnailDockPanel.Visibility = Visibility.Hidden;
-            ThumbnailDockPanelGrid.Visibility = Visibility.Hidden;
-            SliderBorder.Visibility = Visibility.Hidden;
-            Slider.Visibility = Visibility.Hidden;
-        }
+        //    ThumbnailDockPanel.Visibility = Visibility.Hidden;
+        //    ThumbnailDockPanelGrid.Visibility = Visibility.Hidden;
+        //    SliderBorder.Visibility = Visibility.Hidden;
+        //    Slider.Visibility = Visibility.Hidden;
+        //}
         public void CheckTemplate()
         {
 
@@ -937,8 +975,8 @@ namespace FBoothApp
                     Source = new BitmapImage(new Uri(file)),
                     Stretch = Stretch.Uniform,
                     Margin = new Thickness(10),
-                    Width = 200, // Đặt kích thước cố định
-                    Height = 200 // Đặt kích thước cố định
+                    Width = 100, // Đặt kích thước cố định
+                    Height = 100 // Đặt kích thước cố định
                 };
                 backgroundImage.MouseLeftButtonDown += Background_MouseLeftButtonDown;
                 BackgroundsWrapPanel.Children.Add(backgroundImage);
@@ -1139,7 +1177,7 @@ namespace FBoothApp
 
         private void RetakePhotoMenu()
         {
-            
+
             Slider.Visibility = Visibility.Hidden;
             SliderBorder.Visibility = Visibility.Hidden;
             ReadyButton.Visibility = Visibility.Hidden;
@@ -1895,7 +1933,7 @@ namespace FBoothApp
 
         private void RoundedTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (RoundedTextBox.Text == "Enter your code here!")
+            if (RoundedTextBox.Text == "Enter the code from your email here!")
             {
                 RoundedTextBox.Text = string.Empty;
                 RoundedTextBox.Foreground = new SolidColorBrush(Colors.Black);
@@ -1906,7 +1944,7 @@ namespace FBoothApp
         {
             if (string.IsNullOrWhiteSpace(RoundedTextBox.Text))
             {
-                RoundedTextBox.Text = "Enter your code here!";
+                RoundedTextBox.Text = "Enter the code from your email here!";
                 RoundedTextBox.Foreground = new SolidColorBrush(Colors.Gray);
             }
         }
@@ -1915,7 +1953,7 @@ namespace FBoothApp
         {
             if (SendButton == null) return; // Ensure SendButton is not null
 
-            if (string.IsNullOrWhiteSpace(RoundedTextBox.Text) || RoundedTextBox.Text == "Enter your code here!")
+            if (string.IsNullOrWhiteSpace(RoundedTextBox.Text) || RoundedTextBox.Text == "Enter the code from your email here!")
             {
                 SendButton.IsEnabled = false;
                 SendButton.Opacity = 0.5;

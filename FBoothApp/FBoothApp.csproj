@@ -126,6 +126,7 @@
     <Compile Include="Entity\BookingResponse.cs" />
     <Compile Include="Entity\BookingServiceResponse.cs" />
     <Compile Include="Entity\CheckinRequest.cs" />
+    <Compile Include="Entity\CreatePhotoSessionRequest.cs" />
     <Compile Include="Entity\Layout.cs" />
     <Compile Include="Entity\PhotoBox.cs" />
     <Compile Include="Entity\Sticker.cs" />
@@ -237,9 +238,6 @@
     <Resource Include="backgrounds\plus.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\NextButton.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgrounds\check.png" />
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +260,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\NextButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
