@@ -123,12 +123,15 @@
     </Compile>
     <Compile Include="Entity\AppSettings.cs" />
     <Compile Include="Entity\Background.cs" />
-    <Compile Include="Entity\BookingResponse.cs" />
-    <Compile Include="Entity\BookingServiceResponse.cs" />
-    <Compile Include="Entity\CheckinRequest.cs" />
-    <Compile Include="Entity\CreatePhotoSessionRequest.cs" />
+    <Compile Include="Entity\Enum\PhotoSessionStatus.cs" />
+    <Compile Include="Entity\Reponse\BookingResponse.cs" />
+    <Compile Include="Entity\Reponse\BookingServiceResponse.cs" />
+    <Compile Include="Entity\Request\CheckinRequest.cs" />
+    <Compile Include="Entity\Request\CreatePhotoSessionRequest.cs" />
     <Compile Include="Entity\Layout.cs" />
     <Compile Include="Entity\PhotoBox.cs" />
+    <Compile Include="Entity\Reponse\PhotoSessionResponse.cs" />
+    <Compile Include="Entity\Request\UpdatePhotoSessionRequest.cs" />
     <Compile Include="Entity\Sticker.cs" />
     <Compile Include="Classes\StickerProcess.cs" />
     <Compile Include="Menu\UserSettings.cs" />
@@ -232,12 +235,6 @@
     <Resource Include="backgrounds\print.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\minus.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="backgrounds\plus.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgrounds\check.png" />
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +260,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\NextButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\ReloadSession.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\closeSession.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

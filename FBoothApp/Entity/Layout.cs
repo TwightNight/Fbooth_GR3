@@ -8,7 +8,7 @@ namespace FBoothApp.Entity
 {
     public class Layout
     {
-        public string LayoutID { get; set; }
+        public Guid LayoutID { get; set; }
         public string LayoutURL { get; set; }
         public string CouldID { get; set; }
         public string LayoutCode { get; set; }

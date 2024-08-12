@@ -34,6 +34,25 @@ namespace FBoothApp
             string currFile = Path.Combine(FolderDirectory, fileName);
             return File.Exists(currFile);
         }
+
+        public string GetSessionFolder()
+        {
+            string fullPath = CurrentSessionDirectory();
+
+            // Trả về chỉ phần tên của thư mục session
+            return Path.GetFileName(fullPath);
+        }
+
+        public int CountPhotosInSession()
+        {
+            if (Directory.Exists(FolderDirectory))
+            {
+                // Đếm số lượng tệp có định dạng ảnh trong thư mục session
+                return Directory.GetFiles(FolderDirectory, "*.jpg").Length;
+            }
+            return 0;
+        }
+
         public string CurrentSessionDirectory()
         {
             if (CurrentSessionPath == null)

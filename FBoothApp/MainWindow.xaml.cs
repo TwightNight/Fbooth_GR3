@@ -25,6 +25,7 @@ using FBoothApp.Entity;
 using FBoothApp.Services;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using FBoothApp.Entity.Request;
 
 
 namespace FBoothApp
@@ -133,6 +134,7 @@ namespace FBoothApp
             secondCounter.Start();
         }
 
+        
         public async void MakePhoto(object sender, EventArgs e)
         {
             try
@@ -518,7 +520,7 @@ namespace FBoothApp
             catch (Exception ex) { Report.Error(ex.Message, false); }
         }
 
-        private void MainCamera_DownloadReady(Camera sender, DownloadInfo Info)
+        private async void MainCamera_DownloadReady(Camera sender, DownloadInfo Info)
         {
 
             try
@@ -526,10 +528,16 @@ namespace FBoothApp
                 photoNumber++;
                 var savedata = new SavePhoto(photoNumber, BookingID);
                 string dir = savedata.FolderDirectory;
+                string sessionFolder = savedata.GetSessionFolder();
 
                 Info.FileName = savedata.PhotoName;
                 sender.DownloadFile(Info, dir);
-
+                if (sessionFolder != null)
+                {
+                    var sessionStartTime = DateTime.Now;
+                    int totalPhotosTaken = savedata.CountPhotosInSession();
+                    await CreatePhotoSessionAsync(BookingID, layout.LayoutID, sessionFolder, sessionStartTime);
+                }
 
                 ReSize.ImageAndSave(savedata.PhotoDirectory, photoNumberInTemplate, layout);
 
@@ -540,14 +548,13 @@ namespace FBoothApp
 
         }
 
-        public async Task CreatePhotoSessionAsync(Guid bookingID, Guid layoutID, string sessionName, int totalPhotoTaken, DateTime startTime, DateTime endTime)
+        private Guid _currentSessionId;
+        public async Task CreatePhotoSessionAsync(Guid bookingID, Guid layoutID, string sessionName, DateTime startTime)
         {
             var photoSessionRequest = new CreatePhotoSessionRequest
             {
                 SessionName = sessionName,
-                TotalPhotoTaken = totalPhotoTaken,
                 StartTime = startTime,
-                EndTime = endTime,
                 LayoutID = layoutID,
                 BookingID = bookingID
             };
@@ -558,14 +565,61 @@ namespace FBoothApp
 
                 if (response != null)
                 {
-                    // Xử lý phản hồi nếu cần
+                    _currentSessionId = response.PhotoSessionID;
+                    Debug.WriteLine($"Photo session created successfully with ID: {_currentSessionId}");
                 }
             }
             catch (Exception ex)
             {
                 // Xử lý ngoại lệ nếu xảy ra lỗi
-                Console.WriteLine($"Failed to create photo session: {ex.Message}");
+                Debug.WriteLine($"Failed to create photo session: {ex.Message}");
             }
+        }
+
+        private async void TakeNewPictureButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Lấy thông tin booking hiện tại từ API (nếu cần)
+                var booking = await _apiServices.GetBookingByIdAsync(BookingID);
+
+                // Kiểm tra hiệu lực của booking
+                if (IsBookingValid(booking.StartTime, booking.EndTime))
+                {
+                    // Cập nhật phiên làm việc hiện tại trước khi chụp lại ảnh
+                    var savedata = new SavePhoto(photoNumber, BookingID);
+                    var updateRequest = new UpdatePhotoSessionRequest
+                    {
+                        TotalPhotoTaken = savedata.CountPhotosInSession(),
+                        Status = Entity.Enum.PhotoSessionStatus.Ended
+                    };
+
+                    await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
+
+                    //// Tiếp tục quy trình chụp ảnh
+                    //NextButtonTakingPhoto.Visibility = Visibility.Hidden;
+                    //StartButton_Click(sender, e);
+                }
+                else
+                {
+                    // Booking đã hết hạn, yêu cầu check-in lại
+                    MessageBox.Show("Your booking has expired. Please check-in again.", "Booking Expired", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    // Thực hiện hành động cần thiết để yêu cầu người dùng check-in lại
+                    // Ví dụ: Mở lại màn hình check-in
+                    TurnOffLayoutMenu();
+                    Overlay.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to update photo session: {ex.Message}");
+            }
+        }
+
+        private bool IsBookingValid(DateTime startTime, DateTime endTime)
+        {
+            DateTime currentTime = DateTime.Now;
+            return currentTime >= startTime && currentTime <= endTime;
         }
 
         private void ErrorHandler_NonSevereErrorHappened(object sender, ErrorCode ex)
@@ -731,28 +785,29 @@ namespace FBoothApp
                 };
 
                 var response = await _apiServices.CheckinAsync(request);
-
-                var bookingIDresponse = response.BookingID;
-                BookingID = bookingIDresponse;
-
-                // Handle the response (e.g., show a message, update the UI)
-                // Tính toán tổng thời gian thuê và thời gian kết thúc
-                var rentalDuration = response.EndTime - response.StartTime;
-                var checkinTime = DateTime.Now;
-                var formattedDuration = $"{rentalDuration.Hours} hours and {rentalDuration.Minutes} minutes";
-                var endTimeFormatted = response.EndTime.ToString("HH:mm");
-
-                // Hiển thị thông báo thành công
-                var successMessageBox = new CustomMessageBox($"Check-in successful at: {checkinTime}!\nTotal rental time: {formattedDuration}\nRental time ends at: {endTimeFormatted}");
-                successMessageBox.ShowDialog();
-                if (successMessageBox.DialogResult == true)
+                if (response != null)
                 {
-                    // Process the response (e.g., show booking details)
-                    sessionEndTime = response.EndTime;
-                    StartEndTimeCheck();
+                    var bookingIDresponse = response.BookingID;
+                    BookingID = bookingIDresponse;
 
-                    // Turn on layout menu after successful check-in
-                    TurnOnLayoutMenu();
+                    // Handle the response (e.g., show a message, update the UI)
+                    // Tính toán tổng thời gian thuê và thời gian kết thúc
+                    var rentalDuration = response.EndTime - response.StartTime;
+                    var checkinBookingStartTime = DateTime.Now;
+                    var formattedDuration = $"{rentalDuration.Hours} hours and {rentalDuration.Minutes} minutes";
+                    var endTimeFormatted = response.EndTime.ToString("HH:mm");
+
+                    // Hiển thị thông báo thành công
+                    var successMessageBox = new CustomMessageBox($"Check-in successful at: {checkinBookingStartTime}!\nTotal rental time: {formattedDuration}\nRental time ends at: {endTimeFormatted}");
+                    successMessageBox.ShowDialog();
+                    if (successMessageBox.DialogResult == true)
+                    { 
+                        // Process the response (e.g., show booking details)
+                        bookingEndTime = response.EndTime;
+                        StartEndTimeCheck();
+                        // Turn on layout menu after successful check-in
+                        TurnOnLayoutMenu();
+                    }
                 }
             }
             catch (Exception ex)
@@ -789,7 +844,7 @@ namespace FBoothApp
         }
 
         private DispatcherTimer checkEndTimeTimer;
-        private DateTime sessionEndTime;
+        private DateTime bookingEndTime;
 
         private void StartEndTimeCheck()
         {
@@ -804,7 +859,7 @@ namespace FBoothApp
 
         private void CheckEndTimeTimer_Tick(object sender, EventArgs e)
         {
-            if (DateTime.Now >= sessionEndTime)
+            if (DateTime.Now >= bookingEndTime)
             {
                 checkEndTimeTimer.Stop();
                 var endMessageBox = new CustomMessageBox("Your session has ended. The application will now close.");
@@ -1493,7 +1548,6 @@ namespace FBoothApp
                     Height = 30,
                     HorizontalAlignment = HorizontalAlignment.Right,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(0, 5, 5, 0),
                     Visibility = Visibility.Hidden
                 };
 
@@ -1509,7 +1563,7 @@ namespace FBoothApp
                     Foreground = System.Windows.Media.Brushes.White,
                     Background = System.Windows.Media.Brushes.Transparent,
                     Text = "0",
-                    FontSize = 16,
+                    FontSize = 15,
                     FontWeight = FontWeights.Bold,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center
@@ -1533,12 +1587,9 @@ namespace FBoothApp
                     Content = new Image
                     {
                         Source = new BitmapImage(new Uri("pack://application:,,,/backgrounds/minus.png")),
-                        Width = 20,
-                        Height = 20
+                        Width = 30,
+                        Height = 30
                     },
-                    Background = System.Windows.Media.Brushes.White,
-                    BorderBrush = System.Windows.Media.Brushes.Black,
-                    BorderThickness = new Thickness(1),
                     Margin = new Thickness(5),
                     Tag = quantityTextBlock,
                     Style = (Style)FindResource("NoHighlightButtonStyle")
@@ -1550,12 +1601,9 @@ namespace FBoothApp
                     Content = new Image
                     {
                         Source = new BitmapImage(new Uri("pack://application:,,,/backgrounds/plus.png")),
-                        Width = 20,
-                        Height = 20
+                        Width = 30,
+                        Height = 30
                     },
-                    Background = System.Windows.Media.Brushes.White,
-                    BorderBrush = System.Windows.Media.Brushes.Black,
-                    BorderThickness = new Thickness(1),
                     Margin = new Thickness(5),
                     Tag = quantityTextBlock,
                     Style = (Style)FindResource("NoHighlightButtonStyle")

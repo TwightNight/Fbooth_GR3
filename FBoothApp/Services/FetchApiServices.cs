@@ -1,7 +1,9 @@
 ﻿using FBoothApp.Entity;
+using FBoothApp.Entity.Request;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -272,7 +274,44 @@ namespace FBoothApp.Services
             return JsonConvert.DeserializeObject<BookingResponse>(jsonResponse);
         }
 
-        public async Task<CreatePhotoSessionRequest> CreatePhotoSessionAsync(CreatePhotoSessionRequest request)
+        public async Task<BookingResponse> GetBookingByIdAsync(Guid bookingId)
+        {
+            try
+            {
+                var url = $"{_apiBaseUrl}/booking/{bookingId}";
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Đọc nội dung phản hồi và giải mã JSON thành BookingResponse
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var booking = JsonConvert.DeserializeObject<BookingResponse>(jsonResponse);
+
+                    return booking;
+                }
+                else
+                {
+                    // Đọc thông báo lỗi từ phản hồi của API nếu có lỗi
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    var errorObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
+                    if (errorObject != null && errorObject.TryGetValue("message", out var errorMessage))
+                    {
+                        throw new Exception(errorMessage);
+                    }
+
+                    throw new Exception("An unknown error occurred while retrieving the booking.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to retrieve booking: {ex.Message}");
+                throw; // Ném lại ngoại lệ để gọi hàm xử lý
+            }
+        }
+
+
+        public async Task<PhotoSessionResponse> CreatePhotoSessionAsync(CreatePhotoSessionRequest request)
         {
             var jsonRequest = JsonConvert.SerializeObject(request);
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
@@ -291,12 +330,31 @@ namespace FBoothApp.Services
                     throw new Exception(errorMessage);
                 }
 
-                // Nếu không có trường "message", ném lỗi chung chung
                 throw new Exception("An unknown error occurred.");
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<CreatePhotoSessionRequest>(jsonResponse);
+            return JsonConvert.DeserializeObject<PhotoSessionResponse>(jsonResponse);
+        }
+
+        public async Task UpdatePhotoSessionAsync(Guid photoSessionID, UpdatePhotoSessionRequest updateRequest)
+        {
+            var jsonRequest = JsonConvert.SerializeObject(updateRequest);
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"{_apiBaseUrl}/photo-session/{photoSessionID}", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                var errorObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
+                if (errorObject != null && errorObject.TryGetValue("message", out var errorMessage))
+                {
+                    throw new Exception(errorMessage);
+                }
+
+                throw new Exception("An unknown error occurred.");
+            }
         }
 
     }

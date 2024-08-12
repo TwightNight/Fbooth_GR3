@@ -1,5 +1,27 @@
 [
   {
+    "LayoutID": "dcfa3a5f-aacb-4be0-3375-08dcbad9e8c8",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723472425/FBooth-Layout/zacjlbgdtuieawmjbozn.png",
+    "CouldID": "FBooth-Layout/zacjlbgdtuieawmjbozn",
+    "LayoutCode": "1 ảnh",
+    "Status": "Available",
+    "Height": 2827,
+    "Width": 2827,
+    "PhotoSlot": 1,
+    "CreatedDate": "2024-08-12T21:20:25.793",
+    "LastModified": "2024-08-12T21:20:25.793",
+    "PhotoBoxes": [
+      {
+        "BoxHeight": 1507,
+        "BoxWidth": 2261,
+        "CoordinatesX": 283,
+        "CoordinatesY": 283,
+        "LayoutID": "dcfa3a5f-aacb-4be0-3375-08dcbad9e8c8"
+      }
+    ],
+    "Backgrounds": []
+  },
+  {
     "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400",
     "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723025533/FBooth-Layout/jf90f2jka3crzqhfpd4q.png",
     "CouldID": "FBooth-Layout/jf90f2jka3crzqhfpd4q",
