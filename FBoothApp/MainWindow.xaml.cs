@@ -1381,7 +1381,7 @@ namespace FBoothApp
                 //NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
                 //AddOneCopyButton.Visibility = Visibility.Hidden;
                 //MinusOneCopyButton.Visibility = Visibility.Hidden;
-                PrintMenuGrid.Visibility = Visibility.Hidden;
+                //PrintMenuGrid.Visibility = Visibility.Hidden;
 
                 SendEmailButton.Visibility = Visibility.Hidden;
 
@@ -1525,32 +1525,32 @@ namespace FBoothApp
             NextButtonPrinting.Visibility = Visibility.Hidden;
             ShowPrint.Visibility = Visibility.Hidden;
             SendEmailButton.Visibility = Visibility.Visible;
-            PrintMenuGrid.Visibility = Visibility.Visible;
+            //PrintMenuGrid.Visibility = Visibility.Visible;
 
             ShowBookingPhotoThumbnail(BookingID);
         }
 
         public void ShowBookingPhotoThumbnail(Guid bookingID)
         {
-            // Xóa các nút hiện tại trong WrapPanel
+            // Clear existing thumbnails
             BookingPhotoThumbnailWrapPanel.Children.Clear();
 
-            // Đường dẫn tới thư mục gốc của booking cụ thể
+            // Determine the path to the booking folder
             string bookingFolderPath = Path.Combine(Environment.CurrentDirectory, Actual.DateNow(), bookingID.ToString());
 
-            // Kiểm tra xem thư mục có tồn tại không
+            // Check if the booking folder exists
             if (!Directory.Exists(bookingFolderPath))
             {
                 MessageBox.Show("No photos found for this booking.");
                 return;
             }
 
-            // Lấy tất cả các thư mục session
+            // Get all session folders, ordered by creation time
             var sessionFolders = Directory.GetDirectories(bookingFolderPath, "Session_*")
-                                  .OrderByDescending(d => Directory.GetCreationTime(d))
-                                  .ToArray();
+                                          .OrderByDescending(d => Directory.GetCreationTime(d))
+                                          .ToArray();
 
-            // Lấy ảnh có số thứ tự lớn nhất từ thư mục "prints" của các session
+            // Collect the latest print files from each session
             List<string> photoFiles = new List<string>();
             foreach (var sessionFolder in sessionFolders)
             {
@@ -1566,27 +1566,28 @@ namespace FBoothApp
                 }
             }
 
+            // If no photos found, display a message
             if (photoFiles.Count == 0)
             {
                 MessageBox.Show("No photos found for this booking.");
                 return;
             }
 
-            // Duyệt qua từng file ảnh và tạo nút hình thu nhỏ
+            // Create thumbnail buttons for each photo file
             foreach (var photoFile in photoFiles)
             {
-                // Tạo Image cho ảnh
+                // Create an Image control for the photo
                 Image thumbnailImage = new Image
                 {
                     Source = new BitmapImage(new Uri(photoFile)),
                     Stretch = Stretch.Uniform,
-                    Margin = new Thickness(5), // Đảm bảo không có viền trắng
+                    Margin = new Thickness(5),
                     SnapsToDevicePixels = true,
-                    Width = 200, // Đặt kích thước phù hợp
+                    Width = 200,
                     Height = 200
                 };
 
-                // Tạo Grid để chứa vòng tròn và số
+                // Create a Grid for the quantity circle
                 Grid quantityGrid = new Grid
                 {
                     Width = 30,
@@ -1596,13 +1597,13 @@ namespace FBoothApp
                     Visibility = Visibility.Hidden
                 };
 
-                // Tạo Ellipse để tạo vòng tròn đỏ
+                // Create an Ellipse for the quantity circle
                 Ellipse quantityEllipse = new Ellipse
                 {
                     Fill = System.Windows.Media.Brushes.Red
                 };
 
-                // Tạo TextBlock để hiển thị số lượng
+                // Create a TextBlock for the quantity
                 TextBlock quantityTextBlock = new TextBlock
                 {
                     Foreground = System.Windows.Media.Brushes.White,
@@ -1617,7 +1618,7 @@ namespace FBoothApp
                 quantityGrid.Children.Add(quantityEllipse);
                 quantityGrid.Children.Add(quantityTextBlock);
 
-                // Tạo các nút cộng trừ và TextBlock cho số lượng
+                // Create a StackPanel for the control buttons
                 StackPanel controlPanel = new StackPanel
                 {
                     Orientation = Orientation.Horizontal,
@@ -1627,6 +1628,7 @@ namespace FBoothApp
                     Visibility = Visibility.Hidden
                 };
 
+                // Create the decrease button
                 Button decreaseButton = new Button
                 {
                     Content = new Image
@@ -1641,6 +1643,7 @@ namespace FBoothApp
                 };
                 decreaseButton.Click += DecreaseCount;
 
+                // Create the increase button
                 Button increaseButton = new Button
                 {
                     Content = new Image
@@ -1658,33 +1661,50 @@ namespace FBoothApp
                 controlPanel.Children.Add(decreaseButton);
                 controlPanel.Children.Add(increaseButton);
 
-                // Tạo Grid để chứa cả thumbnailImage và quantityGrid
+                // Create a Grid for the thumbnail and controls
                 Grid grid = new Grid();
                 grid.Children.Add(thumbnailImage);
                 grid.Children.Add(quantityGrid);
                 grid.Children.Add(controlPanel);
 
-                // Tạo Border cho Grid
+                // Create a Border for the Grid
                 Border border = new Border
                 {
                     Child = grid,
                     BorderBrush = System.Windows.Media.Brushes.Transparent,
                     BorderThickness = new Thickness(0),
                     Margin = new Thickness(5),
-                    Tag = photoFile // Lưu đường dẫn file ảnh trong thuộc tính Tag
+                    Tag = photoFile // Store the photo file path in the Tag property
                 };
 
-                // Thêm sự kiện click cho Border
+                // Add click event for the thumbnail
                 border.MouseLeftButtonDown += (s, e) =>
                 {
                     ThumbnailBooking_Click(s, e);
-                    controlPanel.Visibility = controlPanel.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+                    // Show control panel based on visibility
+                    if (currentServiceType == ServiceType.Printing)
+                    {
+                        controlPanel.Visibility = Visibility.Visible;
+                    }
+                    else if (currentServiceType == ServiceType.EmailSending)
+                    {
+                        foreach (var child in controlPanel.Children)
+                        {
+                            if (child is Button)
+                            {
+                                (child as Button).Visibility = Visibility.Collapsed;
+                            }
+                        }
+                        controlPanel.Visibility = Visibility.Visible;
+                    }
                 };
 
+                // Add the Border to the WrapPanel
                 BookingPhotoThumbnailWrapPanel.Children.Add(border);
             }
 
-            // Hiển thị BookingPhotoThumbnailGrid
+            // Make the thumbnail grid visible
             BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
         }
 
@@ -1693,25 +1713,68 @@ namespace FBoothApp
 
         private void ThumbnailBooking_Click(object sender, MouseButtonEventArgs e)
         {
+            // Check if a service is selected
+            if (!isServiceSelected)
+            {
+                MessageBox.Show("Please select a service before choosing a photo.");
+                return;
+            }
+
             var clickedBorder = sender as Border;
             if (clickedBorder != null)
             {
                 var parentGrid = clickedBorder.Child as Grid;
                 var quantityGrid = parentGrid?.Children.OfType<Grid>().FirstOrDefault(grid => grid.Children.OfType<Ellipse>().Any());
+                var controlPanel = parentGrid?.Children.OfType<StackPanel>().FirstOrDefault(panel => panel.Orientation == Orientation.Horizontal);
 
-                if (quantityGrid != null)
+                if (quantityGrid != null && controlPanel != null)
                 {
-                    // Nếu ảnh đã được chọn, bỏ chọn
+                    // Handle the border selection
                     if (quantityGrid.Visibility == Visibility.Visible)
                     {
-                        quantityGrid.Visibility = Visibility.Hidden;
+                        // If already selected, deselect the photo
+                        quantityGrid.Visibility = Visibility.Collapsed;
                         clickedBorder.BorderBrush = System.Windows.Media.Brushes.Transparent;
                         selectedPhotoPaths.Remove(clickedBorder.Tag as string);
                         selectedPhotoPathsWithQuantities.Remove(clickedBorder.Tag as string);
+
+                        // Hide all controls including the control panel
+                        foreach (var child in controlPanel.Children)
+                        {
+                            (child as Button).Visibility = Visibility.Collapsed;
+                        }
+                        controlPanel.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
-                        // Nếu ảnh chưa được chọn, chọn ảnh
+                        // If not selected, select the photo
+
+                        // Show controls based on the selected service type
+                        if (currentServiceType == ServiceType.EmailSending)
+                        {
+                            // For EmailSending, only show the quantity control, hide the increase and decrease buttons
+                            foreach (var child in controlPanel.Children)
+                            {
+                                if (child is Button)
+                                {
+                                    (child as Button).Visibility = Visibility.Collapsed;
+                                }
+                            }
+                            controlPanel.Visibility = Visibility.Visible;
+                        }
+                        else if (currentServiceType == ServiceType.Printing)
+                        {
+                            // For Printing, show the entire control panel with increase and decrease buttons
+                            foreach (var child in controlPanel.Children)
+                            {
+                                if (child is Button)
+                                {
+                                    (child as Button).Visibility = Visibility.Visible;
+                                }
+                            }
+                            controlPanel.Visibility = Visibility.Visible;
+                        }
+
                         quantityGrid.Visibility = Visibility.Visible;
                         clickedBorder.BorderBrush = System.Windows.Media.Brushes.Green;
                         var quantityTextBlock = quantityGrid.Children.OfType<TextBlock>().FirstOrDefault();
@@ -1719,12 +1782,13 @@ namespace FBoothApp
                         selectedPhotoPathsWithQuantities[clickedBorder.Tag as string] = 1;
                         if (quantityTextBlock != null)
                         {
-                            quantityTextBlock.Text = "1"; // Đặt số lượng ban đầu là 1
+                            quantityTextBlock.Text = "1"; // Default to 1
                         }
                     }
                 }
             }
         }
+
 
         private void IncreaseCount(object sender, RoutedEventArgs e)
         {
@@ -1739,15 +1803,9 @@ namespace FBoothApp
                     {
                         count++;
                         quantityTextBlock.Text = count.ToString();
-                        var parentGrid = VisualTreeHelper.GetParent(button) as Grid;
-                        if (parentGrid != null)
-                        {
-                            var border = VisualTreeHelper.GetParent(parentGrid) as Border;
-                            if (border != null && border.Tag is string photoPath)
-                            {
-                                selectedPhotoPathsWithQuantities[photoPath] = count;
-                            }
-                        }
+
+                        // Update the quantity in the dictionary
+                        UpdateSelectedPhotoQuantity(button, count);
                     }
                 }
             }
@@ -1764,21 +1822,46 @@ namespace FBoothApp
                     int count;
                     if (int.TryParse(quantityTextBlock.Text, out count))
                     {
-                        count = Math.Max(1, count - 1);
+                        count = Math.Max(1, count - 1); // Ensure the quantity doesn't go below 1
                         quantityTextBlock.Text = count.ToString();
-                        var parentGrid = VisualTreeHelper.GetParent(button) as Grid;
-                        if (parentGrid != null)
-                        {
-                            var border = VisualTreeHelper.GetParent(parentGrid) as Border;
-                            if (border != null && border.Tag is string photoPath)
-                            {
-                                selectedPhotoPathsWithQuantities[photoPath] = count;
-                            }
-                        }
+
+                        // Update the quantity in the dictionary
+                        UpdateSelectedPhotoQuantity(button, count);
                     }
                 }
             }
         }
+
+        private void UpdateSelectedPhotoQuantity(Button button, int count)
+        {
+            // Find the nearest Border ancestor
+            var border = FindVisualParent<Border>(button);
+            if (border != null && border.Tag is string photoPath)
+            {
+                // Update the dictionary with the new quantity
+                selectedPhotoPathsWithQuantities[photoPath] = count;
+
+                // Debugging output to confirm the update
+                Debug.WriteLine($"Updated quantity for {photoPath} to {count}");
+            }
+        }
+
+        // Helper method to find a visual parent of a specific type
+        private T FindVisualParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindVisualParent<T>(parentObject);
+        }
+
+
 
 
 
@@ -1805,15 +1888,15 @@ namespace FBoothApp
 
             ShowPrint.Source = actualPrint;
 
-            PrintMenuGrid.Visibility = Visibility.Visible;
-            PrintMenuStackPanel.Visibility = Visibility.Visible;
+            //PrintMenuGrid.Visibility = Visibility.Visible;
+            //PrintMenuStackPanel.Visibility = Visibility.Visible;
             PrintButton.Visibility = Visibility.Visible;
 
             //NumberOfCopiesTextBox.Visibility = Visibility.Visible;
             //AddOneCopyButton.Visibility = Visibility.Visible;
             //MinusOneCopyButton.Visibility = Visibility.Visible;
 
-            PrintMenuGrid.Visibility = Visibility.Visible;
+            //PrintMenuGrid.Visibility = Visibility.Visible;
             SendEmailButton.Visibility = Visibility.Visible;
 
 
@@ -1993,7 +2076,7 @@ namespace FBoothApp
             //NumberOfCopiesTextBox.Visibility = Visibility.Hidden;
             //AddOneCopyButton.Visibility = Visibility.Hidden;
             //MinusOneCopyButton.Visibility = Visibility.Hidden;
-            PrintMenuGrid.Visibility = Visibility.Hidden;
+            //PrintMenuGrid.Visibility = Visibility.Hidden;
             SendEmailButton.Visibility = Visibility.Hidden;
 
 
@@ -2109,24 +2192,36 @@ namespace FBoothApp
 
 
         // Hàm xử lý khi người dùng click vào dịch vụ đã đặt trong tab "Booked Services"
+        private bool isServiceSelected = false; // Flag to check if a service is selected
+        private ServiceType currentServiceType;
+
+
         private void BookedService_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             if (button != null)
             {
-                var serviceData = button.DataContext as dynamic; // Sử dụng dynamic vì anonymous type
+                var serviceData = button.DataContext as dynamic; // Using dynamic for anonymous type
                 if (serviceData != null)
                 {
                     var selectedService = serviceData.Service;
+                    currentServiceType = selectedService.ServiceType; // Set the current service type
+                    isServiceSelected = true; // Set the flag to true
 
-                    // Kiểm tra ServiceType
-                    if (selectedService.ServiceType == ServiceType.Printing)
+                    // Check ServiceType
+                    if (selectedService.ServiceType == ServiceType.EmailSending)
                     {
-                        Print_Click(sender, e); // Gọi hàm in ảnh
+                        // Show the Send Email button and hide the Print button
+                        SendEmailButton.Visibility = Visibility.Visible;
+                        PrintButton.Visibility = Visibility.Collapsed;
+                        BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
                     }
-                    else if (selectedService.ServiceType == ServiceType.EmailSending)
+                    else if (selectedService.ServiceType == ServiceType.Printing)
                     {
-                        SendEmailButtonClick(sender, e); // Gọi hàm gửi email
+                        // Show the Print button and hide the Send Email button
+                        PrintButton.Visibility = Visibility.Visible;
+                        SendEmailButton.Visibility = Visibility.Collapsed;
+                        BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
                     }
                     else
                     {
@@ -2135,6 +2230,9 @@ namespace FBoothApp
                 }
             }
         }
+
+
+
 
         // Hàm xử lý khi người dùng click vào dịch vụ có sẵn trong tab "Available Services"
         private async void AvailableService_Click(object sender, RoutedEventArgs e)

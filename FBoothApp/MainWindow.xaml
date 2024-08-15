@@ -1092,7 +1092,7 @@
         </ScrollViewer>-->
 
         <!--  show nut goi email  -->
-        <Button
+        <!--<Button
             x:Name="SendEmailButton"
             Grid.Row="5"
             Grid.Column="2"
@@ -1139,9 +1139,9 @@
                     </Setter>
                 </Style>
             </Button.Style>
-        </Button>
+        </Button>-->
 
-        <Grid
+        <!--<Grid
             x:Name="PrintMenuGrid"
             Grid.Row="5"
             Grid.Column="3"
@@ -1153,7 +1153,9 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Orientation="Vertical">
-                <!--  Nút in  -->
+        -->
+        <!--  Nút in  -->
+        <!--
                 <Button
                     x:Name="PrintButton"
                     HorizontalAlignment="Center"
@@ -1184,7 +1186,7 @@
                                                     FontSize="24"
                                                     FontWeight="Bold"
                                                     Foreground="Black"
-                                                    Text="Print" />
+                                                    Text="Print your picture" />
                                             </StackPanel>
                                         </Border>
                                     </ControlTemplate>
@@ -1194,8 +1196,9 @@
                     </Button.Style>
                 </Button>
 
-                <!--  TextBox và Nút tăng giảm số lượng  -->
-                <!--<StackPanel
+        -->
+        <!--  TextBox và Nút tăng giảm số lượng  -->
+        <!--<StackPanel
                     Margin="10,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -1245,8 +1248,9 @@
                             Source="pack://application:,,,/backgrounds/minus.png" />
                     </Button>
                 </StackPanel>-->
+        <!--
             </StackPanel>
-        </Grid>
+        </Grid>-->
 
 
 
@@ -1446,47 +1450,6 @@
                             </StackPanel>
                         </Button>
                     </Border>
-
-                    <!--  Nút để cập nhật danh sách dịch vụ  -->
-                    <!--
-                    <Border
-                        Grid.Row="2"
-                        Margin="0,10,0,0"
-                        Padding="5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Black"
-                        BorderBrush="LightGray"
-                        BorderThickness="2"
-                        CornerRadius="15">
-                        <Button
-                            Padding="10,5"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Black"
-                            BorderThickness="0"
-                            Click="RefreshAllServices_Click"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Foreground="White">
-                            <StackPanel
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="Transparent"
-                                Orientation="Horizontal">
-                                <Image
-                                    Width="20"
-                                    Height="20"
-                                    Margin="0,0,10,0"
-                                    Source="pack://application:,,,/backgrounds/ReloadSession.png" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Background="Transparent"
-                                    RenderTransformOrigin="1,1"
-                                    Text="Refresh Services" />
-                            </StackPanel>
-                        </Button>
-                    </Border>-->
                 </Grid>
             </Border>
 
@@ -1504,6 +1467,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
@@ -1537,40 +1501,174 @@
                             Columns="3" />
                     </ScrollViewer>
 
-                    <!--  Nút để hoàn tất và đóng booking  -->
-                    <Border
+                    <!--  Khu vực nút chức năng  -->
+                    <Grid
                         Grid.Row="2"
                         Margin="10"
-                        Padding="10"
                         HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        Background="White"
-                        CornerRadius="15">
+                        VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Nút Gửi Email  -->
                         <Button
-                            Padding="10,5"
-                            Background="Transparent"
+                            x:Name="SendEmailButton"
+                            Grid.Column="0"
+                            BorderThickness="0"
+                            Click="SendEmailButtonClick"
+                            FontSize="16"
+                            Visibility="Collapsed">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border
+                                                    x:Name="border"
+                                                    Padding="10"
+                                                    Background="White"
+                                                    CornerRadius="15">
+                                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <Image
+                                                            Width="20"
+                                                            Height="20"
+                                                            Source="pack://application:,,,/backgrounds/gmail.png" />
+                                                        <TextBlock
+                                                            Margin="10,0,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontSize="16"
+                                                            FontWeight="Bold"
+                                                            Foreground="Black"
+                                                            Text="Send Email" />
+                                                    </StackPanel>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!--  Nút In Ảnh  -->
+                        <Button
+                            x:Name="PrintButton"
+                            Grid.Column="0"
+                            BorderThickness="0"
+                            Click="Print_Click"
+                            FontSize="16"
+                            Visibility="Collapsed">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border
+                                                    x:Name="border"
+                                                    Padding="10"
+                                                    Background="White"
+                                                    CornerRadius="15">
+                                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <Image
+                                                            Width="20"
+                                                            Height="20"
+                                                            Source="pack://application:,,,/backgrounds/Print.png" />
+                                                        <TextBlock
+                                                            Margin="10,0,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontSize="16"
+                                                            FontWeight="Bold"
+                                                            Foreground="Black"
+                                                            Text="Print your picture" />
+                                                    </StackPanel>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+
+                    <!--  Khu vực nút "Close Booking" riêng biệt  -->
+                    <Grid
+                        Grid.Row="3"
+                        Margin="10"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Nút Đóng Booking  -->
+                        <Button
+                            x:Name="CloseBookingButton"
+                            Grid.Column="0"
                             BorderThickness="0"
                             Click="CloseBooking_Click"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Foreground="Black">
-                            <StackPanel
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="Transparent"
-                                Orientation="Horizontal">
-                                <Image
-                                    Width="20"
-                                    Height="20"
-                                    Margin="0,0,10,0"
-                                    Source="pack://application:,,,/backgrounds/closeSession.png" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Background="Transparent"
-                                    Text="Close the booking" />
-                            </StackPanel>
+                            FontSize="16">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border
+                                                    x:Name="border"
+                                                    Padding="10"
+                                                    Background="Red"
+                                                    CornerRadius="15">
+                                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <Image
+                                                            Width="20"
+                                                            Height="20"
+                                                            Source="pack://application:,,,/backgrounds/closeSession.png" />
+                                                        <TextBlock
+                                                            Margin="10,0,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontSize="16"
+                                                            FontWeight="Bold"
+                                                            Foreground="White"
+                                                            Text="Close the booking" />
+                                                    </StackPanel>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
                         </Button>
-                    </Border>
+                    </Grid>
+
                 </Grid>
             </Border>
         </Grid>
