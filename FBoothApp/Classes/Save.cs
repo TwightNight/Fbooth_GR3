@@ -10,8 +10,7 @@ namespace FBoothApp
 {
     class SavePhoto
     {
-        public static string CurrentSessionPath { get; private set; }
-
+        public static string CurrentSessionPath { get; set; }
         public int PhotoNumber { get; set; }
         public string FolderDirectory { get; set; }
         public string PhotoName { get; set; }
@@ -59,8 +58,8 @@ namespace FBoothApp
             {
                 string p1 = Environment.CurrentDirectory;
                 string p2 = Actual.DateNow();
-                string sessionFolder = $"Session_{DateTime.Now.ToString("HH_mm")}";
-                var path = Path.Combine(p1, p2, BookingID.ToString(), sessionFolder);
+                string sessionFolderName = $"Session_{DateTime.Now.ToString("HH_mm_ss")}";
+                var path = Path.Combine(p1, p2, BookingID.ToString(), sessionFolderName);
 
                 if (!Directory.Exists(path))
                 {

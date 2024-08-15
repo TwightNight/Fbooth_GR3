@@ -26,6 +26,8 @@ using FBoothApp.Services;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using FBoothApp.Entity.Request;
+using FBoothApp.Entity.Enum;
+using FBoothApp.Entity.Reponse;
 
 
 namespace FBoothApp
@@ -134,7 +136,7 @@ namespace FBoothApp
             secondCounter.Start();
         }
 
-        
+
         public async void MakePhoto(object sender, EventArgs e)
         {
             try
@@ -237,6 +239,7 @@ namespace FBoothApp
 
         private async void LoadLayouts()
         {
+            LayoutTabControl.Items.Clear();
             var layouts = await _apiServices.GetLayoutsAsync();
             var photoSlots = layouts.GroupBy(layout => layout.PhotoSlot).OrderBy(group => group.Key);
 
@@ -596,9 +599,15 @@ namespace FBoothApp
 
                     await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
 
-                    //// Tiếp tục quy trình chụp ảnh
-                    //NextButtonTakingPhoto.Visibility = Visibility.Hidden;
-                    //StartButton_Click(sender, e);
+                    // Tiếp tục quy trình chụp ảnh
+                    photoNumber = 0;
+                    photosInTemplate = 0;
+                    photoNumberInTemplate = 0;
+                    printNumber = 0;
+                    SavePhoto.CurrentSessionPath = null;
+
+                    TurnOnLayoutMenu();
+                    BookingPhotoThumbnailGrid.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
@@ -691,7 +700,7 @@ namespace FBoothApp
             try
             {
                 //Slider.Background = liveView;
-                
+
                 MainCamera.StartLiveView();
                 LiveViewImage.Visibility = Visibility.Visible;
 
@@ -801,10 +810,16 @@ namespace FBoothApp
                     var successMessageBox = new CustomMessageBox($"Check-in successful at: {checkinBookingStartTime}!\nTotal rental time: {formattedDuration}\nRental time ends at: {endTimeFormatted}");
                     successMessageBox.ShowDialog();
                     if (successMessageBox.DialogResult == true)
-                    { 
+                    {
                         // Process the response (e.g., show booking details)
                         bookingEndTime = response.EndTime;
                         StartEndTimeCheck();
+
+                        LoadBookedServices(response.BookingServices);
+
+                        var availableServices = await _apiServices.GetAvailableServicesAsync();
+                        LoadAvailableServices(availableServices);
+
                         // Turn on layout menu after successful check-in
                         TurnOnLayoutMenu();
                     }
@@ -980,8 +995,12 @@ namespace FBoothApp
             showStickerAndBackGround.Visibility = Visibility.Visible;
             BackgoundScrollViewer.Visibility = Visibility.Visible;
             BackgroundsWrapPanel.Visibility = Visibility.Visible;
+
+            StickerScrollViewer.Visibility = Visibility.Visible;
+            StickerWrapPanel.Visibility = Visibility.Visible;
+
             NextButtonSticker.Visibility = Visibility.Visible;
-            GirdShowPrintPicture.Visibility= Visibility.Visible;
+            GirdShowPrintPicture.Visibility = Visibility.Visible;
 
             //NumberOfCopiesTextBox.Text = actualNumberOfCopies.ToString();
 
@@ -998,9 +1017,9 @@ namespace FBoothApp
             LoadBackgrounds();
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void BackgroundTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.Source is TabControl tabControl)
+            if (e.Source is TabControl tabControl && tabControl == StickerAndBackGroundTabControl) // Kiểm tra đúng tabControl
             {
                 if (tabControl.SelectedItem is TabItem selectedTab && selectedTab.Header != null)
                 {
@@ -1021,7 +1040,17 @@ namespace FBoothApp
         {
             BackgroundsWrapPanel.Children.Clear(); // Xóa các phần tử cũ trước khi tải mới
             string backgroundsDirectory = Path.Combine(Directory.GetCurrentDirectory(), $"Backgrounds\\{layout.LayoutCode}");
-            string[] backgroundFiles = Directory.GetFiles(backgroundsDirectory, "*.png");
+
+            // Các định dạng ảnh phổ biến
+            string[] imageExtensions = new[] { "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif" };
+
+            List<string> backgroundFiles = new List<string>();
+
+            // Duyệt qua tất cả các định dạng và thêm file ảnh vào danh sách
+            foreach (var extension in imageExtensions)
+            {
+                backgroundFiles.AddRange(Directory.GetFiles(backgroundsDirectory, extension));
+            }
 
             foreach (string file in backgroundFiles)
             {
@@ -1074,24 +1103,38 @@ namespace FBoothApp
             LoadSticker();
         }
 
-        private async void LoadSticker()
+        private void LoadSticker()
         {
-            StickerWrapPanel.Children.Clear();
-            var stickerFiles = await _apiServices.GetStickersAsync();
+            StickerWrapPanel.Children.Clear(); // Xóa các phần tử cũ trước khi tải mới
+            string stickersDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Stickers");
 
-            foreach (var stickerFile in stickerFiles)
+            // Các định dạng ảnh phổ biến
+            string[] imageExtensions = new[] { "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif" };
+
+            List<string> stickerFiles = new List<string>();
+
+            // Duyệt qua tất cả các định dạng và thêm file ảnh vào danh sách
+            foreach (var extension in imageExtensions)
+            {
+                stickerFiles.AddRange(Directory.GetFiles(stickersDirectory, extension));
+            }
+
+            // Thêm các sticker vào StickerWrapPanel
+            foreach (string file in stickerFiles)
             {
                 Image stickerImage = new Image
                 {
-                    Source = new BitmapImage(new Uri(stickerFile.StickerURL)),
-                    Width = 100,
-                    Height = 100,
-                    Margin = new Thickness(5)
+                    Source = new BitmapImage(new Uri(file)),
+                    Stretch = Stretch.Uniform,
+                    Margin = new Thickness(5),
+                    Width = 100, // Đặt kích thước cố định
+                    Height = 100 // Đặt kích thước cố định
                 };
                 stickerImage.MouseLeftButtonDown += StickerImage_MouseLeftButtonDown;
                 StickerWrapPanel.Children.Add(stickerImage);
             }
         }
+
 
         private void StickerImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -1503,7 +1546,9 @@ namespace FBoothApp
             }
 
             // Lấy tất cả các thư mục session
-            string[] sessionFolders = Directory.GetDirectories(bookingFolderPath, "Session_*");
+            var sessionFolders = Directory.GetDirectories(bookingFolderPath, "Session_*")
+                                  .OrderByDescending(d => Directory.GetCreationTime(d))
+                                  .ToArray();
 
             // Lấy ảnh có số thứ tự lớn nhất từ thư mục "prints" của các session
             List<string> photoFiles = new List<string>();
@@ -1792,7 +1837,7 @@ namespace FBoothApp
                 string photoPath = photoPathWithQuantity.Key;
                 int quantity = photoPathWithQuantity.Value;
 
-                Printing.Print(photoPath, printerName, (short)quantity); 
+                PrintingServices.Print(photoPath, printerName, (short)quantity);
             }
 
             //photosInTemplate = 0;
@@ -1839,7 +1884,7 @@ namespace FBoothApp
 
 
         //doc file cau hinh
-        
+
         private void FillSavedData()
         {
             string firstprinter;
@@ -1866,7 +1911,7 @@ namespace FBoothApp
                 maxCopies = System.Convert.ToInt32(actualSettings.Root.Element("maxNumberOfCopies").Value);
                 timeLeft = System.Convert.ToInt32(actualSettings.Root.Element("timeBetweenPhotos").Value);
                 printTime = System.Convert.ToInt32(actualSettings.Root.Element("printingTime").Value);
-                printerName = FBoothApp.Printing.ActualPrinter(layout.LayoutCode, firstprinter, secondprinter);
+                printerName = FBoothApp.PrintingServices.ActualPrinter(layout.LayoutCode, firstprinter, secondprinter);
                 timeLeftCopy = timeLeft;
 
                 SmtpServerName = actualSettings.Root.Element("SmtpServerName").Value;
@@ -2012,6 +2057,227 @@ namespace FBoothApp
                 SendButton.Opacity = 1.0;
             }
         }
+
+
+        public void LoadBookedServices(List<BookingServiceResponse> bookingServices)
+        {
+            // Xóa các dịch vụ cũ trong danh sách
+            BookedServicesList.ItemsSource = null;
+
+            if (bookingServices != null && bookingServices.Count > 0)
+            {
+                // Gán danh sách dịch vụ đã book vào ItemsSource của ItemsControl
+                BookedServicesList.ItemsSource = bookingServices.Select(s => new
+                {
+                    ServiceName = $"{s.Service.ServiceName} (x{s.Quantity})",
+                    Price = s.SubTotal,
+                    Service = s.Service // Lưu toàn bộ đối tượng Service để sử dụng sau này
+                }).ToList();
+            }
+            else
+            {
+                MessageBox.Show("No services booked for this session.");
+            }
+        }
+
+        private void LoadAvailableServices(List<ServiceResponse> availableServices)
+        {
+            // Xóa các dịch vụ cũ trong danh sách
+            AvailableServicesList.ItemsSource = null;
+
+            if (availableServices != null && availableServices.Count > 0)
+            {
+                // Gán danh sách dịch vụ có sẵn vào ItemsSource của ItemsControl
+                var serviceItems = availableServices.Select(s => new AvailableServiceItem
+                {
+                    ServiceName = s.ServiceName,
+                    ServicePrice = s.ServicePrice,
+                    ServiceID = s.ServiceID,
+                    Quantity = 1 // Đặt số lượng mặc định là 1
+                }).ToList();
+
+                AvailableServicesList.ItemsSource = serviceItems;
+            }
+            else
+            {
+                MessageBox.Show("No available services at the moment.");
+            }
+        }
+
+
+
+
+
+        // Hàm xử lý khi người dùng click vào dịch vụ đã đặt trong tab "Booked Services"
+        private void BookedService_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null)
+            {
+                var serviceData = button.DataContext as dynamic; // Sử dụng dynamic vì anonymous type
+                if (serviceData != null)
+                {
+                    var selectedService = serviceData.Service;
+
+                    // Kiểm tra ServiceType
+                    if (selectedService.ServiceType == ServiceType.Printing)
+                    {
+                        Print_Click(sender, e); // Gọi hàm in ảnh
+                    }
+                    else if (selectedService.ServiceType == ServiceType.EmailSending)
+                    {
+                        SendEmailButtonClick(sender, e); // Gọi hàm gửi email
+                    }
+                    else
+                    {
+                        MessageBox.Show("This service is not interactive.");
+                    }
+                }
+            }
+        }
+
+        // Hàm xử lý khi người dùng click vào dịch vụ có sẵn trong tab "Available Services"
+        private async void AvailableService_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null)
+            {
+                var serviceData = button.Tag as dynamic;
+                if (serviceData != null)
+                {
+                    try
+                    {
+                        // Tạo đối tượng request để gửi tới API
+                        var addServiceRequest = new AddExtraServiceRequest
+                        {
+                            BoothID = BoothID,
+                            BookingID = BookingID,
+                            ServiceList = new Dictionary<Guid, short>
+                            {
+                                { serviceData.ServiceID, (short)serviceData.Quantity }
+                            }
+                        };
+
+                        // Gửi yêu cầu tới API
+                        var isSuccess = await _apiServices.AddExtraServiceAsync(addServiceRequest);
+                        if (isSuccess)
+                        {
+                            MessageBox.Show($"Service '{serviceData.ServiceName}' with quantity {serviceData.Quantity} has been added to your booking.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to add service to the booking.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"An error occurred: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+
+
+        // Hàm xử lý khi người dùng click vào nút đóng booking
+        private void CloseBooking_Click(object sender, RoutedEventArgs e)
+        {
+            // Xử lý logic để đóng booking
+            MessageBox.Show("Closing booking...");
+            // Bạn có thể thêm các xử lý khác tại đây
+        }
+
+        private async void ServiceTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source is TabControl tabControl && tabControl == ServiceTabControl) // Kiểm tra đúng tabControl
+            {
+                if (tabControl.SelectedItem is TabItem selectedTab)
+                {
+                    if (selectedTab.Header.ToString() == "Booked Services")
+                    {
+                        try
+                        {
+                            // Gọi hàm GetBookingByIdAsync để lấy thông tin booking
+                            var bookingResponse = await _apiServices.GetBookingByIdAsync(BookingID);
+                            if (bookingResponse != null)
+                            {
+                                // Gọi hàm LoadBookedServices để hiển thị các dịch vụ đã đặt
+                                LoadBookedServices(bookingResponse.BookingServices);
+                            }
+                            else
+                            {
+                                MessageBox.Show("No booking information found.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Failed to load booked services: {ex.Message}");
+                        }
+                    }
+                    else if (selectedTab.Header.ToString() == "Available Services")
+                    {
+                        try
+                        {
+                            // Gọi hàm GetAvailableServicesAsync để lấy danh sách dịch vụ có sẵn
+                            var availableServices = await _apiServices.GetAvailableServicesAsync();
+                            if (availableServices != null && availableServices.Count > 0)
+                            {
+                                // Gọi hàm LoadAvailableServices để hiển thị các dịch vụ có sẵn
+                                LoadAvailableServices(availableServices);
+                            }
+                            else
+                            {
+                                MessageBox.Show("No available services found.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Failed to load available services: {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void IncreaseServiceQuantity_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null)
+            {
+                var serviceID = (Guid)button.Tag;
+                var item = AvailableServicesList.Items.Cast<AvailableServiceItem>().FirstOrDefault(s => s.ServiceID == serviceID);
+                if (item != null)
+                {
+                    item.Quantity++;
+                    RefreshAvailableServicesList();
+                }
+            }
+        }
+
+        private void DecreaseServiceQuantity_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null)
+            {
+                var serviceID = (Guid)button.Tag;
+                var item = AvailableServicesList.Items.Cast<AvailableServiceItem>().FirstOrDefault(s => s.ServiceID == serviceID);
+                if (item != null && item.Quantity > 1) // Đảm bảo số lượng không giảm dưới 1
+                {
+                    item.Quantity--;
+                    RefreshAvailableServicesList();
+                }
+            }
+        }
+
+
+        private void RefreshAvailableServicesList()
+        {
+            // Refresh the ItemsSource to reflect the changes in quantity
+            AvailableServicesList.ItemsSource = AvailableServicesList.Items.Cast<dynamic>().ToList();
+        }
+
+
     }
 }
 

@@ -917,12 +917,12 @@
 
                     <!--  TabControl for Layouts and Stickers  -->
                     <TabControl
-                        x:Name="ContentTabControl"
+                        x:Name="StickerAndBackGroundTabControl"
                         Grid.Column="0"
                         Margin="10,10,10,10"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        SelectionChanged="TabControl_SelectionChanged"
+                        SelectionChanged="BackgroundTabControl_SelectionChanged"
                         Style="{DynamicResource TabControlStyle}">
                         <!--  TabItem for Layouts  -->
                         <TabItem
@@ -1264,7 +1264,7 @@
                 <ColumnDefinition Width="6*" />
             </Grid.ColumnDefinitions>
 
-            <!--  First Border (Left side)  -->
+            <!--  Border bên trái để hiển thị các dịch vụ  -->
             <Border
                 Grid.Column="0"
                 Padding="10"
@@ -1274,27 +1274,141 @@
                 BorderThickness="1"
                 CornerRadius="20">
                 <Grid>
-                    <!--  Row Definitions  -->
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <ScrollViewer
-                        Grid.Row="0"
-                        Margin="10"
-                        HorizontalScrollBarVisibility="Disabled"
-                        VerticalScrollBarVisibility="Hidden">
-                        <UniformGrid
-                            x:Name="BookingPhotoThumbsnailWrapPanel"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top"
-                            Columns="3" />
-                    </ScrollViewer>
-
-                    <!--  Border wrapping the Button  -->
+                    <!--  Tiêu đề  -->
                     <Border
+                        Grid.Row="0"
+                        Padding="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Black"
+                        CornerRadius="20">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="40"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="Manage Your Services" />
+                    </Border>
+
+                    <!--  TabControl cho dịch vụ đã đặt và dịch vụ có sẵn  -->
+                    <TabControl
+                        x:Name="ServiceTabControl"
                         Grid.Row="1"
+                        Margin="10"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        SelectionChanged="ServiceTabControl_SelectionChanged">
+
+                        <!--  Tab cho dịch vụ đã đặt  -->
+                        <TabItem Header="Booked Services">
+                            <ScrollViewer
+                                Margin="10"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Hidden">
+                                <ItemsControl
+                                    x:Name="BookedServicesList"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                                    <!--  Template cho mỗi dịch vụ đã đặt  -->
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                Margin="5"
+                                                Padding="10"
+                                                Background="#348EF6"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="0"
+                                                Click="BookedService_Click"
+                                                Content="{Binding ServiceName}"
+                                                FontWeight="Bold"
+                                                Foreground="White" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                            </ScrollViewer>
+                        </TabItem>
+
+                        <!--  Tab cho dịch vụ có sẵn  -->
+                        <TabItem Header="Available Services">
+                            <ScrollViewer
+                                Margin="10"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Hidden">
+                                <ItemsControl
+                                    x:Name="AvailableServicesList"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" Orientation="Vertical">
+                                                <TextBlock
+                                                    Width="200"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding ServiceName}" />
+                                                <TextBlock
+                                                    Width="100"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding ServicePrice, StringFormat=C}" />
+
+                                                <!--  Chuyển các nút và số lượng thành cột  -->
+                                                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                    <!--  Nút giảm số lượng  -->
+                                                    <Button
+                                                        Width="30"
+                                                        Height="30"
+                                                        VerticalAlignment="Center"
+                                                        Click="DecreaseServiceQuantity_Click"
+                                                        Content="-"
+                                                        Tag="{Binding ServiceID}" />
+
+                                                    <!--  Hiển thị số lượng  -->
+                                                    <TextBlock
+                                                        x:Name="QuantityTextBlock"
+                                                        Width="50"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Quantity}"
+                                                        TextAlignment="Center" />
+
+                                                    <!--  Nút tăng số lượng  -->
+                                                    <Button
+                                                        Width="30"
+                                                        Height="30"
+                                                        VerticalAlignment="Center"
+                                                        Click="IncreaseServiceQuantity_Click"
+                                                        Content="+"
+                                                        Tag="{Binding ServiceID}" />
+                                                </StackPanel>
+
+                                                <!--  Nút thêm dịch vụ vào booking  -->
+                                                <Button
+                                                    Width="100"
+                                                    Height="30"
+                                                    Margin="0,5,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Click="AvailableService_Click"
+                                                    Content="Add"
+                                                    Tag="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
+
+
+                    <Border
+                        Grid.Row="2"
                         Margin="0,10,0,0"
                         Padding="5"
                         HorizontalAlignment="Center"
@@ -1332,10 +1446,51 @@
                             </StackPanel>
                         </Button>
                     </Border>
+
+                    <!--  Nút để cập nhật danh sách dịch vụ  -->
+                    <!--
+                    <Border
+                        Grid.Row="2"
+                        Margin="0,10,0,0"
+                        Padding="5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Black"
+                        BorderBrush="LightGray"
+                        BorderThickness="2"
+                        CornerRadius="15">
+                        <Button
+                            Padding="10,5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Black"
+                            BorderThickness="0"
+                            Click="RefreshAllServices_Click"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Foreground="White">
+                            <StackPanel
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                Orientation="Horizontal">
+                                <Image
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0,0,10,0"
+                                    Source="pack://application:,,,/backgrounds/ReloadSession.png" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    RenderTransformOrigin="1,1"
+                                    Text="Refresh Services" />
+                            </StackPanel>
+                        </Button>
+                    </Border>-->
                 </Grid>
             </Border>
 
-            <!--  Second Border (Right side)  -->
+            <!--  Border bên phải để hiển thị ảnh đã chụp  -->
             <Border
                 Grid.Column="1"
                 Margin="20,0,0,0"
@@ -1350,10 +1505,9 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
-                        <!--  Row for the new button  -->
                     </Grid.RowDefinitions>
 
-                    <!--  Border for TextBlock  -->
+                    <!--  Tiêu đề cho ảnh đã chụp  -->
                     <Border
                         Grid.Row="0"
                         Padding="10"
@@ -1367,9 +1521,10 @@
                             FontSize="40"
                             FontWeight="Bold"
                             Foreground="White"
-                            Text="Your taken photos" />
+                            Text="Your Taken Photos" />
                     </Border>
 
+                    <!--  Khu vực hiển thị ảnh đã chụp  -->
                     <ScrollViewer
                         Grid.Row="1"
                         Margin="0,50,0,0"
@@ -1382,7 +1537,7 @@
                             Columns="3" />
                     </ScrollViewer>
 
-                    <!--  New Border for the button at the bottom right  -->
+                    <!--  Nút để hoàn tất và đóng booking  -->
                     <Border
                         Grid.Row="2"
                         Margin="10"
@@ -1395,6 +1550,7 @@
                             Padding="10,5"
                             Background="Transparent"
                             BorderThickness="0"
+                            Click="CloseBooking_Click"
                             FontSize="16"
                             FontWeight="Bold"
                             Foreground="Black">
@@ -1403,15 +1559,11 @@
                                 VerticalAlignment="Center"
                                 Background="Transparent"
                                 Orientation="Horizontal">
-
-                                <!--  Add image to the button  -->
                                 <Image
                                     Width="20"
                                     Height="20"
                                     Margin="0,0,10,0"
                                     Source="pack://application:,,,/backgrounds/closeSession.png" />
-
-                                <!--  Add text to the button  -->
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -1422,6 +1574,7 @@
                 </Grid>
             </Border>
         </Grid>
+
 
 
 

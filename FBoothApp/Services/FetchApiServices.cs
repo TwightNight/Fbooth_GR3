@@ -1,4 +1,5 @@
 ﻿using FBoothApp.Entity;
+using FBoothApp.Entity.Reponse;
 using FBoothApp.Entity.Request;
 using Newtonsoft.Json;
 using System;
@@ -356,6 +357,42 @@ namespace FBoothApp.Services
                 throw new Exception("An unknown error occurred.");
             }
         }
+
+        public async Task<List<ServiceResponse>> GetAvailableServicesAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetStringAsync($"{_apiBaseUrl}/service/customer");
+                var services = JsonConvert.DeserializeObject<List<ServiceResponse>>(response);
+                return services;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to fetch services: {ex.Message}");
+                return new List<ServiceResponse>(); // Trả về danh sách trống nếu xảy ra lỗi
+            }
+        }
+
+
+        public async Task<bool> AddExtraServiceAsync(AddExtraServiceRequest request)
+        {
+            try
+            {
+                var jsonRequest = JsonConvert.SerializeObject(request);
+                var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync($"{_apiBaseUrl}/booking/extra-service", content);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to add extra service: {ex.Message}");
+                return false;
+            }
+        }
+
+
 
     }
 }

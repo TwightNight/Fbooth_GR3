@@ -10,7 +10,7 @@ using System.IO;
 
 namespace FBoothApp
 {
-    class Printing
+    class PrintingServices
     {
         static public void Print(string printPath, string actualPrinter, short actualNumberOfCopies)
         {

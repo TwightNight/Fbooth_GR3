@@ -122,10 +122,15 @@
       <DependentUpon>CustomMessageBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Entity\AppSettings.cs" />
+    <Compile Include="Entity\AvailableServiceItem.cs" />
     <Compile Include="Entity\Background.cs" />
     <Compile Include="Entity\Enum\PhotoSessionStatus.cs" />
+    <Compile Include="Entity\Enum\ServiceType.cs" />
+    <Compile Include="Entity\Enum\StatusUse.cs" />
     <Compile Include="Entity\Reponse\BookingResponse.cs" />
     <Compile Include="Entity\Reponse\BookingServiceResponse.cs" />
+    <Compile Include="Entity\Reponse\ServiceResponse.cs" />
+    <Compile Include="Entity\Request\AddExtraServiceRequest.cs" />
     <Compile Include="Entity\Request\CheckinRequest.cs" />
     <Compile Include="Entity\Request\CreatePhotoSessionRequest.cs" />
     <Compile Include="Entity\Layout.cs" />
@@ -140,7 +145,7 @@
       <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menu\MenuData.cs" />
-    <Compile Include="Classes\Printing.cs" />
+    <Compile Include="Classes\PrintingServices.cs" />
     <Compile Include="Classes\Save.cs" />
     <Compile Include="Classes\Slider.cs" />
     <Compile Include="Classes\Static.cs" />

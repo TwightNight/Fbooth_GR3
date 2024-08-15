@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FBoothApp.Entity.Reponse;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace FBoothApp.Entity
         public decimal Price { get; set; }
         public decimal SubTotal { get; set; }
         public Guid ServiceID { get; set; }
+        public ServiceResponse Service { get; set; }
     }
 }
