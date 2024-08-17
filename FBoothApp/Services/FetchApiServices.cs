@@ -374,7 +374,7 @@ namespace FBoothApp.Services
         }
 
 
-        public async Task<bool> AddExtraServiceAsync(AddExtraServiceRequest request)
+        public async Task<BookingResponse> AddExtraServiceAsync(AddExtraServiceRequest request)
         {
             try
             {
@@ -383,14 +383,25 @@ namespace FBoothApp.Services
 
                 var response = await _httpClient.PutAsync($"{_apiBaseUrl}/booking/extra-service", content);
 
-                return response.IsSuccessStatusCode;
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var bookingResponse = JsonConvert.DeserializeObject<BookingResponse>(jsonResponse);
+                    return bookingResponse;
+                }
+                else
+                {
+                    Debug.WriteLine($"Failed to add extra service: {response.StatusCode}");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to add extra service: {ex.Message}");
-                return false;
+                return null;
             }
         }
+
 
 
 
