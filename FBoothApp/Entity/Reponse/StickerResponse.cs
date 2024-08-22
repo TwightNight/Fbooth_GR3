@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FBoothApp.Entity
 {
-    public class Sticker
+    public class StickerResponse
     {
-        public string StickerID { get; set; }
+        public Guid StickerID { get; set; }
         public string StickerCode { get; set; } 
         public string StickerURL { get; set; } 
         public string CouldID { get; set; } 

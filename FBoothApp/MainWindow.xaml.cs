@@ -242,6 +242,7 @@ namespace FBoothApp
         {
             LayoutTabControl.Items.Clear();
             var layouts = await _apiServices.GetLayoutsAsync();
+            var sticker = await _apiServices.GetStickerTypesAsync();
             var photoSlots = layouts.GroupBy(layout => layout.PhotoSlot).OrderBy(group => group.Key);
 
             foreach (var photoSlot in photoSlots)
@@ -580,6 +581,7 @@ namespace FBoothApp
             }
         }
 
+
         private async void TakeNewPictureButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -606,6 +608,11 @@ namespace FBoothApp
                     photoNumberInTemplate = 0;
                     printNumber = 0;
                     SavePhoto.CurrentSessionPath = null;
+
+                    HomeText.Visibility = Visibility.Visible;
+                    RoundedTextBox.Clear();
+                    RoundedTextBox_LostFocus(sender, e);
+                    BorderPanel.Visibility = Visibility.Visible;
 
                     TurnOnLayoutMenu();
                     BookingPhotoThumbnailGrid.Visibility = Visibility.Collapsed;
@@ -777,6 +784,7 @@ namespace FBoothApp
 
         private Guid BoothID;
         private Guid BookingID;
+
         private async void SendButton_Click(object sender, RoutedEventArgs e)
         {
             SendButton.IsEnabled = false;
@@ -814,7 +822,8 @@ namespace FBoothApp
                     {
                         // Process the response (e.g., show booking details)
                         bookingEndTime = response.EndTime;
-                        StartEndTimeCheck();
+
+                        StartBookingTimeRemainingCheck();
 
                         LoadBookedServices(response.BookingServices);
 
@@ -862,12 +871,15 @@ namespace FBoothApp
         private DispatcherTimer checkEndTimeTimer;
         private DateTime bookingEndTime;
 
-        private void StartEndTimeCheck()
+        private DispatcherTimer bookingTimeRemainingTimer;
+        private TimeSpan timeRemaining;
+
+        private void StartBookingTimeRemainingCheck()
         {
             if (checkEndTimeTimer == null)
             {
                 checkEndTimeTimer = new DispatcherTimer();
-                checkEndTimeTimer.Interval = TimeSpan.FromSeconds(10); // Check every 30 seconds
+                checkEndTimeTimer.Interval = TimeSpan.FromSeconds(1);
                 checkEndTimeTimer.Tick += CheckEndTimeTimer_Tick;
             }
             checkEndTimeTimer.Start();
@@ -875,9 +887,18 @@ namespace FBoothApp
 
         private void CheckEndTimeTimer_Tick(object sender, EventArgs e)
         {
-            if (DateTime.Now >= bookingEndTime)
+            timeRemaining = bookingEndTime - DateTime.Now;
+            if (timeRemaining.TotalSeconds > 0)
             {
-                checkEndTimeTimer.Stop();
+                CountdownTextBlock.Visibility = Visibility.Visible;
+                CountdownTextBlock.Text = $"Time remaining: {timeRemaining.Hours:D2}:{timeRemaining.Minutes:D2}:{timeRemaining.Seconds:D2}";
+            }
+            else
+            {
+                bookingTimeRemainingTimer.Stop();
+                CountdownTextBlock.Visibility = Visibility.Collapsed;
+                CountdownTextBlock.Text = "Booking has ended.";
+
                 var endMessageBox = new CustomMessageBox("Your session has ended. The application will now close.");
                 endMessageBox.ShowDialog();
                 Application.Current.Shutdown();
@@ -1109,18 +1130,146 @@ namespace FBoothApp
             StickerWrapPanel.Children.Clear(); // Xóa các phần tử cũ trước khi tải mới
             string stickersDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Stickers");
 
+            // Lấy tất cả các thư mục StickerType
+            var stickerTypeDirectories = Directory.GetDirectories(stickersDirectory);
+
+            // Thêm ảnh đại diện và tên của StickerType vào StickerWrapPanel
+            foreach (var stickerTypeDir in stickerTypeDirectories)
+            {
+                string representImagePath = Path.Combine(stickerTypeDir, "RepresentImage.png");
+
+                if (File.Exists(representImagePath))
+                {
+                    // Tạo StackPanel để chứa cả hình ảnh và tên StickerType
+                    StackPanel stackPanel = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Margin = new Thickness(10)
+                    };
+
+                    // Tạo Image cho ảnh đại diện
+                    Image representImage = new Image
+                    {
+                        Source = new BitmapImage(new Uri(representImagePath)),
+                        Stretch = Stretch.Uniform,
+                        Width = 150, // Đặt kích thước cố định
+                        Height = 150 // Đặt kích thước cố định
+                    };
+
+                    // Lấy tên StickerType từ tên thư mục
+                    string stickerTypeName = new DirectoryInfo(stickerTypeDir).Name;
+
+                    // Tạo TextBlock cho tên StickerType
+                    TextBlock stickerTypeNameTextBlock = new TextBlock
+                    {
+                        Text = stickerTypeName,
+                        FontSize = 15 ,
+                        Foreground = new SolidColorBrush(Colors.Black),
+                        FontWeight = FontWeights.Bold,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Margin = new Thickness(0, 5, 0, 0) // Thêm khoảng cách nhỏ phía trên text
+                    };
+
+                    // Gắn event handler để khi click vào ảnh sẽ hiển thị các sticker của StickerType này
+                    representImage.MouseLeftButtonDown += (s, e) => ShowStickersForType(stickerTypeDir);
+
+                    // Thêm ảnh và tên vào StackPanel
+                    stackPanel.Children.Add(representImage);
+                    stackPanel.Children.Add(stickerTypeNameTextBlock);
+
+                    // Thêm StackPanel vào StickerWrapPanel
+                    StickerWrapPanel.Children.Add(stackPanel);
+                }
+            }
+        }
+
+
+        // Hàm hiển thị các sticker của StickerType khi người dùng chọn ảnh đại diện
+        private void ShowStickersForType(string stickerTypeDir)
+        {
+            StickerWrapPanel.Children.Clear(); // Xóa các phần tử cũ trước khi tải mới
+
+            // Tạo Grid để chứa nút Back và các sticker
+            Grid gridContainer = new Grid
+            {
+                Margin = new Thickness(10)
+            };
+
+            // Define Grid rows: 1 row for Back button, 1 row for stickers
+            gridContainer.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            gridContainer.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            // Tạo nút Back với hình ảnh và chữ "Back"
+            Button backButton = new Button
+            {
+                Width = 120,
+                Height = 50,
+                Margin = new Thickness(10),
+                Background = System.Windows.Media.Brushes.Transparent,
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+
+            // Create a StackPanel to hold the image and text
+            StackPanel stackPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            // Add the back image
+            Image backImage = new Image
+            {
+                Source = new BitmapImage(new Uri("pack://application:,,,/backgrounds/back.png")),
+                Width = 20,
+                Height = 20,
+                Margin = new Thickness(5, 0, 10, 0)
+            };
+            stackPanel.Children.Add(backImage);
+
+            // Add the text "Back"
+            TextBlock backText = new TextBlock
+            {
+                Text = "Back",
+                VerticalAlignment = VerticalAlignment.Center,
+                FontSize = 20,
+                FontWeight = FontWeights.Bold,
+                Foreground = System.Windows.Media.Brushes.Black
+            };
+            stackPanel.Children.Add(backText);
+
+            // Add the StackPanel to the Button
+            backButton.Content = stackPanel;
+            backButton.Click += (s, e) => LoadSticker();
+
+            // Add the Back button to the grid
+            Grid.SetRow(backButton, 0);
+            gridContainer.Children.Add(backButton);
+
+            // Tạo một WrapPanel để chứa các sticker
+            WrapPanel stickersPanel = new WrapPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(10)
+            };
+
             // Các định dạng ảnh phổ biến
             string[] imageExtensions = new[] { "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif" };
 
             List<string> stickerFiles = new List<string>();
 
-            // Duyệt qua tất cả các định dạng và thêm file ảnh vào danh sách
+            // Duyệt qua tất cả các file ảnh sticker trong thư mục StickerType
             foreach (var extension in imageExtensions)
             {
-                stickerFiles.AddRange(Directory.GetFiles(stickersDirectory, extension));
+                stickerFiles.AddRange(Directory.GetFiles(stickerTypeDir, extension));
             }
 
-            // Thêm các sticker vào StickerWrapPanel
+            // Loại bỏ ảnh đại diện nếu có trong danh sách
+            stickerFiles = stickerFiles.Where(file => !file.EndsWith("RepresentImage.png")).ToList();
+
+            // Thêm các sticker vào WrapPanel
             foreach (string file in stickerFiles)
             {
                 Image stickerImage = new Image
@@ -1131,10 +1280,19 @@ namespace FBoothApp
                     Width = 100, // Đặt kích thước cố định
                     Height = 100 // Đặt kích thước cố định
                 };
-                stickerImage.MouseLeftButtonDown += StickerImage_MouseLeftButtonDown;
-                StickerWrapPanel.Children.Add(stickerImage);
+                stickerImage.MouseLeftButtonDown += StickerImage_MouseLeftButtonDown; // Thêm event handler cho mỗi sticker
+                stickersPanel.Children.Add(stickerImage);
             }
+
+            // Add the stickers panel to the grid
+            Grid.SetRow(stickersPanel, 1);
+            gridContainer.Children.Add(stickersPanel);
+
+            // Add the grid container to the main wrap panel
+            StickerWrapPanel.Children.Add(gridContainer);
         }
+
+
 
 
         private void StickerImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -2101,33 +2259,48 @@ namespace FBoothApp
 
         private void UpdateServiceButtons()
         {
-            // Disable PrintButton if printing usage count reaches or exceeds the total service count
-            if (printingUsageCount >= totalPrintServiceCount)
+            foreach (var item in BookedServicesList.Items)
             {
-                PrintButton.IsEnabled = false;
-                PrintButton.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                PrintButton.IsEnabled = true;
-                PrintButton.Visibility = Visibility.Visible;
-            }
+                var container = BookedServicesList.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
+                var button = container?.FindName("ServiceButton") as Button;
+                var border = container?.FindName("ServiceButtonBorder") as Border;
 
-            // Disable SendEmailButton if email usage count reaches or exceeds the total service count
-            if (emailUsageCount >= totalEmailServiceCount)
-            {
-                SendEmailButton.IsEnabled = false;
-                SendEmailButton.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                SendEmailButton.IsEnabled = true;
-                SendEmailButton.Visibility = Visibility.Visible;
+                if (button != null && border != null)
+                {
+                    // Set the default border style
+                    border.CornerRadius = new CornerRadius(10);
+                    border.BorderThickness = new Thickness(2);
+                    border.Padding = new Thickness(5);
+                    border.Margin = new Thickness(5);
+                    border.Background = new SolidColorBrush(Colors.Transparent);
+                    border.BorderBrush = new SolidColorBrush(Colors.Gray);
+
+                    // Disable all buttons by default
+                    button.IsEnabled = false;
+                    button.Foreground = new SolidColorBrush(Colors.Gray);
+
+                    var serviceData = item as dynamic; // Using dynamic for anonymous type
+                    if (serviceData != null)
+                    {
+                        var serviceType = serviceData.Service.ServiceType;
+
+                        // Enable and highlight only Print and Email buttons
+                        if (serviceType == ServiceType.Printing)
+                        {
+                            button.IsEnabled = printingUsageCount < totalPrintServiceCount;
+                            border.Background = new SolidColorBrush(Colors.Green);
+                            button.Foreground = new SolidColorBrush(Colors.White);
+                        }
+                        else if (serviceType == ServiceType.EmailSending)
+                        {
+                            button.IsEnabled = emailUsageCount < totalEmailServiceCount;
+                            border.Background = new SolidColorBrush(Colors.Blue);
+                            button.Foreground = new SolidColorBrush(Colors.White);
+                        }
+                    }
+                }
             }
         }
-
-
-
 
         private void LoadAvailableServices(List<ServiceResponse> availableServices)
         {
@@ -2167,44 +2340,51 @@ namespace FBoothApp
             var button = sender as Button;
             if (button != null)
             {
-                var serviceData = button.DataContext as dynamic; // Using dynamic for anonymous type
+                var border = VisualTreeHelper.GetParent(button) as Border;
+                var serviceData = button.DataContext as dynamic;
+
                 if (serviceData != null)
                 {
                     var selectedService = serviceData.Service;
-                    currentServiceType = selectedService.ServiceType; // Set the current service type
-                    isServiceSelected = true; // Set the flag to true
+                    currentServiceType = selectedService.ServiceType;
+                    isServiceSelected = true;
 
-                    // Unclick all selected photos
+                    // Unselect all photos when a new service is selected
                     UnselectAllPhotos();
 
-                    // Check if the service type is EmailSending or Printing
-                    if (selectedService.ServiceType == ServiceType.EmailSending || selectedService.ServiceType == ServiceType.Printing)
-                    {
-                        // Show the respective button and hide the other
-                        if (selectedService.ServiceType == ServiceType.EmailSending)
-                        {
-                            SendEmailButton.Visibility = Visibility.Visible;
-                            PrintButton.Visibility = Visibility.Collapsed;
-                        }
-                        else if (selectedService.ServiceType == ServiceType.Printing)
-                        {
-                            PrintButton.Visibility = Visibility.Visible;
-                            SendEmailButton.Visibility = Visibility.Collapsed;
-                        }
+                    // Update the appearance of the buttons
+                    UpdateServiceButtons();
 
-                        BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
+                    // Make the current button and its border appear more prominent
+                    if (border != null)
+                    {
+                        border.Background = new SolidColorBrush(Colors.Orange);
+                        button.Foreground = new SolidColorBrush(Colors.White);
+                    }
+
+                    // Ensure only relevant UI elements are shown
+                    if (currentServiceType == ServiceType.EmailSending)
+                    {
+                        SendEmailButton.Visibility = Visibility.Visible;
+                        PrintButton.Visibility = Visibility.Collapsed;
+                    }
+                    else if (currentServiceType == ServiceType.Printing)
+                    {
+                        PrintButton.Visibility = Visibility.Visible;
+                        SendEmailButton.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
-                        // Hide both buttons if the service is not EmailSending or Printing
-                        MessageBox.Show("This service is not interactive.");
                         SendEmailButton.Visibility = Visibility.Collapsed;
                         PrintButton.Visibility = Visibility.Collapsed;
-                        BookingPhotoThumbnailGrid.Visibility = Visibility.Collapsed;
                     }
+
+                    BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
                 }
             }
         }
+
+
 
         private void UnselectAllPhotos()
         {
@@ -2298,11 +2478,55 @@ namespace FBoothApp
 
 
         // Hàm xử lý khi người dùng click vào nút đóng booking
-        private void CloseBooking_Click(object sender, RoutedEventArgs e)
+        private async void CloseBooking_Click(object sender, RoutedEventArgs e)
         {
-            // Xử lý logic để đóng booking
-            MessageBox.Show("Closing booking...");
-            // Bạn có thể thêm các xử lý khác tại đây
+            try
+            {
+                // Hiển thị thông báo trong khi xử lý đóng booking
+                MessageBox.Show("Closing booking...");
+
+                // Gọi phương thức CloseBookingAsync để gửi yêu cầu đóng booking tới API
+                bool isClosed = await _apiServices.CloseBookingAsync(BoothID, BookingID);
+
+                if (isClosed)
+                {
+                    var savedata = new SavePhoto(photoNumber, BookingID);
+                    var updateRequest = new UpdatePhotoSessionRequest
+                    {
+                        TotalPhotoTaken = savedata.CountPhotosInSession(),
+                        Status = Entity.Enum.PhotoSessionStatus.Ended
+                    };
+
+                    await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
+
+                    MessageBox.Show("Booking closed successfully.");
+                    // Thực hiện các xử lý khác khi đóng booking thành công, ví dụ như làm mới UI hoặc điều hướng
+                    BookingID = Guid.Empty;
+                    photoNumber = 0;
+                    photosInTemplate = 0;
+                    photoNumberInTemplate = 0;
+                    printNumber = 0;
+                    SavePhoto.CurrentSessionPath = null;
+
+                    HomeText.Visibility = Visibility.Visible;
+                    RoundedTextBox.Clear();
+                    RoundedTextBox_LostFocus(sender, e);
+                    BorderPanel.Visibility = Visibility.Visible;
+                    SliderBorder.Visibility = Visibility.Visible;
+
+                    BookingPhotoThumbnailGrid.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    MessageBox.Show("Failed to close booking. Please try again.");
+                    // Thực hiện các xử lý khác khi đóng booking thất bại
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+                // Xử lý ngoại lệ nếu có
+            }
         }
 
         private async void ServiceTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2414,10 +2638,6 @@ namespace FBoothApp
                 totalPrintServiceCount = bookedService.Quantity;
             }
         }
-
-
-
-
 
     }
 }

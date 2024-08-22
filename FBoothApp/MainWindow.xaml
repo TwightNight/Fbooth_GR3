@@ -285,7 +285,8 @@
             Grid.Column="0"
             Grid.ColumnSpan="3"
             Margin="30"
-            VerticalAlignment="Center">
+            VerticalAlignment="Center"
+            Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -308,13 +309,12 @@
                 VerticalAlignment="Top"
                 BorderBrush="AliceBlue"
                 BorderThickness="0"
-                CornerRadius="30"
-                Visibility="Visible">
+                CornerRadius="30">
                 <Canvas x:Name="Slider">
                     <Border
                         x:Name="ImageBorder"
-                        Width="310"
-                        Height="310"
+                        Width="400"
+                        Height="400"
                         ClipToBounds="True"
                         CornerRadius="30">
                         <Border.Background>
@@ -497,7 +497,8 @@
             Grid.Column="3"
             Grid.ColumnSpan="4"
             Margin="242,-445,-692,21"
-            Panel.ZIndex="-1">
+            Panel.ZIndex="-1"
+            Visibility="Visible">
             <Grid.RenderTransform>
                 <RotateTransform Angle="50" />
             </Grid.RenderTransform>
@@ -1295,7 +1296,7 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            FontSize="40"
+                            FontSize="30"
                             FontWeight="Bold"
                             Foreground="White"
                             Text="Manage Your Services" />
@@ -1323,18 +1324,49 @@
                                     <!--  Template cho mỗi dịch vụ đã đặt  -->
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Button
+                                            <Border
                                                 Margin="5"
-                                                Padding="10"
-                                                Background="#348EF6"
-                                                BorderBrush="Transparent"
-                                                BorderThickness="0"
-                                                Click="BookedService_Click"
-                                                Content="{Binding ServiceName}"
-                                                FontWeight="Bold"
-                                                Foreground="White" />
+                                                Padding="0"
+                                                Background="#EEEEEE"
+                                                BorderThickness="1"
+                                                CornerRadius="30">
+                                                <Button
+                                                    x:Name="ServiceButton"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Background="#348EF6"
+                                                    Click="BookedService_Click"
+                                                    Content="{Binding ServiceName}"
+                                                    FontWeight="Bold"
+                                                    Foreground="Black">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                            <Setter Property="Background" Value="Gray" />
+                                                            <Setter Property="BorderThickness" Value="0" />
+                                                            <Setter Property="Padding" Value="10" />
+                                                            <Style.Triggers>
+                                                                <!--  Kiểm tra nếu là dịch vụ Print hoặc Email thì bật nút  -->
+                                                                <DataTrigger Binding="{Binding Service.ServiceType}" Value="Printing">
+                                                                    <Setter Property="IsEnabled" Value="True" />
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Service.ServiceType}" Value="EmailSending">
+                                                                    <Setter Property="IsEnabled" Value="True" />
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                </DataTrigger>
+                                                                <!--  Trigger to handle selection  -->
+                                                                <Trigger Property="IsPressed" Value="True">
+                                                                    <Setter Property="Background" Value="DarkSlateGray" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
+
                                 </ItemsControl>
 
                             </ScrollViewer>
@@ -1673,15 +1705,21 @@
             </Border>
         </Grid>
 
-
-
-
-
-
-
-
-
-
+        <TextBlock
+            x:Name="CountdownTextBlock"
+            Grid.Row="5"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="Bold"
+            Foreground="Black"
+            Text="Time remaining: --:--:--"
+            TextWrapping="Wrap"
+            Visibility="Collapsed" />
 
     </Grid>
 </Window>

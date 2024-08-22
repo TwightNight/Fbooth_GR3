@@ -16,7 +16,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\duy48\Desktop\CAPSTONE\</PublishUrl>
+    <PublishUrl>C:\Users\duy48\Desktop\CAPSTONE\SU24CapstoneGang\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -26,7 +26,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -84,6 +84,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EDSDKLib, Version=1.1.1.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -130,14 +133,16 @@
     <Compile Include="Entity\Reponse\BookingResponse.cs" />
     <Compile Include="Entity\Reponse\BookingServiceResponse.cs" />
     <Compile Include="Entity\Reponse\ServiceResponse.cs" />
+    <Compile Include="Entity\Reponse\StickerTypeResponse.cs" />
     <Compile Include="Entity\Request\AddExtraServiceRequest.cs" />
     <Compile Include="Entity\Request\CheckinRequest.cs" />
+    <Compile Include="Entity\Request\CloseBookingRequest.cs" />
     <Compile Include="Entity\Request\CreatePhotoSessionRequest.cs" />
     <Compile Include="Entity\Layout.cs" />
     <Compile Include="Entity\PhotoBox.cs" />
     <Compile Include="Entity\Reponse\PhotoSessionResponse.cs" />
     <Compile Include="Entity\Request\UpdatePhotoSessionRequest.cs" />
-    <Compile Include="Entity\Sticker.cs" />
+    <Compile Include="Entity\Reponse\StickerResponse.cs" />
     <Compile Include="Classes\StickerProcess.cs" />
     <Compile Include="Menu\UserSettings.cs" />
     <Compile Include="Classes\LayoutProcess.cs" />
@@ -277,6 +282,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\closeSession.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -31,8 +31,8 @@ namespace FBoothApp.Services
         public FetchApiServices()
         {
             _httpClient = new HttpClient();
-            _apiBaseUrl = "https://localhost:7156/api";
-            //_apiBaseUrl = "https://fboothapi.azurewebsites.net/api";
+            //_apiBaseUrl = "https://localhost:7156/api";
+            _apiBaseUrl = "https://fboothapi.azurewebsites.net/api";
             _initialLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/layout");
             _initialStickerLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/sticker");
 
@@ -76,66 +76,6 @@ namespace FBoothApp.Services
 
             return layouts;
         }
-
-        public async Task<List<Sticker>> GetStickersAsync()
-        {
-            List<Sticker> stickers = new List<Sticker>();
-            try
-            {
-                var response = await _initialStickerLoadTask;
-                stickers = JsonConvert.DeserializeObject<List<Sticker>>(response);
-                await SyncStickersLocalFiles(stickers);
-            }
-            catch (HttpRequestException)
-            {
-                stickers = LoadLocalStickers();
-            }
-
-            return stickers;
-        }
-
-        private List<Sticker> LoadLocalStickers()
-        {
-            var stickers = new List<Sticker>();
-            var stickerFiles = Directory.GetFiles(_stickersFolderPath, "*.png");
-
-            foreach (var filePath in stickerFiles)
-            {
-                var stickerId = Path.GetFileNameWithoutExtension(filePath);
-                stickers.Add(new Sticker
-                {
-                    StickerID = stickerId,
-                    StickerURL = filePath,
-                    LastModified = File.GetLastWriteTime(filePath)
-                });
-            }
-
-            return stickers;
-        }
-
-        private async Task SyncStickersLocalFiles(List<Sticker> stickers)
-        {
-            var stickerFiles = new HashSet<string>(Directory.GetFiles(_stickersFolderPath, "*", SearchOption.AllDirectories));
-
-            foreach (var sticker in stickers)
-            {
-                string stickerFileName = $"{sticker.StickerID}.png";
-                string stickerFilePath = Path.Combine(_stickersFolderPath, stickerFileName);
-
-                if (!File.Exists(stickerFilePath) || FileNeedsUpdate(stickerFilePath, sticker.LastModified))
-                {
-                    await DownloadAndSaveImageAsync(sticker.StickerURL, stickerFilePath);
-                }
-                stickerFiles.Remove(stickerFilePath); // Xóa các file sticker đã tồn tại từ danh sách
-            }
-
-            // Xóa các sticker không còn tồn tại trên server
-            foreach (var file in stickerFiles)
-            {
-                File.Delete(file);
-            }
-        }
-
 
         private void SaveLayoutsToLocalJson(List<Layout> layouts)
         {
@@ -209,6 +149,154 @@ namespace FBoothApp.Services
                 File.Delete(file);
             }
         }
+
+        //public async Task<List<Sticker>> GetStickersAsync()
+        //{
+        //    List<Sticker> stickers = new List<Sticker>();
+        //    try
+        //    {
+        //        var response = await _initialStickerLoadTask;
+        //        stickers = JsonConvert.DeserializeObject<List<Sticker>>(response);
+        //        await SyncStickersLocalFiles(stickers);
+        //    }
+        //    catch (HttpRequestException)
+        //    {
+        //        stickers = LoadLocalStickers();
+        //    }
+
+        //    return stickers;
+        //}
+
+        //private List<Sticker> LoadLocalStickers()
+        //{
+        //    var stickers = new List<Sticker>();
+        //    var stickerFiles = Directory.GetFiles(_stickersFolderPath, "*.png");
+
+        //    foreach (var filePath in stickerFiles)
+        //    {
+        //        var stickerId = Path.GetFileNameWithoutExtension(filePath);
+        //        stickers.Add(new Sticker
+        //        {
+        //            StickerID = stickerId,
+        //            StickerURL = filePath,
+        //            LastModified = File.GetLastWriteTime(filePath)
+        //        });
+        //    }
+
+        //    return stickers;
+        //}
+
+        //private async Task SyncStickersLocalFiles(List<Sticker> stickers)
+        //{
+        //    var stickerFiles = new HashSet<string>(Directory.GetFiles(_stickersFolderPath, "*", SearchOption.AllDirectories));
+
+        //    foreach (var sticker in stickers)
+        //    {
+        //        string stickerFileName = $"{sticker.StickerID}.png";
+        //        string stickerFilePath = Path.Combine(_stickersFolderPath, stickerFileName);
+
+        //        if (!File.Exists(stickerFilePath) || FileNeedsUpdate(stickerFilePath, sticker.LastModified))
+        //        {
+        //            await DownloadAndSaveImageAsync(sticker.StickerURL, stickerFilePath);
+        //        }
+        //        stickerFiles.Remove(stickerFilePath); // Xóa các file sticker đã tồn tại từ danh sách
+        //    }
+
+        //    // Xóa các sticker không còn tồn tại trên server
+        //    foreach (var file in stickerFiles)
+        //    {
+        //        File.Delete(file);
+        //    }
+        //}
+
+        public async Task<List<StickerTypeResponse>> GetStickerTypesAsync()
+        {
+            List<StickerTypeResponse> stickerTypes = new List<StickerTypeResponse>();
+            try
+            {
+                var response = await _httpClient.GetStringAsync($"{_apiBaseUrl}/sticker-type");
+                stickerTypes = JsonConvert.DeserializeObject<List<StickerTypeResponse>>(response);
+                await SyncStickerTypesLocalFiles(stickerTypes);
+            }
+            catch (HttpRequestException)
+            {
+                stickerTypes = LoadLocalStickerTypes();
+            }
+
+            return stickerTypes;
+        }
+
+        private async Task SyncStickerTypesLocalFiles(List<StickerTypeResponse> stickerTypes)
+        {
+            foreach (var stickerType in stickerTypes)
+            {
+                // Tạo thư mục cho từng StickerType
+                string stickerTypeFolderPath = Path.Combine(_stickersFolderPath, stickerType.StickerTypeName);
+                if (!Directory.Exists(stickerTypeFolderPath))
+                {
+                    Directory.CreateDirectory(stickerTypeFolderPath);
+                }
+
+                // Lưu ảnh đại diện của StickerType
+                string representImageFilePath = Path.Combine(stickerTypeFolderPath, "RepresentImage.png");
+                if (!File.Exists(representImageFilePath) || FileNeedsUpdate(representImageFilePath, stickerType.LastModified))
+                {
+                    await DownloadAndSaveImageAsync(stickerType.RepresentImageURL, representImageFilePath);
+                }
+
+                // Lưu các sticker thuộc StickerType
+                foreach (var sticker in stickerType.Stickers)
+                {
+                    string stickerFileName = $"{sticker.StickerID}.png";
+                    string stickerFilePath = Path.Combine(stickerTypeFolderPath, stickerFileName);
+
+                    if (!File.Exists(stickerFilePath) || FileNeedsUpdate(stickerFilePath, sticker.LastModified))
+                    {
+                        await DownloadAndSaveImageAsync(sticker.StickerURL, stickerFilePath);
+                    }
+                }
+            }
+
+            // Xóa các sticker không còn tồn tại trên server (nếu cần)
+            // Code tương tự như trong SyncLocalFiles ở phần Layout.
+        }
+
+        private List<StickerTypeResponse> LoadLocalStickerTypes()
+        {
+            var stickerTypes = new List<StickerTypeResponse>();
+            var stickerTypeDirectories = Directory.GetDirectories(_stickersFolderPath);
+
+            foreach (var dir in stickerTypeDirectories)
+            {
+                var stickerTypeName = Path.GetFileName(dir);
+                var representImagePath = Path.Combine(dir, "RepresentImage.png");
+
+                var stickers = new List<StickerResponse>();
+                var stickerFiles = Directory.GetFiles(dir, "*.png").Where(f => f != representImagePath);
+
+                foreach (var filePath in stickerFiles)
+                {
+                    var stickerId = Guid.Parse(Path.GetFileNameWithoutExtension(filePath));
+                    stickers.Add(new StickerResponse
+                    {
+                        StickerID = stickerId,
+                        StickerURL = filePath,
+                        LastModified = File.GetLastWriteTime(filePath)
+                    });
+                }
+
+                stickerTypes.Add(new StickerTypeResponse
+                {
+                    StickerTypeName = stickerTypeName,
+                    RepresentImageURL = representImagePath,
+                    Stickers = stickers,
+                    LastModified = File.GetLastWriteTime(representImagePath)
+                });
+            }
+
+            return stickerTypes;
+        }
+
 
         private async Task DownloadAndSaveImageAsync(string url, string filePath)
         {
@@ -402,7 +490,43 @@ namespace FBoothApp.Services
             }
         }
 
+        public async Task<bool> CloseBookingAsync(Guid boothID, Guid bookingID)
+        {
+            try
+            {
+                // Tạo request với các giá trị cần thiết
+                var closeBookingRequest = new
+                {
+                    boothID = boothID,
+                    bookingID = bookingID
+                };
 
+                // Chuyển request thành chuỗi JSON
+                var jsonRequest = JsonConvert.SerializeObject(closeBookingRequest);
+                var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+                // Gửi yêu cầu PUT tới API
+                var response = await _httpClient.PutAsync($"{_apiBaseUrl}/booking/close-booking", content);
+
+                // Kiểm tra nếu yêu cầu thành công
+                if (response.IsSuccessStatusCode)
+                {
+                    return true; // Đóng booking thành công
+                }
+                else
+                {
+                    // Đọc thông báo lỗi từ phản hồi của API
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Failed to close booking: {response.StatusCode} - {errorResponse}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to close booking: {ex.Message}");
+                return false;
+            }
+        }
 
 
     }
