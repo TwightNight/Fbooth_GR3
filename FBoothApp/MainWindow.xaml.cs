@@ -2350,46 +2350,39 @@ namespace FBoothApp
                 {
                     var selectedService = serviceData.Service;
                     currentServiceType = selectedService.ServiceType;
-                    isServiceSelected = !isServiceSelected; // Toggle the selection state
+                    isServiceSelected = true;
 
-                    // Unselect all photos if the service is being deselected
-                    if (!isServiceSelected)
-                    {
-                        UnselectAllPhotos();
-                    }
+                    // Unselect all photos when a new service is selected
+                    UnselectAllPhotos();
 
                     // Update the appearance of the buttons
                     UpdateServiceButtons();
 
-                    // Toggle visibility of service-specific buttons
+                    // Make the current button and its border appear more prominent
                     if (border != null)
                     {
-                        if (isServiceSelected)
-                        {
-                            border.Background = new SolidColorBrush(Colors.Orange);
-                            button.Foreground = new SolidColorBrush(Colors.White);
-
-                            if (currentServiceType == ServiceType.EmailSending)
-                            {
-                                SendEmailButton.Visibility = Visibility.Visible;
-                                PrintButton.Visibility = Visibility.Collapsed;
-                            }
-                            else if (currentServiceType == ServiceType.Printing)
-                            {
-                                PrintButton.Visibility = Visibility.Visible;
-                                SendEmailButton.Visibility = Visibility.Collapsed;
-                            }
-                        }
-                        else
-                        {
-                            border.Background = new SolidColorBrush(Colors.Transparent);
-                            button.Foreground = new SolidColorBrush(Colors.Gray);
-                            SendEmailButton.Visibility = Visibility.Collapsed;
-                            PrintButton.Visibility = Visibility.Collapsed;
-                        }
+                        border.Background = new SolidColorBrush(Colors.Orange);
+                        button.Foreground = new SolidColorBrush(Colors.White);
                     }
 
-                    BookingPhotoThumbnailGrid.Visibility = isServiceSelected ? Visibility.Visible : Visibility.Collapsed;
+                    // Ensure only relevant UI elements are shown
+                    if (currentServiceType == ServiceType.EmailSending)
+                    {
+                        SendEmailButton.Visibility = Visibility.Visible;
+                        PrintButton.Visibility = Visibility.Collapsed;
+                    }
+                    else if (currentServiceType == ServiceType.Printing)
+                    {
+                        PrintButton.Visibility = Visibility.Visible;
+                        SendEmailButton.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        SendEmailButton.Visibility = Visibility.Collapsed;
+                        PrintButton.Visibility = Visibility.Collapsed;
+                    }
+
+                    BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
                 }
             }
         }
@@ -2494,12 +2487,19 @@ namespace FBoothApp
 
             await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
 
+            // Reset Booking related values
             BookingID = Guid.Empty;
             photoNumber = 0;
             photosInTemplate = 0;
             photoNumberInTemplate = 0;
             printNumber = 0;
             SavePhoto.CurrentSessionPath = null;
+
+            // Reset Service usage counts
+            emailUsageCount = 0;
+            printingUsageCount = 0;
+            totalEmailServiceCount = 0;
+            totalPrintServiceCount = 0;
 
             HomeText.Visibility = Visibility.Visible;
             SliderBorder.Visibility = Visibility.Visible;
