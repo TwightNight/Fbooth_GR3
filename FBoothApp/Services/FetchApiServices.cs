@@ -31,8 +31,8 @@ namespace FBoothApp.Services
         public FetchApiServices()
         {
             _httpClient = new HttpClient();
-            //_apiBaseUrl = "https://localhost:7156/api";
-            _apiBaseUrl = "https://fboothapi.azurewebsites.net/api";
+            _apiBaseUrl = "https://localhost:7156/api";
+            //_apiBaseUrl = "https://fboothapi.azurewebsites.net/api";
             _initialLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/layout");
             _initialStickerLoadTask = _httpClient.GetStringAsync($"{_apiBaseUrl}/sticker");
 
@@ -228,9 +228,13 @@ namespace FBoothApp.Services
 
         private async Task SyncStickerTypesLocalFiles(List<StickerTypeResponse> stickerTypes)
         {
+            // Tạo danh sách các StickerType từ server
+            var serverStickerTypeNames = new HashSet<string>(stickerTypes.Select(s => s.StickerTypeName));
+
+            // Xử lý từng StickerType trả về từ server
             foreach (var stickerType in stickerTypes)
             {
-                // Tạo thư mục cho từng StickerType
+                // Tạo thư mục cho mỗi StickerType
                 string stickerTypeFolderPath = Path.Combine(_stickersFolderPath, stickerType.StickerTypeName);
                 if (!Directory.Exists(stickerTypeFolderPath))
                 {
@@ -244,9 +248,12 @@ namespace FBoothApp.Services
                     await DownloadAndSaveImageAsync(stickerType.RepresentImageURL, representImageFilePath);
                 }
 
-                // Lưu các sticker thuộc StickerType
+                // Lưu các sticker thuộc về StickerType
+                var serverStickerIDs = new HashSet<Guid>();
                 foreach (var sticker in stickerType.Stickers)
                 {
+                    serverStickerIDs.Add(sticker.StickerID);
+
                     string stickerFileName = $"{sticker.StickerID}.png";
                     string stickerFilePath = Path.Combine(stickerTypeFolderPath, stickerFileName);
 
@@ -255,11 +262,32 @@ namespace FBoothApp.Services
                         await DownloadAndSaveImageAsync(sticker.StickerURL, stickerFilePath);
                     }
                 }
+
+                // Xóa các sticker local không còn tồn tại trên server
+                var localStickerFiles = Directory.GetFiles(stickerTypeFolderPath, "*.png").Where(f => f != representImageFilePath);
+                foreach (var localStickerFilePath in localStickerFiles)
+                {
+                    var localStickerID = Guid.Parse(Path.GetFileNameWithoutExtension(localStickerFilePath));
+                    if (!serverStickerIDs.Contains(localStickerID))
+                    {
+                        File.Delete(localStickerFilePath);
+                    }
+                }
             }
 
-            // Xóa các sticker không còn tồn tại trên server (nếu cần)
-            // Code tương tự như trong SyncLocalFiles ở phần Layout.
+            // Xóa các folder StickerType trong local không còn tồn tại trên server
+            var localStickerTypeFolders = Directory.GetDirectories(_stickersFolderPath);
+            foreach (var localFolderPath in localStickerTypeFolders)
+            {
+                var localStickerTypeName = Path.GetFileName(localFolderPath);
+                if (!serverStickerTypeNames.Contains(localStickerTypeName))
+                {
+                    Directory.Delete(localFolderPath, true);
+                }
+            }
         }
+
+
 
         private List<StickerTypeResponse> LoadLocalStickerTypes()
         {

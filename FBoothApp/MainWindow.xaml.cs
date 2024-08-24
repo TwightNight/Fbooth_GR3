@@ -79,7 +79,7 @@ namespace FBoothApp
         //public string templateName = string.Empty;
         string printerName = string.Empty;
         private string currentDirectory = Environment.CurrentDirectory;
-        public bool turnOnTemplateMenu = false;
+        //public bool turnOnTemplateMenu = false;
         public bool PhotoTaken = false;
 
 
@@ -91,7 +91,7 @@ namespace FBoothApp
             InitializeComponent();
             FillSavedData();
             ActivateTimers();
-            CheckTemplate();
+            //CheckTemplate();
 
             //Canon:
             try
@@ -682,7 +682,7 @@ namespace FBoothApp
 
             SliderBorder.Visibility = Visibility.Hidden;
             Slider.Visibility = Visibility.Hidden;
-            StartButton.Visibility = Visibility.Hidden;
+            //StartButton.Visibility = Visibility.Hidden;
 
             //StartButtonMenu.Visibility = Visibility.Hidden;
             //InputGrid.Visibility = Visibility.Hidden;
@@ -870,8 +870,7 @@ namespace FBoothApp
 
         private DispatcherTimer checkEndTimeTimer;
         private DateTime bookingEndTime;
-
-        private DispatcherTimer bookingTimeRemainingTimer;
+        
         private TimeSpan timeRemaining;
 
         private void StartBookingTimeRemainingCheck()
@@ -887,7 +886,9 @@ namespace FBoothApp
 
         private void CheckEndTimeTimer_Tick(object sender, EventArgs e)
         {
+            // Tính toán thời gian còn lại
             timeRemaining = bookingEndTime - DateTime.Now;
+
             if (timeRemaining.TotalSeconds > 0)
             {
                 CountdownTextBlock.Visibility = Visibility.Visible;
@@ -895,15 +896,19 @@ namespace FBoothApp
             }
             else
             {
-                bookingTimeRemainingTimer.Stop();
-                CountdownTextBlock.Visibility = Visibility.Collapsed;
-                CountdownTextBlock.Text = "Booking has ended.";
+                // Ngay khi hết giờ, dừng bộ đếm thời gian để tránh việc lặp lại
+                checkEndTimeTimer.Stop();
+                checkEndTimeTimer = null; // Xóa bộ đếm thời gian để đảm bảo nó không bị kích hoạt lại
 
-                var endMessageBox = new CustomMessageBox("Your session has ended. The application will now close.");
+                // Hiển thị thông báo và đóng booking
+                var endMessageBox = new CustomMessageBox("Your session has ended. The application will now reset.");
                 endMessageBox.ShowDialog();
-                Application.Current.Shutdown();
+
+                // Gọi CloseBookingAsync để đóng booking và xử lý các logic còn lại
+                ResetBookingState();
             }
         }
+
 
         private void HideAllElementsRecursive(DependencyObject parent)
         {
@@ -975,19 +980,19 @@ namespace FBoothApp
         //    SliderBorder.Visibility = Visibility.Hidden;
         //    Slider.Visibility = Visibility.Hidden;
         //}
-        public void CheckTemplate()
-        {
+        //public void CheckTemplate()
+        //{
 
-            if (turnOnTemplateMenu)
-            {
-                //StartButtonMenu.Visibility = Visibility.Visible;
-                SendButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                StartButton.Visibility = Visibility.Visible;
-            }
-        }
+        //    if (turnOnTemplateMenu)
+        //    {
+        //        //StartButtonMenu.Visibility = Visibility.Visible;
+        //        SendButton.Visibility = Visibility.Visible;
+        //    }
+        //    else
+        //    {
+        //        //StartButton.Visibility = Visibility.Visible;
+        //    }
+        //}
 
 
         #endregion
@@ -1683,7 +1688,7 @@ namespace FBoothApp
             StickerWrapPanel.Visibility = Visibility.Hidden;
             NextButtonPrinting.Visibility = Visibility.Hidden;
             ShowPrint.Visibility = Visibility.Hidden;
-            SendEmailButton.Visibility = Visibility.Visible;
+            //SendEmailButton.Visibility = Visibility.Visible;
             //PrintMenuGrid.Visibility = Visibility.Visible;
 
             ShowBookingPhotoThumbnail(BookingID);
@@ -1944,14 +1949,14 @@ namespace FBoothApp
 
             //PrintMenuGrid.Visibility = Visibility.Visible;
             //PrintMenuStackPanel.Visibility = Visibility.Visible;
-            PrintButton.Visibility = Visibility.Visible;
+            //PrintButton.Visibility = Visibility.Visible;
 
             //NumberOfCopiesTextBox.Visibility = Visibility.Visible;
             //AddOneCopyButton.Visibility = Visibility.Visible;
             //MinusOneCopyButton.Visibility = Visibility.Visible;
 
             //PrintMenuGrid.Visibility = Visibility.Visible;
-            SendEmailButton.Visibility = Visibility.Visible;
+            //SendEmailButton.Visibility = Visibility.Visible;
 
 
             ShowPrint.Visibility = Visibility.Visible;
@@ -2050,16 +2055,14 @@ namespace FBoothApp
             {
                 actualSettings = System.Xml.Linq.XDocument.Load(System.IO.Path.Combine(currentDirectory, "menusettings.xml"));
                 actualSettings.Root.Elements("setting");
-                layout.LayoutCode = actualSettings.Root.Element("actualTemplate").Value;
-                if (actualSettings.Root.Element("actualTemplate").Value == "All")
-                {
-                    turnOnTemplateMenu = true;
-                }
+                //layout.LayoutCode = actualSettings.Root.Element("actualTemplate").Value;
+                //if (actualSettings.Root.Element("actualTemplate").Value == "All")
+                //{
+                //    turnOnTemplateMenu = true;
+                //}
                 firstprinter = actualSettings.Root.Element("actualPrinter").Value;
                 secondprinter = actualSettings.Root.Element("secondPrinter").Value;
-                maxCopies = System.Convert.ToInt32(actualSettings.Root.Element("maxNumberOfCopies").Value);
                 timeLeft = System.Convert.ToInt32(actualSettings.Root.Element("timeBetweenPhotos").Value);
-                printTime = System.Convert.ToInt32(actualSettings.Root.Element("printingTime").Value);
                 printerName = FBoothApp.PrintingServices.ActualPrinter(layout.LayoutCode, firstprinter, secondprinter);
                 timeLeftCopy = timeLeft;
 
@@ -2133,7 +2136,7 @@ namespace FBoothApp
             sliderTimer.Start();
             SliderBorder.Visibility = Visibility.Visible;
             Slider.Visibility = Visibility.Visible;
-            StartButton.Visibility = Visibility.Visible;
+            //StartButton.Visibility = Visibility.Visible;
 
             ReadyButton.Visibility = Visibility.Hidden;
             PrintButton.Visibility = Visibility.Hidden;
@@ -2347,42 +2350,50 @@ namespace FBoothApp
                 {
                     var selectedService = serviceData.Service;
                     currentServiceType = selectedService.ServiceType;
-                    isServiceSelected = true;
+                    isServiceSelected = !isServiceSelected; // Toggle the selection state
 
-                    // Unselect all photos when a new service is selected
-                    UnselectAllPhotos();
+                    // Unselect all photos if the service is being deselected
+                    if (!isServiceSelected)
+                    {
+                        UnselectAllPhotos();
+                    }
 
                     // Update the appearance of the buttons
                     UpdateServiceButtons();
 
-                    // Make the current button and its border appear more prominent
+                    // Toggle visibility of service-specific buttons
                     if (border != null)
                     {
-                        border.Background = new SolidColorBrush(Colors.Orange);
-                        button.Foreground = new SolidColorBrush(Colors.White);
+                        if (isServiceSelected)
+                        {
+                            border.Background = new SolidColorBrush(Colors.Orange);
+                            button.Foreground = new SolidColorBrush(Colors.White);
+
+                            if (currentServiceType == ServiceType.EmailSending)
+                            {
+                                SendEmailButton.Visibility = Visibility.Visible;
+                                PrintButton.Visibility = Visibility.Collapsed;
+                            }
+                            else if (currentServiceType == ServiceType.Printing)
+                            {
+                                PrintButton.Visibility = Visibility.Visible;
+                                SendEmailButton.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                        else
+                        {
+                            border.Background = new SolidColorBrush(Colors.Transparent);
+                            button.Foreground = new SolidColorBrush(Colors.Gray);
+                            SendEmailButton.Visibility = Visibility.Collapsed;
+                            PrintButton.Visibility = Visibility.Collapsed;
+                        }
                     }
 
-                    // Ensure only relevant UI elements are shown
-                    if (currentServiceType == ServiceType.EmailSending)
-                    {
-                        SendEmailButton.Visibility = Visibility.Visible;
-                        PrintButton.Visibility = Visibility.Collapsed;
-                    }
-                    else if (currentServiceType == ServiceType.Printing)
-                    {
-                        PrintButton.Visibility = Visibility.Visible;
-                        SendEmailButton.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        SendEmailButton.Visibility = Visibility.Collapsed;
-                        PrintButton.Visibility = Visibility.Collapsed;
-                    }
-
-                    BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
+                    BookingPhotoThumbnailGrid.Visibility = isServiceSelected ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
         }
+
 
 
 
@@ -2434,9 +2445,9 @@ namespace FBoothApp
                             BoothID = BoothID,
                             BookingID = BookingID,
                             ServiceList = new Dictionary<Guid, short>
-                    {
-                        { serviceData.ServiceID, (short)serviceData.Quantity }
-                    }
+                            {
+                                { serviceData.ServiceID, (short)serviceData.Quantity }
+                            }
                         };
 
                         var bookingResponse = await _apiServices.AddExtraServiceAsync(addServiceRequest);
@@ -2472,13 +2483,45 @@ namespace FBoothApp
             }
         }
 
+        private async void ResetBookingState()
+        {
+            var savedata = new SavePhoto(photoNumber, BookingID);
+            var updateRequest = new UpdatePhotoSessionRequest
+            {
+                TotalPhotoTaken = savedata.CountPhotosInSession(),
+                Status = Entity.Enum.PhotoSessionStatus.Ended
+            };
+
+            await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
+
+            BookingID = Guid.Empty;
+            photoNumber = 0;
+            photosInTemplate = 0;
+            photoNumberInTemplate = 0;
+            printNumber = 0;
+            SavePhoto.CurrentSessionPath = null;
+
+            HomeText.Visibility = Visibility.Visible;
+            SliderBorder.Visibility = Visibility.Visible;
+            Slider.Visibility = Visibility.Visible;
+            ImageBorder.Visibility = Visibility.Visible;
+
+            sliderTimer.Start();
+            slider(null, null);
+
+            RoundedTextBox.Clear();
+            RoundedTextBox_LostFocus(null, null);
+            BorderPanel.Visibility = Visibility.Visible;
+
+            checkEndTimeTimer?.Stop();
+            timeRemaining = TimeSpan.Zero;
+            CountdownTextBlock.Visibility = Visibility.Collapsed;
+
+            BookingPhotoThumbnailGrid.Visibility = Visibility.Collapsed;
+        }
 
 
-
-
-
-        // Hàm xử lý khi người dùng click vào nút đóng booking
-        private async void CloseBooking_Click(object sender, RoutedEventArgs e)
+        private async Task CloseBookingAsync(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -2490,36 +2533,46 @@ namespace FBoothApp
 
                 if (isClosed)
                 {
-                    var savedata = new SavePhoto(photoNumber, BookingID);
-                    var updateRequest = new UpdatePhotoSessionRequest
-                    {
-                        TotalPhotoTaken = savedata.CountPhotosInSession(),
-                        Status = Entity.Enum.PhotoSessionStatus.Ended
-                    };
+                    //var savedata = new SavePhoto(photoNumber, BookingID);
+                    //var updateRequest = new UpdatePhotoSessionRequest
+                    //{
+                    //    TotalPhotoTaken = savedata.CountPhotosInSession(),
+                    //    Status = Entity.Enum.PhotoSessionStatus.Ended
+                    //};
 
-                    await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
+                    //await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
 
                     MessageBox.Show("Booking closed successfully.");
                     // Thực hiện các xử lý khác khi đóng booking thành công, ví dụ như làm mới UI hoặc điều hướng
-                    BookingID = Guid.Empty;
-                    photoNumber = 0;
-                    photosInTemplate = 0;
-                    photoNumberInTemplate = 0;
-                    printNumber = 0;
-                    SavePhoto.CurrentSessionPath = null;
+                    //BookingID = Guid.Empty;
+                    //photoNumber = 0;
+                    //photosInTemplate = 0;
+                    //photoNumberInTemplate = 0;
+                    //printNumber = 0;
+                    //SavePhoto.CurrentSessionPath = null;
 
-                    HomeText.Visibility = Visibility.Visible;
-                    RoundedTextBox.Clear();
-                    RoundedTextBox_LostFocus(sender, e);
-                    BorderPanel.Visibility = Visibility.Visible;
-                    SliderBorder.Visibility = Visibility.Visible;
+                    //HomeText.Visibility = Visibility.Visible;
+                    //SliderBorder.Visibility = Visibility.Visible;
+                    //Slider.Visibility = Visibility.Visible;
+                    //ImageBorder.Visibility = Visibility.Visible;
 
-                    BookingPhotoThumbnailGrid.Visibility = Visibility.Collapsed;
+                    //sliderTimer.Start();
+                    //slider(null, null);
+
+                    //RoundedTextBox.Clear();
+                    //RoundedTextBox_LostFocus(sender, e);
+                    //BorderPanel.Visibility = Visibility.Visible;
+
+                    //checkEndTimeTimer.Stop();
+                    //timeRemaining = TimeSpan.Zero;
+                    //CountdownTextBlock.Visibility = Visibility.Collapsed;
+
+                    //BookingPhotoThumbnailGrid.Visibility = Visibility.Collapsed;
+                    ResetBookingState();
                 }
                 else
                 {
                     MessageBox.Show("Failed to close booking. Please try again.");
-                    // Thực hiện các xử lý khác khi đóng booking thất bại
                 }
             }
             catch (Exception ex)
@@ -2527,6 +2580,12 @@ namespace FBoothApp
                 MessageBox.Show($"An error occurred: {ex.Message}");
                 // Xử lý ngoại lệ nếu có
             }
+        }
+
+        // Hàm xử lý khi người dùng click vào nút đóng booking
+        private async void CloseBooking_Click(object sender, RoutedEventArgs e)
+        {
+            await CloseBookingAsync(sender, e);
         }
 
         private async void ServiceTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

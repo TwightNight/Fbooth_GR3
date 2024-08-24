@@ -8,7 +8,7 @@
     Title="Menu"
     Width="619"
     Height="327"
-    Background="#FFD1B32D"
+    Background="#3795BD"
     mc:Ignorable="d">
 
     <TabControl
@@ -19,7 +19,8 @@
         <TabItem
             MinWidth="100"
             MinHeight="30"
-            Header="General"
+            HorizontalAlignment="Center"
+            Header="General config"
             IsSelected="True">
 
             <Grid>
@@ -61,51 +62,10 @@
                     VerticalAlignment="Top"
                     Content="Printer 1"
                     RenderTransformOrigin="0.688,0.5" />
-                <ComboBox
-                    x:Name="ForegroundComboBox"
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="3"
-                    Width="155"
-                    Height="28"
-                    Margin="1,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top" />
-                <Label
-                    x:Name="label_Copy"
-                    Grid.Row="2"
-                    Width="72"
-                    Height="28"
-                    Margin="1,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="Foreground"
-                    RenderTransformOrigin="0.688,0.5" />
-                <ComboBox
-                    x:Name="CopiesComboBox"
-                    Grid.Row="2"
-                    Grid.Column="5"
-                    Grid.ColumnSpan="2"
-                    Width="155"
-                    Height="28"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top" />
-                <Label
-                    x:Name="label_Copy1"
-                    Grid.Row="2"
-                    Grid.Column="3"
-                    Grid.ColumnSpan="2"
-                    Width="99"
-                    Height="28"
-                    Margin="55,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="Copies Count"
-                    RenderTransformOrigin="0.737,-0.679" />
 
                 <Label
                     x:Name="label_Copy2"
-                    Grid.Row="4"
+                    Grid.Row="3"
                     Grid.ColumnSpan="2"
                     Width="154"
                     Height="28"
@@ -114,67 +74,17 @@
                     VerticalAlignment="Top"
                     Content="Time between Photos"
                     RenderTransformOrigin="0.737,-0.679" />
-                <Slider
-                    x:Name="TimeBetweenPhotosSlider"
-                    Grid.Row="4"
+
+                <TextBox
+                    x:Name="TimeBetweenPhotosTextBox"
+                    Grid.Row="3"
                     Grid.Column="2"
                     Grid.ColumnSpan="2"
-                    Width="155"
+                    Width="100"
                     Height="28"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    IsSnapToTickEnabled="True"
-                    Maximum="10"
-                    Minimum="3"
-                    TickFrequency="1"
-                    TickPlacement="BottomRight" />
-                <TextBox
-                    x:Name="textBox1"
-                    Grid.Row="4"
-                    Grid.Column="4"
-                    Width="35"
-                    Height="28"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Text="{Binding ElementName=TimeBetweenPhotosSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                    VerticalAlignment="Center"
                     TextWrapping="Wrap" />
-
-
-                <Label
-                    x:Name="label_Copy3"
-                    Grid.Row="5"
-                    Grid.ColumnSpan="2"
-                    Width="154"
-                    Height="28"
-                    Margin="1,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Content="Printing Time"
-                    RenderTransformOrigin="0.737,-0.679" />
-                <TextBox
-                    x:Name="textBox"
-                    Grid.Row="5"
-                    Grid.Column="4"
-                    Width="35"
-                    Height="28"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Text="{Binding ElementName=PrintingTimeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="Wrap" />
-                <Slider
-                    x:Name="PrintingTimeSlider"
-                    Grid.Row="5"
-                    Grid.Column="2"
-                    Grid.ColumnSpan="2"
-                    Width="155"
-                    Height="28"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    IsSnapToTickEnabled="True"
-                    Maximum="40"
-                    Minimum="10"
-                    TickFrequency="1"
-                    TickPlacement="BottomRight" />
 
 
                 <Button
@@ -182,7 +92,7 @@
                     Grid.Row="6"
                     Grid.Column="5"
                     Grid.ColumnSpan="2"
-                    Width="145"
+                    Width="140"
                     Height="24"
                     Margin="10,0,0,0"
                     HorizontalAlignment="Left"
@@ -194,7 +104,7 @@
                     Grid.Row="6"
                     Grid.Column="3"
                     Grid.ColumnSpan="2"
-                    Width="144"
+                    Width="140"
                     Height="24"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
@@ -221,74 +131,27 @@
                     VerticalAlignment="Top"
                     Content="Printer 2"
                     RenderTransformOrigin="0.688,0.5" />
-                <ComboBox
-                    x:Name="SettingsComboBox"
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="3"
-                    Width="155"
-                    Height="28"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    SelectionChanged="SettingsComboBox_SelectionChanged" />
+
                 <Label
-                    x:Name="label1"
-                    Grid.Row="3"
-                    Width="85"
+                    x:Name="BoothIDLabel"
+                    Grid.Row="2"
+                    Width="154"
                     Height="28"
+                    Margin="1,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Content="Change Text" />
+                    Content="Booth ID"
+                    RenderTransformOrigin="0.737,-0.679" />
                 <TextBox
-                    x:Name="SettingsTextBox"
-                    Grid.Row="3"
-                    Grid.Column="3"
+                    x:Name="BoothIDTextBox"
+                    Grid.Row="2"
+                    Grid.Column="1"
                     Grid.ColumnSpan="4"
-                    Width="271"
+                    Width="400"
                     Height="28"
-                    Margin="38,0,0,0"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
+                    VerticalAlignment="Center"
                     TextWrapping="Wrap" />
-                <Button
-                    x:Name="ChangeTextButton"
-                    Grid.Row="3"
-                    Grid.Column="7"
-                    Width="62"
-                    Height="28"
-                    Margin="5,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Click="ChangeTextButton_Click"
-                    Content="SaveText" />
-
-            </Grid>
-        </TabItem>
-
-        <TabItem
-            MinWidth="100"
-            MinHeight="30"
-            Header="Style">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100*" />
-                    <ColumnDefinition Width="55*" />
-                    <ColumnDefinition Width="78*" />
-                    <ColumnDefinition Width="77*" />
-                    <ColumnDefinition Width="77*" />
-                    <ColumnDefinition Width="77*" />
-                    <ColumnDefinition Width="78*" />
-                    <ColumnDefinition Width="77*" />
-                </Grid.ColumnDefinitions>
 
 
             </Grid>
@@ -297,7 +160,8 @@
         <TabItem
             MinWidth="100"
             MinHeight="30"
-            Header="Email">
+            HorizontalAlignment="Center"
+            Header="Email Config">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -412,7 +276,6 @@
                     VerticalAlignment="Center"
                     Click="WithoutSaveButton_Click"
                     Content="Quit without save" />
-
 
             </Grid>
         </TabItem>
