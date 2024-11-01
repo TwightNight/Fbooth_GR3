@@ -28,6 +28,10 @@ using System.Windows.Threading;
 using FBoothApp.Entity.Request;
 using FBoothApp.Entity.Enum;
 using FBoothApp.Entity.Reponse;
+using QRCoder;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Http;
+using FBoothApp.Helpers;
 
 
 namespace FBoothApp
@@ -600,7 +604,7 @@ namespace FBoothApp
                         Status = Entity.Enum.PhotoSessionStatus.Ended
                     };
 
-                    await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
+                    //await _apiServices.UpdatePhotoSessionAsync(_currentSessionId, updateRequest);
 
                     // Tiếp tục quy trình chụp ảnh
                     photoNumber = 0;
@@ -795,6 +799,7 @@ namespace FBoothApp
             try
             {
                 var checkinCode = long.Parse(RoundedTextBox.Text);
+                Guid BoothID = Guid.Parse("28110B4A-BF04-4C04-A19B-1B91D976EE7C");
 
                 var request = new CheckinRequest
                 {
@@ -870,7 +875,7 @@ namespace FBoothApp
 
         private DispatcherTimer checkEndTimeTimer;
         private DateTime bookingEndTime;
-        
+
         private TimeSpan timeRemaining;
 
         private void StartBookingTimeRemainingCheck()
@@ -1170,7 +1175,7 @@ namespace FBoothApp
                     TextBlock stickerTypeNameTextBlock = new TextBlock
                     {
                         Text = stickerTypeName,
-                        FontSize = 15 ,
+                        FontSize = 15,
                         Foreground = new SolidColorBrush(Colors.Black),
                         FontWeight = FontWeights.Bold,
                         HorizontalAlignment = HorizontalAlignment.Center,
@@ -1548,6 +1553,7 @@ namespace FBoothApp
                 //PrintMenuGrid.Visibility = Visibility.Hidden;
 
                 SendEmailButton.Visibility = Visibility.Hidden;
+                CreateQRCodeButton.Visibility = Visibility.Hidden;
 
 
                 isRetake = true;
@@ -1876,6 +1882,10 @@ namespace FBoothApp
             else if (currentServiceType == ServiceType.Printing)
             {
                 availableQuantity = totalPrintServiceCount - printingUsageCount;
+            }
+            else if (currentServiceType == ServiceType.CreatingQR)
+            {
+                availableQuantity = totalQRServiceCount - creatingQRUsageCount;
             }
             else
             {
@@ -2370,16 +2380,26 @@ namespace FBoothApp
                     {
                         SendEmailButton.Visibility = Visibility.Visible;
                         PrintButton.Visibility = Visibility.Collapsed;
+                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
                     }
                     else if (currentServiceType == ServiceType.Printing)
                     {
                         PrintButton.Visibility = Visibility.Visible;
                         SendEmailButton.Visibility = Visibility.Collapsed;
+                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
+
+                    }
+                    else if (currentServiceType == ServiceType.CreatingQR)
+                    {
+                        CreateQRCodeButton.Visibility = Visibility.Visible;
+                        SendEmailButton.Visibility = Visibility.Collapsed;
+                        PrintButton.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
                         SendEmailButton.Visibility = Visibility.Collapsed;
                         PrintButton.Visibility = Visibility.Collapsed;
+                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
                     }
 
                     BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
@@ -2588,6 +2608,93 @@ namespace FBoothApp
             await CloseBookingAsync(sender, e);
         }
 
+
+
+        //Hàm xử lý khi người dùng click nút create QR code
+        private async void CreateQRCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Kiểm tra nếu không có ảnh nào được chọn
+            if (selectedPhotoPaths.Count == 0)
+            {
+                MessageBox.Show("Please select one photo to create a QR code.");
+                return;
+            } else if (selectedPhotoPaths.Count > 1)
+            {
+                MessageBox.Show("Please select only one photo to create a QR code.");
+                return;
+            }
+
+            // Giả sử bạn muốn lấy đường dẫn của ảnh đầu tiên trong danh sách
+            string photoPath = selectedPhotoPaths[0];
+
+            // Khởi tạo FirebaseHelper với thông tin Firebase của bạn
+            FirebaseHelper firebaseHelper = new FirebaseHelper(
+                apiKey: "AIzaSyCHo3ofJXAIXBwlpu9L19NQyeXZjrkGGJA",
+                bucket: "face-image-cb4c4.appspot.com",
+                authEmail: "cuongtpse171590@fpt.edu.vn",
+                authPassword: "cuongtpse171590-222"
+            );
+
+            try
+            {
+                // Gọi phương thức để tải ảnh lên Firebase và nhận URL ảnh
+                string photoUrl = await firebaseHelper.UploadImageToFirebaseAsync(photoPath, "guest_images");
+
+                // Kiểm tra xem ảnh đã được tải lên thành công
+                if (string.IsNullOrEmpty(photoUrl))
+                {
+                    MessageBox.Show("Failed to upload photo. Please try again.");
+                    return;
+                }
+
+                // Tạo mã QR từ URL của ảnh đã tạo
+                string qrContent = photoUrl;
+
+                // Sử dụng thư viện QRCoder để tạo QR code
+                using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+                {
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+                    using (QRCode qrCode = new QRCode(qrCodeData))
+                    {
+                        Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                        // Lưu QR code vào MemoryStream
+                        using (MemoryStream memoryStream = new MemoryStream())
+                        {
+                            qrCodeImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+                            memoryStream.Position = 0; // Reset vị trí stream về đầu
+
+                            // Hiển thị hình ảnh QR trong một MessageBox
+                            var bitmapImage = new BitmapImage();
+                            bitmapImage.BeginInit();
+                            bitmapImage.StreamSource = memoryStream; // Thiết lập nguồn cho hình ảnh
+                            bitmapImage.EndInit();
+                            bitmapImage.Freeze(); // Để tránh lỗi khi sử dụng từ thread khác
+
+                            // Tạo một cửa sổ để hiển thị hình ảnh QR
+                            var qrWindow = new Window
+                            {
+                                Title = "QR Code",
+                                Width = 300,
+                                Height = 300,
+                                Content = new Image { Source = bitmapImage },
+                                WindowStartupLocation = WindowStartupLocation.CenterScreen
+                            };
+
+                            qrWindow.ShowDialog(); // Hiển thị cửa sổ chứa hình ảnh QR
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+
+
+
         private async void ServiceTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.Source is TabControl tabControl && tabControl == ServiceTabControl) // Kiểm tra đúng tabControl
@@ -2671,7 +2778,6 @@ namespace FBoothApp
             }
         }
 
-
         private void RefreshAvailableServicesList()
         {
             // Refresh the ItemsSource to reflect the changes in quantity
@@ -2680,9 +2786,11 @@ namespace FBoothApp
 
         private int emailUsageCount = 0; // Số lần đã sử dụng dịch vụ EmailSending
         private int printingUsageCount = 0; // Số lần đã sử dụng dịch vụ Printing
+        private int creatingQRUsageCount = 0; //Số lần đã sử dụng dịch vụ CreatingQR
 
         private int totalEmailServiceCount = 0;
         private int totalPrintServiceCount = 0;
+        private int totalQRServiceCount = 0;
 
         private void InitializeRemainingQuantities(BookingServiceResponse bookedService)
         {
@@ -2695,6 +2803,10 @@ namespace FBoothApp
             else if (serviceType == ServiceType.Printing)
             {
                 totalPrintServiceCount = bookedService.Quantity;
+            }
+            else if (serviceType == ServiceType.CreatingQR)
+            {
+                totalQRServiceCount = bookedService.Quantity;
             }
         }
 

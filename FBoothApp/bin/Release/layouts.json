@@ -1,192 +1,237 @@
 [
   {
-    "LayoutID": "dcfa3a5f-aacb-4be0-3375-08dcbad9e8c8",
-    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723472425/FBooth-Layout/zacjlbgdtuieawmjbozn.png",
-    "CouldID": "FBooth-Layout/zacjlbgdtuieawmjbozn",
-    "LayoutCode": "1 ảnh",
+    "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740291/FBooth-Layout/aczubonw08ltadkl631x.png",
+    "CouldID": "FBooth-Layout/aczubonw08ltadkl631x",
+    "LayoutCode": "dcfa3a5f-aacb-4be0-3375-08dcbad9e8c8",
     "Status": "Available",
     "Height": 2827,
     "Width": 2827,
     "PhotoSlot": 1,
-    "CreatedDate": "2024-08-12T21:20:25.793",
-    "LastModified": "2024-08-12T21:20:25.793",
+    "CreatedDate": "2024-10-24T10:24:54.62",
+    "LastModified": "2024-10-24T10:24:54.62",
     "PhotoBoxes": [
       {
         "BoxHeight": 1507,
         "BoxWidth": 2261,
         "CoordinatesX": 283,
         "CoordinatesY": 283,
-        "LayoutID": "dcfa3a5f-aacb-4be0-3375-08dcbad9e8c8"
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
       }
     ],
-    "Backgrounds": []
+    "Backgrounds": [
+      {
+        "BackgroundID": "a9a1a490-917c-400b-7fdf-08dcf3dc04d0",
+        "BackgroundCode": "0dd251ce-772b-4701-c36b-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740738/FBooth-Background/sewyz99dsxbrcz1tjsxs.png",
+        "CouldID": "FBooth-Background/sewyz99dsxbrcz1tjsxs",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-10-24T10:32:19.1628874",
+        "LastModified": "2024-10-24T10:32:19.16",
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
+      },
+      {
+        "BackgroundID": "32927bd6-3ae1-423d-7fe0-08dcf3dc04d0",
+        "BackgroundCode": "70ae3efa-7d26-49c1-c36c-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740750/FBooth-Background/hiqobuzoflrh7dg1rnzh.png",
+        "CouldID": "FBooth-Background/hiqobuzoflrh7dg1rnzh",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-10-24T10:32:30.4078556",
+        "LastModified": "2024-10-24T10:32:30.41",
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
+      },
+      {
+        "BackgroundID": "e9d35ac0-1899-48b2-7fe1-08dcf3dc04d0",
+        "BackgroundCode": "535a6b6a-1e91-482d-c367-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740769/FBooth-Background/hxzwwcl31ylxxjrxdugm.png",
+        "CouldID": "FBooth-Background/hxzwwcl31ylxxjrxdugm",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-10-24T10:32:49.1029414",
+        "LastModified": "2024-10-24T10:32:49.1",
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
+      },
+      {
+        "BackgroundID": "ccfe4ad3-5fd7-42df-7fe2-08dcf3dc04d0",
+        "BackgroundCode": "654ecaf9-bdda-400b-c36e-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740832/FBooth-Background/hrhvfuxhvdfpkk0wevwg.png",
+        "CouldID": "FBooth-Background/hrhvfuxhvdfpkk0wevwg",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-10-24T10:33:52.7856506",
+        "LastModified": "2024-10-24T10:33:52.787",
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
+      },
+      {
+        "BackgroundID": "4f682a41-f0c6-4240-a0ae-08dcf4a72c58",
+        "BackgroundCode": "techday2024_no_background.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729827801/FBooth-Background/ioqa6jgwlofyki3fhh9x.png",
+        "CouldID": "FBooth-Background/ioqa6jgwlofyki3fhh9x",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-10-25T10:43:22.0469979",
+        "LastModified": "2024-10-25T10:43:22.05",
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
+      },
+      {
+        "BackgroundID": "483afca3-6484-49a1-a306-08dcf706c07a",
+        "BackgroundCode": "techday2024_no_background_2.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1730088755/FBooth-Background/hflihxmb4eyhclnpsugs.png",
+        "CouldID": "FBooth-Background/hflihxmb4eyhclnpsugs",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-10-28T11:12:35.075287",
+        "LastModified": "2024-10-28T11:12:35.1",
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
+      },
+      {
+        "BackgroundID": "273dc05f-7310-4349-a307-08dcf706c07a",
+        "BackgroundCode": "techday2024_no_background_1.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1730088779/FBooth-Background/wem4skoonupflybtexaq.png",
+        "CouldID": "FBooth-Background/wem4skoonupflybtexaq",
+        "Height": 2827,
+        "Width": 2827,
+        "CreatedDate": "2024-10-28T11:12:59.3530996",
+        "LastModified": "2024-10-28T11:12:59.353",
+        "LayoutID": "163e5675-8231-4907-32a4-08dcf3db57e2"
+      }
+    ]
   },
   {
-    "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400",
-    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723025533/FBooth-Layout/jf90f2jka3crzqhfpd4q.png",
-    "CouldID": "FBooth-Layout/jf90f2jka3crzqhfpd4q",
-    "LayoutCode": "1-01",
+    "LayoutID": "8f8a3e54-fa57-4059-32a3-08dcf3db57e2",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740281/FBooth-Layout/eefs59st7kv58i6c1afv.png",
+    "CouldID": "FBooth-Layout/eefs59st7kv58i6c1afv",
+    "LayoutCode": "7d327828-a8f3-459e-5fff-08dcb6b4c400",
     "Status": "Available",
     "Height": 7090,
     "Width": 2370,
     "PhotoSlot": 3,
-    "CreatedDate": "2024-08-07T17:12:13.463",
-    "LastModified": "2024-08-07T17:12:13.467",
+    "CreatedDate": "2024-10-24T10:24:41.79",
+    "LastModified": "2024-10-24T10:24:41.79",
     "PhotoBoxes": [
       {
         "BoxHeight": 1641,
         "BoxWidth": 2111,
         "CoordinatesX": 120,
         "CoordinatesY": 230,
-        "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400"
+        "LayoutID": "8f8a3e54-fa57-4059-32a3-08dcf3db57e2"
       },
       {
         "BoxHeight": 1641,
         "BoxWidth": 2111,
         "CoordinatesX": 120,
         "CoordinatesY": 2000,
-        "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400"
+        "LayoutID": "8f8a3e54-fa57-4059-32a3-08dcf3db57e2"
       },
       {
         "BoxHeight": 1631,
         "BoxWidth": 2111,
         "CoordinatesX": 120,
         "CoordinatesY": 3780,
-        "LayoutID": "7d327828-a8f3-459e-5fff-08dcb6b4c400"
+        "LayoutID": "8f8a3e54-fa57-4059-32a3-08dcf3db57e2"
       }
     ],
     "Backgrounds": []
   },
   {
-    "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400",
-    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016667/FBooth-Layout/htnfkesgonmfd54iirsc.png",
-    "CouldID": "FBooth-Layout/htnfkesgonmfd54iirsc",
-    "LayoutCode": "912A0DF7-A542-4EC0-A987-F8663F83BB4C",
+    "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2",
+    "LayoutURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740257/FBooth-Layout/z5esk5ba19uj3tdflgxm.png",
+    "CouldID": "FBooth-Layout/z5esk5ba19uj3tdflgxm",
+    "LayoutCode": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400",
     "Status": "Available",
     "Height": 2827,
     "Width": 2827,
     "PhotoSlot": 1,
-    "CreatedDate": "2024-08-07T14:44:27.937",
-    "LastModified": "2024-08-07T14:44:27.94",
+    "CreatedDate": "2024-10-24T10:24:17.8",
+    "LastModified": "2024-10-24T10:24:17.8",
     "PhotoBoxes": [
       {
         "BoxHeight": 1446,
         "BoxWidth": 2479,
         "CoordinatesX": 174,
         "CoordinatesY": 403,
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       }
     ],
     "Backgrounds": [
       {
-        "BackgroundID": "ef19fb4d-5d50-41f7-c366-08dcb6b4f590",
-        "BackgroundCode": "1F4D1301-7FD2-4AA9-ADE9-FE45CDA7B498.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016751/FBooth-Background/zngmnnpjxfwgmy5bskii.png",
-        "CouldID": "FBooth-Background/zngmnnpjxfwgmy5bskii",
+        "BackgroundID": "daeba3ea-c047-4000-7fdb-08dcf3dc04d0",
+        "BackgroundCode": "0dd251ce-772b-4701-c36b-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740547/FBooth-Background/c5flda3trfrya2ryaicx.png",
+        "CouldID": "FBooth-Background/c5flda3trfrya2ryaicx",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-07T14:45:51.0018587",
-        "LastModified": "2024-08-07T14:45:51.033",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "CreatedDate": "2024-10-24T10:29:07.887702",
+        "LastModified": "2024-10-24T10:29:07.907",
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       },
       {
-        "BackgroundID": "535a6b6a-1e91-482d-c367-08dcb6b4f590",
-        "BackgroundCode": "FFC92F50-3219-40FE-90C3-10AACFECB6A3.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016760/FBooth-Background/z1kporset1rgjba7qgml.png",
-        "CouldID": "FBooth-Background/z1kporset1rgjba7qgml",
+        "BackgroundID": "3fe22d51-73e0-4b07-7fdc-08dcf3dc04d0",
+        "BackgroundCode": "70ae3efa-7d26-49c1-c36c-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740560/FBooth-Background/xahpmii0zey6b9fdirw5.png",
+        "CouldID": "FBooth-Background/xahpmii0zey6b9fdirw5",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-07T14:46:00.5607312",
-        "LastModified": "2024-08-07T14:46:00.56",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "CreatedDate": "2024-10-24T10:29:20.4280526",
+        "LastModified": "2024-10-24T10:29:20.423",
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       },
       {
-        "BackgroundID": "c617366f-a1a7-422f-c368-08dcb6b4f590",
-        "BackgroundCode": "582E78D8-941F-49F3-8798-F2B62A1AA18E.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016768/FBooth-Background/reiiylksqwyksvsyqjtl.png",
-        "CouldID": "FBooth-Background/reiiylksqwyksvsyqjtl",
+        "BackgroundID": "8f8bf166-dc35-463b-7fdd-08dcf3dc04d0",
+        "BackgroundCode": "535a6b6a-1e91-482d-c367-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740572/FBooth-Background/ryzyrfu9ieru3l23v7ur.png",
+        "CouldID": "FBooth-Background/ryzyrfu9ieru3l23v7ur",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-07T14:46:08.6632083",
-        "LastModified": "2024-08-07T14:46:08.66",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "CreatedDate": "2024-10-24T10:29:32.4736768",
+        "LastModified": "2024-10-24T10:29:32.473",
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       },
       {
-        "BackgroundID": "e1eb5787-1a56-4249-c369-08dcb6b4f590",
-        "BackgroundCode": "582E78D8-941F-49F3-8798-F2B62A1AA18E.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016777/FBooth-Background/fhhk8krfkurwf6mp3vhz.png",
-        "CouldID": "FBooth-Background/fhhk8krfkurwf6mp3vhz",
+        "BackgroundID": "c47262ea-a7a4-4222-7fde-08dcf3dc04d0",
+        "BackgroundCode": "15507f5f-44ca-40e2-c36f-08dcb6b4f590.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729740580/FBooth-Background/j8cayxjdoamargnhhjtj.png",
+        "CouldID": "FBooth-Background/j8cayxjdoamargnhhjtj",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-07T14:46:17.1913375",
-        "LastModified": "2024-08-07T14:46:17.19",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "CreatedDate": "2024-10-24T10:29:40.8689466",
+        "LastModified": "2024-10-24T10:29:40.867",
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       },
       {
-        "BackgroundID": "b8eccce6-7f34-427b-c36a-08dcb6b4f590",
-        "BackgroundCode": "356A33FE-A5FA-48C2-8492-3940ADC5C5D0.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016784/FBooth-Background/keejcpcy5kwq8yvxw2f2.png",
-        "CouldID": "FBooth-Background/keejcpcy5kwq8yvxw2f2",
+        "BackgroundID": "8fd92663-06cc-41c5-a0af-08dcf4a72c58",
+        "BackgroundCode": "techday2024_no_background.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1729827826/FBooth-Background/z2lsqv4e0gph7pfrqgme.png",
+        "CouldID": "FBooth-Background/z2lsqv4e0gph7pfrqgme",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-07T14:46:24.7675829",
-        "LastModified": "2024-08-07T14:46:24.767",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "CreatedDate": "2024-10-25T10:43:47.5119874",
+        "LastModified": "2024-10-25T10:43:47.503",
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       },
       {
-        "BackgroundID": "0dd251ce-772b-4701-c36b-08dcb6b4f590",
-        "BackgroundCode": "CC18F434-B006-4B0E-B71C-108C62C770C5.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016796/FBooth-Background/f0ha3rdxmx4zotd9k7g2.png",
-        "CouldID": "FBooth-Background/f0ha3rdxmx4zotd9k7g2",
+        "BackgroundID": "3fe55d5a-980a-4007-a308-08dcf706c07a",
+        "BackgroundCode": "techday2024_no_background_1.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1730088869/FBooth-Background/iebwfs6jroknrk9mi5os.png",
+        "CouldID": "FBooth-Background/iebwfs6jroknrk9mi5os",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-07T14:46:36.1985191",
-        "LastModified": "2024-08-07T14:46:36.197",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "CreatedDate": "2024-10-28T11:14:29.5877889",
+        "LastModified": "2024-10-28T11:14:29.583",
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       },
       {
-        "BackgroundID": "70ae3efa-7d26-49c1-c36c-08dcb6b4f590",
-        "BackgroundCode": "872D91FB-E4AF-4321-B520-B75251CF3BAD.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016806/FBooth-Background/zinaqrkelehz3us4aqn9.png",
-        "CouldID": "FBooth-Background/zinaqrkelehz3us4aqn9",
+        "BackgroundID": "26a70dc4-e067-4a02-a309-08dcf706c07a",
+        "BackgroundCode": "techday2024_no_background_2.png",
+        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1730088882/FBooth-Background/mzjzmaofwzjpfvhtlewb.png",
+        "CouldID": "FBooth-Background/mzjzmaofwzjpfvhtlewb",
         "Height": 2827,
         "Width": 2827,
-        "CreatedDate": "2024-08-07T14:46:46.4742173",
-        "LastModified": "2024-08-07T14:46:46.473",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
-      },
-      {
-        "BackgroundID": "a8e72c81-30b0-4274-c36d-08dcb6b4f590",
-        "BackgroundCode": "B200446E-2D3D-48A0-A2FD-0B3AC2103C94.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016814/FBooth-Background/carueulywfmydqneo9tg.png",
-        "CouldID": "FBooth-Background/carueulywfmydqneo9tg",
-        "Height": 2827,
-        "Width": 2827,
-        "CreatedDate": "2024-08-07T14:46:54.5381293",
-        "LastModified": "2024-08-07T14:46:54.54",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
-      },
-      {
-        "BackgroundID": "654ecaf9-bdda-400b-c36e-08dcb6b4f590",
-        "BackgroundCode": "4CBCB408-D304-47E1-B82E-35FBDD472C15.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016823/FBooth-Background/nlkg2damkil0zmpiyh6v.png",
-        "CouldID": "FBooth-Background/nlkg2damkil0zmpiyh6v",
-        "Height": 2827,
-        "Width": 2827,
-        "CreatedDate": "2024-08-07T14:47:02.9411919",
-        "LastModified": "2024-08-07T14:47:02.94",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
-      },
-      {
-        "BackgroundID": "15507f5f-44ca-40e2-c36f-08dcb6b4f590",
-        "BackgroundCode": "AB91B123-B7D7-4FC8-A293-90717DFD757F.png",
-        "BackgroundURL": "https://res.cloudinary.com/dfxvccyje/image/upload/v1723016829/FBooth-Background/lo0laxfnr1ck9zyt0kwz.png",
-        "CouldID": "FBooth-Background/lo0laxfnr1ck9zyt0kwz",
-        "Height": 2827,
-        "Width": 2827,
-        "CreatedDate": "2024-08-07T14:47:09.5971018",
-        "LastModified": "2024-08-07T14:47:09.597",
-        "LayoutID": "0eefff09-d993-4ecb-5ffe-08dcb6b4c400"
+        "CreatedDate": "2024-10-28T11:14:42.0970596",
+        "LastModified": "2024-10-28T11:14:42.097",
+        "LayoutID": "56030225-6b3a-42e8-32a2-08dcf3db57e2"
       }
     ]
   }

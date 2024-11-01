@@ -13,6 +13,7 @@ namespace FBoothApp.Entity.Enum
         ClothingRental = 3,
         Drinking = 4,
         MakeupKitRental = 5,
-        Other = 6
+        Other = 6,
+        CreatingQR = 7,
     }
 }
