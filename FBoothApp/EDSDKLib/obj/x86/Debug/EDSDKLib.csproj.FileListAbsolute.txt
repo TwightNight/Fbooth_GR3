@@ -3,3 +3,6 @@ C:\Users\Kamil\Desktop\fotobudka\fotobudkie-2.0-master\EDSDKLib\bin\Debug\EDSDKL
 C:\Users\Kamil\Desktop\fotobudka\fotobudkie-2.0-master\EDSDKLib\obj\x86\Debug\EDSDKLib.csprojResolveAssemblyReference.cache
 C:\Users\Kamil\Desktop\fotobudka\fotobudkie-2.0-master\EDSDKLib\obj\x86\Debug\EDSDKLib.dll
 C:\Users\Kamil\Desktop\fotobudka\fotobudkie-2.0-master\EDSDKLib\obj\x86\Debug\EDSDKLib.pdb
+D:\FPTU\S6\PhotoboothApp\FBoothApp\EDSDKLib\obj\x86\Debug\EDSDKLib.csproj.AssemblyReference.cache
+D:\FPTU\S6\PhotoboothApp\FBoothApp\EDSDKLib\obj\x86\Debug\EDSDKLib.csproj.CoreCompileInputs.cache
+D:\FPTU\S6\PhotoboothApp\FBoothApp\EDSDKLib\obj\x86\Debug\EDSDKLib.dll

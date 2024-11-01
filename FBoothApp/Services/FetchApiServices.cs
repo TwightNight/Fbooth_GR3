@@ -1,4 +1,5 @@
 ﻿using FBoothApp.Entity;
+using FBoothApp.Entity.Enum;
 using FBoothApp.Entity.Reponse;
 using FBoothApp.Entity.Request;
 using Newtonsoft.Json;
@@ -10,9 +11,13 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace FBoothApp.Services
 {
@@ -555,6 +560,7 @@ namespace FBoothApp.Services
                 return false;
             }
         }
+
 
 
     }

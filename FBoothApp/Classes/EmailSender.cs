@@ -12,6 +12,12 @@ using System.Xml.Linq;
 using EOSDigital.SDK;
 using System.Net.Mime;
 using System.Collections.Generic;
+using QRCoder;
+using System.Drawing.Imaging;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Net.Http.Json;
+
 
 
 namespace FBoothApp.Classes
@@ -126,7 +132,6 @@ namespace FBoothApp.Classes
                 Debug.WriteLine(ex.ToString());
             }
         }
-
 
         private bool IsValidEmail(string email)
         {

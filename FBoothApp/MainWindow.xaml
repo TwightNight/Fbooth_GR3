@@ -308,7 +308,7 @@
     </Window.Resources>
 
     <Window.Background>
-        <ImageBrush ImageSource="pack://application:,,,/backgrounds/background_1.jpg" />
+        <ImageBrush ImageSource="pack://application:,,,/backgrounds/tecday.png" />
     </Window.Background>
 
     <Grid x:Name="MainGrid">
@@ -336,9 +336,8 @@
             x:Name="HomeText"
             Grid.Row="2"
             Grid.RowSpan="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Margin="30"
+            Grid.ColumnSpan="4"
+            Margin="170,0,274,0"
             VerticalAlignment="Center"
             Background="Transparent"
             Visibility="Visible">
@@ -397,7 +396,7 @@
                 FontFamily="pack://application:,,,/Fonts/#Dosis"
                 FontSize="70"
                 FontWeight="Bold"
-                Foreground="Black"
+                Foreground="#DFFFF5"
                 Text="FBooth">
                 <TextBlock.Effect>
                     <DropShadowEffect
@@ -488,13 +487,13 @@
                         x:Name="SendButton"
                         Width="50"
                         Height="50"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
                         Background="Transparent"
                         BorderThickness="0"
                         Click="SendButton_Click"
                         IsEnabled="False"
-                        Style="{StaticResource NoHighlightButtonStyle}">
+                        Style="{StaticResource NoHighlightButtonStyle}" Margin="648,3,0,0">
                         <Image
                             Width="35"
                             Height="35"
@@ -560,54 +559,7 @@
                 <RotateTransform Angle="50" />
             </Grid.RenderTransform>
 
-            <StackPanel Margin="-350,250,-255,-250" Orientation="Horizontal">
-
-                <StackPanel>
-                    <Border
-                        Width="1000"
-                        Height="70"
-                        Margin="150,0,0,0"
-                        Background="#a6eefc"
-                        CornerRadius="40" />
-
-                    <Border
-                        Width="1000"
-                        Height="70"
-                        Margin="0,15,0,0"
-                        Background="#146C94"
-                        CornerRadius="40" />
-
-                    <Border
-                        Width="1000"
-                        Height="70"
-                        Margin="75,15,0,0"
-                        Background="#000000"
-                        CornerRadius="40" />
-                </StackPanel>
-
-                <StackPanel>
-                    <Border
-                        Width="1000"
-                        Height="70"
-                        Margin="150,0,0,0"
-                        Background="#a6eefc"
-                        CornerRadius="40" />
-
-                    <Border
-                        Width="1000"
-                        Height="70"
-                        Margin="0,15,0,0"
-                        Background="#146C94"
-                        CornerRadius="40" />
-
-                    <Border
-                        Width="1000"
-                        Height="70"
-                        Margin="75,15,0,0"
-                        Background="#000000"
-                        CornerRadius="40" />
-                </StackPanel>
-            </StackPanel>
+            <StackPanel Margin="-350,250,-255,-250" Orientation="Horizontal"/>
         </Grid>
 
         <Button
@@ -666,9 +618,11 @@
 
         <Button
             x:Name="NextButtonTakingPhoto"
-            Grid.Row="5"
-            Grid.Column="4"
-            Grid.ColumnSpan="3"
+            Grid.Row="4"
+            Margin="0 10 0 0"
+            
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Panel.ZIndex="2"
@@ -678,14 +632,15 @@
             Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Collapsed">
             <Image
-                Width="70"
-                Height="70"
+                Width="60"
+                Height="60"
                 Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
 
         <Button
             x:Name="NextButtonBackGround"
-            Grid.Row="5"
+            Grid.Row="4"
+            Margin="150 0 10 -50"
             Grid.Column="4"
             Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
@@ -696,14 +651,15 @@
             Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Collapsed">
             <Image
-                Width="70"
-                Height="70"
+                Width="100"
+                Height="100"
                 Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
 
         <Button
             x:Name="NextButtonSticker"
-            Grid.Row="5"
+            Grid.Row="4"
+            Margin="150 0 10 -50"
             Grid.Column="4"
             Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
@@ -714,14 +670,15 @@
             Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Collapsed">
             <Image
-                Width="70"
-                Height="70"
+                Width="100"
+                Height="100"
                 Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
 
         <Button
             x:Name="NextButtonPrinting"
-            Grid.Row="5"
+            Grid.Row="4"
+            Margin="150 0 10 -50"
             Grid.Column="4"
             Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
@@ -732,8 +689,8 @@
             Style="{StaticResource NoHighlightButtonStyle}"
             Visibility="Collapsed">
             <Image
-                Width="70"
-                Height="70"
+                Width="100"
+                Height="100"
                 Source="pack://application:,,,/backgrounds/NextButton.png" />
         </Button>
 
@@ -783,15 +740,16 @@
                         CornerRadius="10">
                         <Image
                             x:Name="ShowPictureInlayout"
-                            Margin="30"
+                            Margin="45"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Stretch="Uniform" />
+                        
                     </Border>
 
                     <Border
                         Grid.Column="0"
-                        Margin="10"
+                        Margin="120 170 -70 170" 
                         Padding="10"
                         Background="#EEEEEE"
                         CornerRadius="30">
@@ -837,7 +795,7 @@
             Grid.RowSpan="6"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="30,140,30,30"
+            Margin="140,350,-50,30"
             Visibility="Collapsed">
             <ScrollViewer
                 Background="Transparent"
@@ -933,7 +891,7 @@
                     x:Name="LayoutTabControl"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    Background="#66d1fb"
+                    Background="#274ba0"
                     Style="{DynamicResource TabControlStyle}" />
 
             </Border>
@@ -1325,9 +1283,10 @@
             <!--  Border bên trái để hiển thị các dịch vụ  -->
             <Border
                 Grid.Column="0"
-                Padding="10"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
+                Padding="20"
+                Margin="100 0 -100 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 Background="#EEEEEE"
                 BorderThickness="1"
                 CornerRadius="20">
@@ -1478,6 +1437,10 @@
                                                                             <Setter TargetName="border" Property="Background" Value="#348EF6" />
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Service.ServiceType}" Value="EmailSending">
+                                                                            <Setter Property="IsEnabled" Value="True" />
+                                                                            <Setter TargetName="border" Property="Background" Value="#348EF6" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Service.ServiceType}" Value="CreatingQR">
                                                                             <Setter Property="IsEnabled" Value="True" />
                                                                             <Setter TargetName="border" Property="Background" Value="#348EF6" />
                                                                         </DataTrigger>
@@ -1813,6 +1776,55 @@
                                 </Style>
                             </Button.Style>
                         </Button>
+
+                        <!--Nút tạo QR-->
+                        <Button
+                            x:Name="CreateQRCodeButton"
+                            Grid.Column="0"
+                            BorderThickness="0"
+                            Click="CreateQRCodeButton_Click"
+                            FontSize="16"
+                            Visibility="Collapsed">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border
+                                                    x:Name="border"
+                                                    Padding="10"
+                                                    Background="White"
+                                                    CornerRadius="15">
+                                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <Image
+                                                            Width="20"
+                                                            Height="20"
+                                                            Source="pack://application:,,,/backgrounds/qrcode.png" />
+                                                        <TextBlock
+                                                            Margin="10,0,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontSize="16"
+                                                            FontWeight="Bold"
+                                                            Foreground="Black"
+                                                            Text="Create QR Code" />
+                                                    </StackPanel>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+
                     </Grid>
 
                     <!--  Khu vực nút "Close Booking" riêng biệt  -->
@@ -1874,7 +1886,6 @@
                             </Button.Style>
                         </Button>
                     </Grid>
-
                 </Grid>
             </Border>
         </Grid>
