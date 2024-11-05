@@ -2112,8 +2112,11 @@ namespace FBoothApp
 
         private async Task UploadAndGenerateQRCodeAsync()
         {
+            
             try
             {
+                LoadingOverlay.Visibility = Visibility.Visible;
+                
                 // Giả sử ShowPrint là ảnh đã chỉnh sửa xong
                 var bitmap = new RenderTargetBitmap((int)ShowPrint.ActualWidth, (int)ShowPrint.ActualHeight, 96, 96, PixelFormats.Pbgra32);
                 bitmap.Render(ShowPrint);
@@ -2140,7 +2143,12 @@ namespace FBoothApp
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
+            finally
+            {
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+            }
         }
+        
 
         // Hàm tải ảnh lên Firebase
         private async Task<string> UploadImageToFirebase(string photoPath)
@@ -2167,7 +2175,7 @@ namespace FBoothApp
         {
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
             {
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.M);
                 using (QRCode qrCode = new QRCode(qrCodeData))
                 {
                     Bitmap qrCodeImage = qrCode.GetGraphic(20);
