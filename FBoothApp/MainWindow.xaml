@@ -151,25 +151,26 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Border
-                                Grid.Row="0"
-                                Background="White"
-                                BorderThickness="0"
-                                CornerRadius="5">
+                                    Grid.Row="0"
+                                    Background="White"
+                                    BorderThickness="0"
+                                    CornerRadius="5" 
+                                    >
                                 <TabPanel
-                                    HorizontalAlignment="Left"
-                                    Background="Transparent"
-                                    IsItemsHost="True" />
+                                        HorizontalAlignment="Left"
+                                        Background="Transparent"
+                                        IsItemsHost="True" />
                             </Border>
                             <Border
-                                Grid.Row="1"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="5">
+                                    Grid.Row="1"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="5">
                                 <ContentPresenter
-                                    Margin="{TemplateBinding Padding}"
-                                    ContentSource="SelectedContent"
-                                    SnapsToDevicePixels="True" />
+                                        Margin="{TemplateBinding Padding}"
+                                        ContentSource="SelectedContent"
+                                        SnapsToDevicePixels="True" />
                             </Border>
                         </Grid>
                     </ControlTemplate>
@@ -744,7 +745,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Stretch="Uniform" />
-                        
+
                     </Border>
 
                     <Border
@@ -1276,7 +1277,7 @@
             Background="Transparent"
             Visibility="Collapsed">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="6*" />
             </Grid.ColumnDefinitions>
 
@@ -1299,7 +1300,7 @@
                     </Grid.RowDefinitions>
 
                     <!--  Tiêu đề  -->
-                    <Border
+                    <!--<Border
                         Grid.Row="0"
                         Padding="10"
                         HorizontalAlignment="Center"
@@ -1313,7 +1314,7 @@
                             FontWeight="Bold"
                             Foreground="White"
                             Text="Manage Your Services" />
-                    </Border>
+                    </Border>-->
 
                     <!--  TabControl cho dịch vụ đã đặt và dịch vụ có sẵn  -->
                     <TabControl
@@ -1329,14 +1330,38 @@
                             <Style TargetType="TabControl">
                                 <Setter Property="Background" Value="Transparent" />
                                 <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TabControl">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <!-- TabPanel với HorizontalAlignment là Center -->
+                                                <TabPanel
+                                                    Grid.Row="0"
+                                                    IsItemsHost="True"
+                                                    HorizontalAlignment="Center"
+                                                    Background="Transparent" 
+                                                    /> 
+                                                
+                                                <ContentPresenter
+                                                    Grid.Row="1"
+                                                    ContentSource="SelectedContent"
+                                                    Margin="{TemplateBinding Padding}"
+                                                     />
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
 
                             <!--  Style for TabItem  -->
                             <Style TargetType="TabItem">
-                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="Foreground" Value="black" />
                                 <Setter Property="FontSize" Value="16" />
                                 <Setter Property="Padding" Value="10,5" />
-                                <Setter Property="Margin" Value="0,0,0,0" />
                                 <!--  Adjusted margins for even spacing  -->
                                 <Setter Property="Background" Value="Transparent" />
                                 <Setter Property="Template">
@@ -1347,22 +1372,25 @@
                                                 Background="Transparent"
                                                 BorderBrush="Transparent"
                                                 BorderThickness="0,0,0,3"
-                                                CornerRadius="10">
+                                                CornerRadius="10"                                              
+                                                >
                                                 <ContentPresenter
-                                                    x:Name="ContentSite"
-                                                    Margin="10,2"
+                                                    x:Name="ContentSite"                                                 
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     ContentSource="Header"
-                                                    RecognizesAccessKey="True" />
+                                                    RecognizesAccessKey="True" 
+                                                    Margin="12,16"
+                                                    />
+
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsSelected" Value="True">
                                                     <Setter TargetName="Bd" Property="Background">
                                                         <Setter.Value>
                                                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                <GradientStop Offset="0.0" Color="#FF57A0D3" />
-                                                                <GradientStop Offset="1.0" Color="#FF348EF6" />
+                                                                <GradientStop Offset="0.0" Color="#4A90E2" />
+                                                                <GradientStop Offset="1.0" Color="#348EF6" />
                                                             </LinearGradientBrush>
                                                         </Setter.Value>
                                                     </Setter>
@@ -1370,7 +1398,7 @@
                                                     <Setter Property="FontWeight" Value="Bold" />
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="#FF5DADE2" />
+                                                    <Setter TargetName="Bd" Property="Background" Value="#1976D2  " />
                                                     <Setter Property="Cursor" Value="Hand" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
@@ -1396,7 +1424,7 @@
                                         <DataTemplate>
                                             <Button
                                                 x:Name="ServiceButton"
-                                                Margin="0,5"
+                                                Margin="0,12"
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch"
                                                 Click="BookedService_Click"
@@ -1405,29 +1433,31 @@
                                                 Tag="{Binding Service.ServiceType}">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
-                                                        <Setter Property="Background" Value="Gray" />
+                                                        <Setter Property="Background" Value="#FF1A1A1A" />
                                                         <Setter Property="BorderThickness" Value="0" />
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="Button">
                                                                     <Border
                                                                         x:Name="border"
-                                                                        Padding="10"
-                                                                        Background="Gray"
+                                                                        Padding="20"
+                                                                        Background="#FF1A1A1A"
                                                                         CornerRadius="15">
                                                                         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                                                             <Image
                                                                                 Width="20"
                                                                                 Height="20"
                                                                                 Margin="0,0,10,0"
-                                                                                Source="pack://application:,,,/backgrounds/serviceIcon.png" />
+                                                                                Source="pack://application:,,,/backgrounds/serviceIcon.png"                                                            
+                                                                                />
                                                                             <TextBlock
-                                                                                Margin="10,0,0,0"
-                                                                                VerticalAlignment="Center"
-                                                                                FontSize="16"
-                                                                                FontWeight="Bold"
-                                                                                Foreground="White"
-                                                                                Text="{Binding ServiceName}" />
+                                                                            Margin="10,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            FontSize="16"
+                                                                            FontWeight="Bold"
+                                                                            Foreground="White"
+                                                                            Text="{Binding ServiceName}"
+                                                                             />
                                                                         </StackPanel>
                                                                     </Border>
                                                                     <ControlTemplate.Triggers>
@@ -1467,7 +1497,6 @@
                                 </ItemsControl>
                             </ScrollViewer>
                         </TabItem>
-
 
                         <!--  Tab for Available Services  -->
                         <TabItem Margin="0,0,0,0" Header="Available Services">
@@ -1563,61 +1592,7 @@
 
 
 
-                    <Border
-                        Grid.Row="2"
-                        Margin="0,10,0,0"
-                        Padding="5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="2"
-                        CornerRadius="15">
-                        <Button
-                            x:Name="TakeNewPictureButton"
-                            Click="TakeNewPictureButton_Click"
-                            FontSize="16">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="BorderThickness" Value="0" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border
-                                                    x:Name="border"
-                                                    Padding="10"
-                                                    Background="Black"
-                                                    BorderBrush="LightGray"
-                                                    BorderThickness="2"
-                                                    CornerRadius="15">
-                                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                                        <Image
-                                                            Width="30"
-                                                            Height="30"
-                                                            Margin="0,0,10,0"
-                                                            Source="pack://application:,,,/backgrounds/ReloadSession.png" />
-                                                        <TextBlock
-                                                            Margin="10,0,0,0"
-                                                            VerticalAlignment="Center"
-                                                            FontSize="16"
-                                                            FontWeight="Bold"
-                                                            Foreground="White"
-                                                            Text="Take a new picture!" />
-                                                    </StackPanel>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
-                                                        <Setter Property="Cursor" Value="Hand" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </Border>
+                    
 
                 </Grid>
             </Border>
@@ -1844,6 +1819,7 @@
                         <Button
                             x:Name="CloseBookingButton"
                             Grid.Column="0"
+                             Margin="0,0,0,30"
                             BorderThickness="0"
                             Click="CloseBooking_Click"
                             FontSize="16">
@@ -1887,6 +1863,65 @@
                         </Button>
                     </Grid>
                 </Grid>
+            </Border>
+
+
+            <!--border back-->
+            <Border
+                Grid.Row="2"
+                Margin="0,0,0,30"
+                Padding="5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="Transparent"
+                BorderThickness="2"
+                CornerRadius="15">
+                <Button
+                    x:Name="TakeNewPictureButton"
+                    Click="TakeNewPictureButton_Click"
+                    FontSize="16">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border
+                                x:Name="border"
+                                Padding="5"
+                                Background="White"
+                                BorderBrush="LightGray"
+                                BorderThickness="2"
+                                CornerRadius="15">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                                                <Image                                      
+                                                Width="50"
+                                                Height="50"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="pack://application:,,,/backgrounds/retake.png" />
+                                                <!--<TextBlock
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="16"
+                                                    FontWeight="Bold"
+                                                    Foreground="White"
+                                                    Text="Again ?" />-->
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                <Setter Property="Cursor" Value="Hand" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Border>
         </Grid>
 
