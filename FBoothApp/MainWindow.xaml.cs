@@ -1003,6 +1003,7 @@ namespace FBoothApp
         #endregion
 
 
+
         #region BackgroundMenu
         private void NextButtonBackGround_Click(object sender, RoutedEventArgs e)
         {
@@ -1588,7 +1589,7 @@ namespace FBoothApp
 
 
         #region PrintMenu
-        private void NextButtonPrinting_Click(object sender, RoutedEventArgs e)
+        private async void NextButtonPrinting_Click(object sender, RoutedEventArgs e)
         {
             var endMessageBox = new CustomMessageBox("When you press next, you cannot go back. Do you agree?");
             endMessageBox.ShowDialog();
@@ -1600,6 +1601,7 @@ namespace FBoothApp
 
                 RenderStickersOnImage();
                 SaveFinalImage();
+                await UploadAndGenerateQRCodeAsync();
                 PhotoBookingLibraryMenu();
                 HideStickers();
             }
@@ -2108,7 +2110,95 @@ namespace FBoothApp
         }
         #endregion
 
-        public void ActivateTimers()
+        private async Task UploadAndGenerateQRCodeAsync()
+        {
+            try
+            {
+                // Giả sử ShowPrint là ảnh đã chỉnh sửa xong
+                var bitmap = new RenderTargetBitmap((int)ShowPrint.ActualWidth, (int)ShowPrint.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(ShowPrint);
+
+                // Lưu ảnh từ RenderTargetBitmap vào một tệp tạm để tải lên Firebase
+                string tempPhotoPath = Path.Combine(Path.GetTempPath(), "temp_photo.png");
+                using (var fileStream = new FileStream(tempPhotoPath, FileMode.Create))
+                {
+                    BitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(fileStream);
+                }
+
+                // Tải ảnh lên Firebase và lấy URL
+                string photoUrl = await UploadImageToFirebase(tempPhotoPath);
+
+                // Xóa tệp tạm sau khi tải lên
+                File.Delete(tempPhotoPath);
+
+                // Tạo và hiển thị mã QR từ URL
+                GenerateAndShowQRCode(photoUrl);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+        // Hàm tải ảnh lên Firebase
+        private async Task<string> UploadImageToFirebase(string photoPath)
+        {
+            FirebaseHelper firebaseHelper = new FirebaseHelper(
+                apiKey: "AIzaSyCHo3ofJXAIXBwlpu9L19NQyeXZjrkGGJA",
+                bucket: "face-image-cb4c4.appspot.com",
+                authEmail: "cuongtpse171590@fpt.edu.vn",
+                authPassword: "cuongtpse171590-222"
+            );
+
+            string photoUrl = await firebaseHelper.UploadImageToFirebaseAsync(photoPath, "guest_images");
+
+            if (string.IsNullOrEmpty(photoUrl))
+            {
+                throw new Exception("Failed to upload photo. Please try again.");
+            }
+
+            return photoUrl;
+        }
+
+        // Hàm tạo và hiển thị mã QR từ URL
+        private void GenerateAndShowQRCode(string qrContent)
+        {
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            {
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+                using (QRCode qrCode = new QRCode(qrCodeData))
+                {
+                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        qrCodeImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+                        memoryStream.Position = 0;
+
+                        var bitmapImage = new BitmapImage();
+                        bitmapImage.BeginInit();
+                        bitmapImage.StreamSource = memoryStream;
+                        bitmapImage.EndInit();
+                        bitmapImage.Freeze();
+
+                        var qrWindow = new Window
+                        {
+                            Title = "QR Code",
+                            Width = 300,
+                            Height = 300,
+                            Content = new Image { Source = bitmapImage },
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        };
+
+                        qrWindow.ShowDialog();
+                    }
+                }
+            }
+        }
+
+            public void ActivateTimers()
         {
             sliderTimer = new System.Windows.Threading.DispatcherTimer();
             sliderTimer.Tick += new EventHandler(slider);
