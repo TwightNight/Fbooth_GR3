@@ -1906,5 +1906,18 @@
             TextWrapping="Wrap"
             Visibility="Collapsed" />
 
+        <Border x:Name="LoadingOverlay" Background="#80000000" Visibility="Collapsed"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                Grid.Column="0"
+                Grid.RowSpan="6"
+                Grid.ColumnSpan="6"
+                >
+                
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Processing, please wait..." Foreground="White" FontSize="16" HorizontalAlignment="Center"/>
+                <ProgressBar IsIndeterminate="True" Width="150" Height="20" Margin="0,10,0,0"/>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </Window>
