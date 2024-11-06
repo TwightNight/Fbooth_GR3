@@ -1277,50 +1277,29 @@
             Background="Transparent"
             Visibility="Collapsed">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="6*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="10*" />
             </Grid.ColumnDefinitions>
 
             <!--  Border bên trái để hiển thị các dịch vụ  -->
             <Border
                 Grid.Column="0"
-                Padding="20"
-                Margin="100 0 -100 0"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="0 0 0 40"
                 Background="#EEEEEE"
                 BorderThickness="1"
                 CornerRadius="20">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="0.05555*" />
                     </Grid.RowDefinitions>
-
-                    <!--  Tiêu đề  -->
-                    <!--<Border
-                        Grid.Row="0"
-                        Padding="10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Black"
-                        CornerRadius="20">
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="25"
-                            FontWeight="Bold"
-                            Foreground="White"
-                            Text="Manage Your Services" />
-                    </Border>-->
 
                     <!--  TabControl cho dịch vụ đã đặt và dịch vụ có sẵn  -->
                     <TabControl
                         x:Name="ServiceTabControl"
                         Grid.Row="1"
-                        Margin="10"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Background="Transparent"
@@ -1344,8 +1323,8 @@
                                                     IsItemsHost="True"
                                                     HorizontalAlignment="Center"
                                                     Background="Transparent" 
-                                                    /> 
-                                                
+                                                    />
+
                                                 <ContentPresenter
                                                     Grid.Row="1"
                                                     ContentSource="SelectedContent"
@@ -1361,7 +1340,6 @@
                             <Style TargetType="TabItem">
                                 <Setter Property="Foreground" Value="black" />
                                 <Setter Property="FontSize" Value="16" />
-                                <Setter Property="Padding" Value="10,5" />
                                 <!--  Adjusted margins for even spacing  -->
                                 <Setter Property="Background" Value="Transparent" />
                                 <Setter Property="Template">
@@ -1371,7 +1349,6 @@
                                                 x:Name="Bd"
                                                 Background="Transparent"
                                                 BorderBrush="Transparent"
-                                                BorderThickness="0,0,0,3"
                                                 CornerRadius="10"                                              
                                                 >
                                                 <ContentPresenter
@@ -1380,7 +1357,6 @@
                                                     VerticalAlignment="Center"
                                                     ContentSource="Header"
                                                     RecognizesAccessKey="True" 
-                                                    Margin="12,16"
                                                     />
 
                                             </Border>
@@ -1389,12 +1365,11 @@
                                                     <Setter TargetName="Bd" Property="Background">
                                                         <Setter.Value>
                                                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                <GradientStop Offset="0.0" Color="#4A90E2" />
-                                                                <GradientStop Offset="1.0" Color="#348EF6" />
+                                                                <GradientStop Offset="0.0" Color="Transparent" />
                                                             </LinearGradientBrush>
                                                         </Setter.Value>
                                                     </Setter>
-                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="Foreground" Value="black" />
                                                     <Setter Property="FontWeight" Value="Bold" />
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -1414,7 +1389,7 @@
                                 Margin="10"
                                 HorizontalScrollBarVisibility="Disabled"
                                 VerticalScrollBarVisibility="Hidden">
-                                <ItemsControl
+                                                                <ItemsControl
                                     x:Name="BookedServicesList"
                                     Margin="0,5"
                                     HorizontalAlignment="Stretch"
@@ -1423,14 +1398,13 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Button
-                                                x:Name="ServiceButton"
-                                                Margin="0,12"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Stretch"
-                                                Click="BookedService_Click"
-                                                FontSize="16"
-                                                FontWeight="Bold"
-                                                Tag="{Binding Service.ServiceType}">
+                                                    x:Name="ServiceButton"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Click="BookedService_Click"
+                                                    FontSize="16"
+                                                    FontWeight="Bold"
+                                                    Tag="{Binding Service.ServiceType}">        
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Background" Value="#FF1A1A1A" />
@@ -1439,25 +1413,17 @@
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="Button">
                                                                     <Border
-                                                                        x:Name="border"
-                                                                        Padding="20"
-                                                                        Background="#FF1A1A1A"
-                                                                        CornerRadius="15">
-                                                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                                    x:Name="border"
+                                                                        
+                                                                    Background="#FF1A1A1A"
+                                                                    CornerRadius="15">          
+                                                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                                                                             <Image
-                                                                                Width="20"
-                                                                                Height="20"
-                                                                                Margin="0,0,10,0"
-                                                                                Source="pack://application:,,,/backgrounds/serviceIcon.png"                                                            
-                                                                                />
-                                                                            <TextBlock
-                                                                            Margin="10,0,0,0"
-                                                                            VerticalAlignment="Center"
-                                                                            FontSize="16"
-                                                                            FontWeight="Bold"
-                                                                            Foreground="White"
-                                                                            Text="{Binding ServiceName}"
-                                                                             />
+                                                                                    Width="50"
+                                                                                    Height="50"
+                                                                                    Source="pack://application:,,,/backgrounds/letter.png"                                                            
+                                                                                    />          
+
                                                                         </StackPanel>
                                                                     </Border>
                                                                     <ControlTemplate.Triggers>
@@ -1499,17 +1465,15 @@
                         </TabItem>
 
                         <!--  Tab for Available Services  -->
-                        <TabItem Margin="0,0,0,0" Header="Available Services">
+                        <TabItem Margin="0,0,0,0" Header="Available Services" Visibility="Hidden">
                             <ScrollViewer
-                                Margin="10"
                                 HorizontalScrollBarVisibility="Disabled"
                                 VerticalScrollBarVisibility="Hidden">
-                                <ItemsControl x:Name="AvailableServicesList" Margin="20">
+                                <ItemsControl x:Name="AvailableServicesList">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Border
-                                                Margin="5"
-                                                Padding="10"
+                                               
                                                 BorderBrush="#348EF6"
                                                 BorderThickness="1"
                                                 CornerRadius="10">
@@ -1526,7 +1490,6 @@
                                                     <!--  Service Name  -->
                                                     <TextBlock
                                                         Grid.Column="0"
-                                                        Margin="10,0"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         FontWeight="Bold"
@@ -1543,7 +1506,7 @@
                                                         <!--  Decrease Quantity Button  -->
                                                         <Button
                                                             Width="30"
-                                                            Height="30"
+                                                   
                                                             Click="DecreaseServiceQuantity_Click"
                                                             Content="-"
                                                             Style="{StaticResource QuantityButtonStyle}"
@@ -1562,8 +1525,7 @@
 
                                                         <!--  Increase Quantity Button  -->
                                                         <Button
-                                                            Width="30"
-                                                            Height="30"
+                                                          
                                                             Click="IncreaseServiceQuantity_Click"
                                                             Content="+"
                                                             Style="{StaticResource QuantityButtonStyle}"
@@ -1573,9 +1535,7 @@
                                                     <!--  Add Button  -->
                                                     <Button
                                                         Grid.Column="2"
-                                                        Width="60"
-                                                        Height="30"
-                                                        Margin="10,0,0,0"
+                                                       
                                                         HorizontalAlignment="Right"
                                                         Click="AvailableService_Click"
                                                         Content="Add"
@@ -1588,14 +1548,68 @@
                                 </ItemsControl>
                             </ScrollViewer>
                         </TabItem>
+
+
+                        <!--border back-->
+                        <Border
+                Grid.Row="2"
+                Margin="0,0,0,30"
+                Padding="5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="Transparent"
+                BorderThickness="2"
+                CornerRadius="15">
+                            <Button
+                    x:Name="TakeNewPictureButton"
+                    Click="TakeNewPictureButton_Click"
+                    FontSize="16">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border
+                                                    x:Name="border"
+                                                    Padding="5"
+                                                    Background="White"
+                                                    BorderBrush="LightGray"
+                                                    BorderThickness="2"
+                                                    CornerRadius="15">  
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                                                            <Image                                      
+                                                Width="50"
+                                                Height="50"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="pack://application:,,,/backgrounds/retake.png" />
+                                   
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                            <Setter Property="Cursor" Value="Hand" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Border>
                     </TabControl>
 
 
 
-                    
+
 
                 </Grid>
             </Border>
+
 
             <!--  Border bên phải để hiển thị ảnh đã chụp  -->
             <Border
@@ -1636,13 +1650,13 @@
                     <ScrollViewer
                         Grid.Row="1"
                         Margin="0,50,0,0"
-                        HorizontalScrollBarVisibility="Disabled"
+                        HorizontalScrollBarVisibility="Auto"
                         VerticalScrollBarVisibility="Hidden">
                         <UniformGrid
                             x:Name="BookingPhotoThumbnailWrapPanel"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            Columns="3" />
+                            Columns="7" />
                     </ScrollViewer>
 
                     <!--  Khu vực nút chức năng  -->
@@ -1863,65 +1877,6 @@
                         </Button>
                     </Grid>
                 </Grid>
-            </Border>
-
-
-            <!--border back-->
-            <Border
-                Grid.Row="2"
-                Margin="0,0,0,30"
-                Padding="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Background="Transparent"
-                BorderThickness="2"
-                CornerRadius="15">
-                <Button
-                    x:Name="TakeNewPictureButton"
-                    Click="TakeNewPictureButton_Click"
-                    FontSize="16">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border
-                                x:Name="border"
-                                Padding="5"
-                                Background="White"
-                                BorderBrush="LightGray"
-                                BorderThickness="2"
-                                CornerRadius="15">
-                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                                                <Image                                      
-                                                Width="50"
-                                                Height="50"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Source="pack://application:,,,/backgrounds/retake.png" />
-                                                <!--<TextBlock
-                                                    Margin="10,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Foreground="White"
-                                                    Text="Again ?" />-->
-                                            </StackPanel>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
-                                                <Setter Property="Cursor" Value="Hand" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                </Button>
             </Border>
         </Grid>
 
