@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("backgrounds/qricon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("backgrounds/letter.png")]
 
 
