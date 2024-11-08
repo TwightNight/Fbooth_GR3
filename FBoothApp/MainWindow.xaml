@@ -1030,27 +1030,15 @@
                                     <Image
                                         x:Name="ShowPrint"
                                         HorizontalAlignment="Center"
-<<<<<<< HEAD
-                                        VerticalAlignment="Center"
-                                       />
-=======
                                         VerticalAlignment="Center" />
 
->>>>>>> 09d477dbcbfc2ec7426cd79bce6f8729d03cae26
                                     <Canvas
                                         Name="CanvasSticker"
                                         Width="{Binding ActualWidth, ElementName=ShowPrint}"
                                         Height="{Binding ActualHeight, ElementName=ShowPrint}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-<<<<<<< HEAD
-                                        Background="Transparent"
-
-                                       >
-                                    </Canvas>
-
-=======
-                                        Background="Transparent" >
+                                        Background="Transparent">
 
                                         <!-- ShowBackGround nằm trong CanvasSticker -->
                                         <Image
@@ -1061,7 +1049,7 @@
                                             Height="{Binding ActualHeight, ElementName=CanvasSticker}"
                                             Stretch="UniformToFill" />
                                     </Canvas>
->>>>>>> 09d477dbcbfc2ec7426cd79bce6f8729d03cae26
+
                                 </Grid>
                             </Border>
                         </Grid>
