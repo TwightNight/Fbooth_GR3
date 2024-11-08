@@ -503,9 +503,6 @@
     <Resource Include="backgrounds\qrcode.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgrounds\tecday.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgrounds\qrIcon.png" />
     <Resource Include="backgrounds\printer.png" />
   </ItemGroup>
@@ -517,6 +514,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="backgrounds\letter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\techday.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgrounds\techday1.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

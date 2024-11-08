@@ -309,7 +309,7 @@
     </Window.Resources>
 
     <Window.Background>
-        <ImageBrush ImageSource="pack://application:,,,/backgrounds/tecday.png" />
+        <ImageBrush ImageSource="pack://application:,,,/backgrounds/techday1.jpg" />
     </Window.Background>
 
     <Grid x:Name="MainGrid">
@@ -338,7 +338,7 @@
             Grid.Row="2"
             Grid.RowSpan="2"
             Grid.ColumnSpan="4"
-            Margin="170,0,274,0"
+            Margin="400,0,0,0"
             VerticalAlignment="Center"
             Background="Transparent"
             Visibility="Visible">
@@ -367,9 +367,10 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch">
                     <Border
+                        Visibility="Hidden"
                         x:Name="ImageBorder"
-                        Width="300"
-                        Height="300"
+                        Width="0"
+                        Height="0"
                         ClipToBounds="True"
                         CornerRadius="20">
                         <Border.Background>
@@ -384,7 +385,9 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 Width="100"
-                Height="100">
+                Height="100"
+                Margin="350 0 10 0"
+                >
                 <Ellipse.Fill>
                     <ImageBrush ImageSource="pack://application:,,,/backgrounds/logo.jpg" Stretch="UniformToFill" />
                 </Ellipse.Fill>
@@ -392,7 +395,7 @@
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="1"
-                Margin="10,0,0,0"
+                Margin="0,0,0,0"    
                 VerticalAlignment="Center"
                 FontFamily="pack://application:,,,/Fonts/#Dosis"
                 FontSize="70"
@@ -407,33 +410,35 @@
                 </TextBlock.Effect>
             </TextBlock>
 
-            <TextBlock
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Margin="0,10,0,0"
-                FontFamily="pack://application:,,,/Fonts/#Dosis"
-                FontSize="80"
-                FontWeight="Medium"
-                Foreground="White"
-                Text="Capture">
-                <TextBlock.Effect>
-                    <DropShadowEffect
-                        BlurRadius="10"
-                        ShadowDepth="2"
-                        Color="Black" />
-                </TextBlock.Effect>
-            </TextBlock>
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Center"
+                    FontFamily="pack://application:,,,/Fonts/#Dosis"
+                    FontSize="160"
+                    FontWeight="Medium"
+                    Foreground="White"
+                    Text="Capture">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="10"
+                            ShadowDepth="2"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
 
             <TextBlock
                 Grid.Row="3"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
+                HorizontalAlignment="Center"
                 FontFamily="pack://application:,,,/Fonts/#Dosis"
                 FontSize="80"
                 FontWeight="Medium"
                 Foreground="White"
-                Text="Your">
+                Text="Your Moments">
                 <TextBlock.Effect>
                     <DropShadowEffect
                         BlurRadius="10"
@@ -442,22 +447,6 @@
                 </TextBlock.Effect>
             </TextBlock>
 
-            <TextBlock
-                Grid.Row="4"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                FontFamily="pack://application:,,,/Fonts/#Dosis"
-                FontSize="80"
-                FontWeight="Medium"
-                Foreground="White"
-                Text="Moments">
-                <TextBlock.Effect>
-                    <DropShadowEffect
-                        BlurRadius="10"
-                        ShadowDepth="2"
-                        Color="Black" />
-                </TextBlock.Effect>
-            </TextBlock>
 
             <Border
                 Grid.Row="5"
@@ -465,6 +454,7 @@
                 Grid.ColumnSpan="2"
                 Margin="0,50,0,0"
                 Padding="5"
+                Width="150"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
                 Background="White"
@@ -473,7 +463,7 @@
                     <TextBox
                         x:Name="RoundedTextBox"
                         Padding="10"
-                        HorizontalAlignment="Stretch"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Background="Transparent"
                         BorderThickness="0"
@@ -482,7 +472,7 @@
                         Foreground="Gray"
                         GotFocus="RoundedTextBox_GotFocus"
                         LostFocus="RoundedTextBox_LostFocus"
-                        Text="Enter the code from your email here!"
+                        Text="START"
                         TextChanged="RoundedTextBox_TextChanged" />
                     <Button
                         x:Name="SendButton"
@@ -1039,14 +1029,19 @@
                                     <Image
                                         x:Name="ShowPrint"
                                         HorizontalAlignment="Center"
-                                        VerticalAlignment="Center" />
+                                        VerticalAlignment="Center"
+                                       />
                                     <Canvas
                                         Name="CanvasSticker"
                                         Width="{Binding ActualWidth, ElementName=ShowPrint}"
                                         Height="{Binding ActualHeight, ElementName=ShowPrint}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Background="Transparent" />
+                                        Background="Transparent"
+
+                                       >
+                                    </Canvas>
+
                                 </Grid>
                             </Border>
                         </Grid>
@@ -1287,6 +1282,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Margin="0 0 0 40"
+                Padding="10"
                 Background="#EEEEEE"
                 BorderThickness="1"
                 CornerRadius="20">
@@ -1300,6 +1296,7 @@
                     <TabControl
                         x:Name="ServiceTabControl"
                         Grid.Row="1"
+                        Margin="0 0 0 50"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Background="Transparent"
@@ -1325,6 +1322,7 @@
                                                     Background="Transparent" 
                                                     />
 
+                                          
                                                 <ContentPresenter
                                                     Grid.Row="1"
                                                     ContentSource="SelectedContent"
@@ -1373,7 +1371,7 @@
                                                     <Setter Property="FontWeight" Value="Bold" />
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="#1976D2  " />
+                                                    
                                                     <Setter Property="Cursor" Value="Hand" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
@@ -1413,9 +1411,9 @@
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="Button">
                                                                     <Border
-                                                                    x:Name="border"
-                                                                        
-                                                                    Background="#FF1A1A1A"
+                                                                        Width="64"
+                                                                        Height="60"
+                                                                    x:Name="border"                                                                        
                                                                     CornerRadius="15">          
                                                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                                                                             <Image
@@ -1426,6 +1424,8 @@
 
                                                                         </StackPanel>
                                                                     </Border>
+                                                                    
+                                                                    
                                                                     <ControlTemplate.Triggers>
                                                                         <!--  Enable button only for Printing or EmailSending services  -->
                                                                         <DataTrigger Binding="{Binding Service.ServiceType}" Value="Printing">
@@ -1434,7 +1434,7 @@
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Service.ServiceType}" Value="EmailSending">
                                                                             <Setter Property="IsEnabled" Value="True" />
-                                                                            <Setter TargetName="border" Property="Background" Value="#348EF6" />
+                                                                            <Setter TargetName="border" Property="Background" Value="white" />
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Service.ServiceType}" Value="CreatingQR">
                                                                             <Setter Property="IsEnabled" Value="True" />
@@ -1549,62 +1549,62 @@
                             </ScrollViewer>
                         </TabItem>
 
-
-                        <!--border back-->
-                        <Border
-                Grid.Row="2"
-                Margin="0,0,0,30"
-                Padding="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Background="Transparent"
-                BorderThickness="2"
-                CornerRadius="15">
-                            <Button
-                    x:Name="TakeNewPictureButton"
-                    Click="TakeNewPictureButton_Click"
-                    FontSize="16">
-                                <Button.Style>
-                                    <Style TargetType="Button">
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Border
-                                                    x:Name="border"
-                                                    Padding="5"
-                                                    Background="White"
-                                                    BorderBrush="LightGray"
-                                                    BorderThickness="2"
-                                                    CornerRadius="15">  
-                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                                                            <Image                                      
-                                                Width="50"
-                                                Height="50"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Source="pack://application:,,,/backgrounds/retake.png" />
-                                   
-                                                        </StackPanel>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
-                                                            <Setter Property="Cursor" Value="Hand" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                        </Border>
+                           
+                      
                     </TabControl>
 
 
+                    <!--border back-->
+                    <Border
+                            Grid.Row="2"
+                            Margin="25,0,0,-10"
+                            Padding="5"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Background="Transparent"
+                            BorderThickness="2"
+                            CornerRadius="15">
+                        <Button
+                            x:Name="TakeNewPictureButton"
+                            Click="TakeNewPictureButton_Click"
+                            FontSize="16">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border
+                                    x:Name="border"
+                                    Padding="5"
+                                    Background="White"
+                                    BorderBrush="LightGray"
+                                    BorderThickness="2"
+                                    CornerRadius="15">
+                                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <Image                                      
+                                Width="50"
+                                Height="50"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Source="pack://application:,,,/backgrounds/retake.png" />
 
+                                                    </StackPanel>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Border>
 
 
                 </Grid>
