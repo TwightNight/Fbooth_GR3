@@ -1085,6 +1085,12 @@ namespace FBoothApp
                 backgroundFiles.AddRange(Directory.GetFiles(backgroundsDirectory, extension));
             }
 
+            // Nếu có background nào, đặt ảnh đầu tiên làm background mặc định
+            if (backgroundFiles.Count > 0)
+            {
+                ShowBG.Source = new BitmapImage(new Uri(backgroundFiles[0]));
+            }
+
             foreach (string file in backgroundFiles)
             {
                 Image backgroundImage = new Image
@@ -1106,6 +1112,7 @@ namespace FBoothApp
             Bitmap background = new Bitmap(Path.Combine(Directory.GetCurrentDirectory(), "Backgrounds", layout.LayoutCode, fileName));
 
             Bitmap result = backGroundProcess.OverlayBackground(actualPrint, background);
+            ShowBG.Source = clickedBackground.Source;
             ShowPrint.Source = backGroundProcess.ConvertToBitmapImage(result);
         }
 
