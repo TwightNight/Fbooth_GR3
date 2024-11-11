@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace FBoothApp
 {
     /// <summary>
@@ -23,11 +24,32 @@ namespace FBoothApp
     public partial class EmailSendDialog : Window
     {
 
-        public EmailSendDialog()
+        public EmailSendDialog(string question, string defaultAnswer = "")
         {
             InitializeComponent();
-            ShowVirtualKeyboard();
+            textBoxEmailAnswer.Text = defaultAnswer;
+            // Bật bàn phím ảo cho textBoxEmailAnswer
+            
         }
+
+        // Khi TextBox nhận focus
+        private void textBoxEmailAnswer_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("TextBox GotFocus");
+
+            // Mở bàn phím ảo 
+            
+        }
+
+        // Khi TextBox mất focus
+        private void textBoxEmailAnswer_LostFocus(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("TextBox LostFocus");
+
+            // Đóng bàn phím ảo nếu có
+            
+        }
+
 
         public static bool IsValidEmail(string email)
         {
@@ -78,25 +100,6 @@ namespace FBoothApp
         private void ButtonCancel_OnClick(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        private void ShowVirtualKeyboard()
-        {
-            var virtualKeyboard = new VirtualKeyboard();
-            virtualKeyboard.KeyPressed += VirtualKeyboard_KeyPressed;
-            virtualKeyboard.Show();
-        }
-
-        private void VirtualKeyboard_KeyPressed(string key)
-        {
-            if (key == "DELETE" && textBoxEmailAnswer.Text.Length > 0)
-            {
-                textBoxEmailAnswer.Text = textBoxEmailAnswer.Text.Substring(0, textBoxEmailAnswer.Text.Length - 1);
-            }
-            else
-            {
-                textBoxEmailAnswer.Text += key;
-            }
         }
     }
 }

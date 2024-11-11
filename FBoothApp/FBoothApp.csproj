@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -375,9 +376,6 @@
       <DependentUpon>RepeatPhotoDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\FetchApiServices.cs" />
-    <Compile Include="VirtualKeyboard.xaml.cs">
-      <DependentUpon>VirtualKeyboard.xaml</DependentUpon>
-    </Compile>
     <Page Include="CustomMessageBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -403,10 +401,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RepeatPhotoDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="VirtualKeyboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
