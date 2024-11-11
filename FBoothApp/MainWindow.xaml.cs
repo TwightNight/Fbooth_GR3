@@ -2493,6 +2493,7 @@ namespace FBoothApp
                         SendEmailButton.Visibility = Visibility.Collapsed;
                         CreateQRCodeButton.Visibility = Visibility.Collapsed;
 
+
                     }
                     else if (currentServiceType == ServiceType.CreatingQR)
                     {
