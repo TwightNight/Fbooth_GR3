@@ -1346,14 +1346,14 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Button
-                            x:Name="ServiceButton"
-                            Margin="0,5"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Click="BookedService_Click"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Tag="{Binding Service.ServiceType}">
+                                                    x:Name="ServiceButton"
+                                                    Margin="0,13"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Click="BookedService_Click"
+                                                    FontSize="16"
+                                                    FontWeight="Bold"
+                                                    Tag="{Binding Service.ServiceType}">
                                                     <Button.Style>
                                                         <Style TargetType="Button">
                                                             <Setter Property="Background" Value="Gray" />
@@ -1362,21 +1362,21 @@
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="Button">
                                                                         <Border
-                                                    x:Name="border"
-                                                    Padding="10"
-                                                    Background="Gray"
-                                                    CornerRadius="15">
+                                                                            x:Name="border"
+                                                                            Padding="10"
+                                                                            Background="Gray"
+                                                                            CornerRadius="15">
                                                                             <StackPanel
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Center"
-                                                        Orientation="Horizontal">
+                                                                                VerticalAlignment="Center"
+                                                                                HorizontalAlignment="Center"
+                                                                                Orientation="Horizontal">
                                                                                 <!-- Ảnh dịch vụ -->
                                                                                 <Image
-                                                            x:Name="ServiceIcon"
-                                                            Width="20"
-                                                            Height="20"
-                                                            Margin="0,0,10,0"
-                                                            Source="pack://application:,,,/backgrounds/serviceIcon.png" />
+                                                                                    x:Name="ServiceIcon"
+                                                                                    Width="30"
+                                                                                    Height="30"
+                                                                                    Margin="0,0,0,0"
+                                                                                    Source="pack://application:,,,/backgrounds/serviceIcon.png" />
                                                                             </StackPanel>
                                                                         </Border>
                                                                         <ControlTemplate.Triggers>
@@ -1536,19 +1536,22 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
                                                 <Border
-                                    x:Name="border"
-                                    Padding="5"
-                                    Background="White"
-                                    BorderBrush="LightGray"
-                                    BorderThickness="2"
-                                    CornerRadius="15">
+                                                    x:Name="border"
+                                                    Padding="5"
+                                                    Background="White"
+                                                    BorderBrush="LightGray"
+                                                    BorderThickness="2"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Margin="-07 0 0 0"
+                                                    CornerRadius="15">
                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                                                         <Image                                      
-                                Width="50"
-                                Height="50"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Source="pack://application:,,,/backgrounds/retake.png" />
+                                                            Width="50"
+                                                            Height="50"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Source="pack://application:,,,/backgrounds/retake.png" />
 
                                                     </StackPanel>
                                                 </Border>
@@ -1611,12 +1614,13 @@
                         Grid.Row="1"
                         Margin="0,50,0,0"
                         HorizontalScrollBarVisibility="Auto"
+                        
                         VerticalScrollBarVisibility="Hidden">
                         <UniformGrid
                             x:Name="BookingPhotoThumbnailWrapPanel"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            Columns="7" />
+                            Columns="5" />
                     </ScrollViewer>
 
                     <!--  Khu vực nút chức năng  -->
