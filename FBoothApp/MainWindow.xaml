@@ -449,91 +449,38 @@
 
 
             <Border
-                Grid.Row="5"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Margin="0,50,0,0"
-                Padding="5"
-                Width="150"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center"
-                Background="White"
-                CornerRadius="20">
-                <Grid>
-                    <TextBox
-                        x:Name="RoundedTextBox"
-                        Padding="10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        FontSize="30"
-                        FontStyle="Italic"
-                        Foreground="Gray"
-                        GotFocus="RoundedTextBox_GotFocus"
-                        LostFocus="RoundedTextBox_LostFocus"
-                        Text="START"
-                        TextChanged="RoundedTextBox_TextChanged" />
-                    <Button
-                        x:Name="SendButton"
-                        Width="50"
-                        Height="50"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Click="SendButton_Click"
-                        IsEnabled="False"
-                        Style="{StaticResource NoHighlightButtonStyle}" Margin="648,3,0,0">
-                        <Image
-                            Width="35"
-                            Height="35"
-                            Source="pack://application:,,,/backgrounds/send.png">
-                            <Image.Style>
-                                <Style TargetType="Image">
-                                    <Setter Property="Opacity" Value="0.5" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsEnabled, ElementName=SendButton}" Value="True">
-                                            <Setter Property="Opacity" Value="1.0" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
-                    </Button>
-                    <Border
-                        x:Name="LoadingProgressBarContainer"
-                        Width="50"
-                        Height="50"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Visibility="Collapsed">
-                        <Grid>
-                            <Ellipse
-                                Width="50"
-                                Height="50"
-                                Fill="Transparent"
-                                Opacity="0.5"
-                                Stroke="#FFFFFF"
-                                StrokeThickness="5" />
-                            <Ellipse
-                                Width="50"
-                                Height="50"
-                                Fill="Transparent"
-                                Stroke="#61F2F5"
-                                StrokeDashArray="25,75"
-                                StrokeDashCap="Round"
-                                StrokeThickness="5">
-                                <Ellipse.RenderTransform>
-                                    <RotateTransform x:Name="LoadingRotateTransform" CenterX="25" CenterY="25" />
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                        </Grid>
-                    </Border>
-                </Grid>
+    Grid.Row="5"
+    Grid.Column="0"
+    Grid.ColumnSpan="2"
+    Margin="0,50,0,0"
+    Padding="5"
+    Width="50"  
+                HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    Background="White"
+    CornerRadius="25">
+
+                <Button
+        x:Name="SendButton"
+        Width="50"
+        Height="50"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="Transparent"
+        BorderThickness="0"
+        Click="SendButton_Click"
+        IsEnabled="True" 
+                    Opacity="1.0"
+        Style="{StaticResource NoHighlightButtonStyle}">
+
+                    <Image
+            Width="35"
+            Height="35"
+            Source="pack://application:,,,/backgrounds/send.png" />
+                </Button>
             </Border>
+
+
         </Grid>
 
         <Grid
@@ -767,7 +714,7 @@
                                     FontSize="30"
                                     FontWeight="Bold"
                                     Foreground="Black"
-                                    Text="Please select the photo you want to retake!"
+                                    Text="To retake, select the photo below."
                                     TextAlignment="Center"
                                     TextWrapping="Wrap" />
                             </Border>
@@ -894,7 +841,7 @@
                 FontSize="25"
                 FontWeight="Bold"
                 Foreground="Black"
-                Text="Choose a Layout to Begin Your Experience!" />
+                Text="Choose a Layout" />
         </Grid>
 
 
@@ -1015,7 +962,7 @@
                                     FontSize="30"
                                     FontWeight="Bold"
                                     Foreground="Black"
-                                    Text="Choose a Background and Sticker for Your Photo!"
+                                    Text="Backgrounds For Photos"
                                     TextWrapping="Wrap" />
                             </Border>
 
@@ -1391,86 +1338,91 @@
 
                         <!--  Tab for Booked Services  -->
                         <TabItem Header="Booked Services">
-                            <ScrollViewer
-                                Margin="10"
-                                HorizontalScrollBarVisibility="Disabled"
-                                VerticalScrollBarVisibility="Hidden">
-                                                                <ItemsControl
-                                    x:Name="BookedServicesList"
-                                    Margin="0,5"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top">
-                                    <!--  Template for each booked service  -->
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Button
-                                                    x:Name="ServiceButton"
-                                                    HorizontalAlignment="Stretch"
-                                                    VerticalAlignment="Stretch"
-                                                    Click="BookedService_Click"
-                                                    FontSize="16"
-                                                    FontWeight="Bold"
-                                                    Tag="{Binding Service.ServiceType}">        
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Background" Value="#FF1A1A1A" />
-                                                        <Setter Property="BorderThickness" Value="0" />
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="Button">
-                                                                    <Border
-                                                                        Width="64"
-                                                                        Height="60"
-                                                                    x:Name="border"                                                                        
-                                                                    CornerRadius="15">          
-                                                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
-                                                                            <Image
-                                                                                    Width="50"
-                                                                                    Height="50"
-                                                                                    Source="pack://application:,,,/backgrounds/letter.png"                                                            
-                                                                                    />          
-
-                                                                        </StackPanel>
-                                                                    </Border>
-                                                                    
-                                                                    
-                                                                    <ControlTemplate.Triggers>
-                                                                        <!--  Enable button only for Printing or EmailSending services  -->
-                                                                        <DataTrigger Binding="{Binding Service.ServiceType}" Value="Printing">
-                                                                            <Setter Property="IsEnabled" Value="True" />
-                                                                            <Setter TargetName="border" Property="Background" Value="#348EF6" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Service.ServiceType}" Value="EmailSending">
-                                                                            <Setter Property="IsEnabled" Value="True" />
-                                                                            <Setter TargetName="border" Property="Background" Value="white" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Service.ServiceType}" Value="CreatingQR">
-                                                                            <Setter Property="IsEnabled" Value="True" />
-                                                                            <Setter TargetName="border" Property="Background" Value="#348EF6" />
-                                                                        </DataTrigger>
-                                                                        <!--  Interactive Effects Only for Enabled Buttons  -->
-                                                                        <DataTrigger Binding="{Binding IsEnabled}" Value="True">
-                                                                            <Setter Property="Background" Value="Transparent" />
-                                                                        </DataTrigger>
-                                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                                            <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
-                                                                            <Setter Property="Cursor" Value="Hand" />
-                                                                        </Trigger>
-                                                                        <Trigger Property="IsPressed" Value="True">
-                                                                            <Setter TargetName="border" Property="Background" Value="DarkSlateGray" />
-                                                                        </Trigger>
-                                                                    </ControlTemplate.Triggers>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+                            <StackPanel>
+                                <!-- ScrollViewer và danh sách các dịch vụ đã đặt -->
+                                <ScrollViewer Margin="10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                    <ItemsControl x:Name="BookedServicesList" Margin="0,5" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                        <!-- Template for each booked service -->
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button
+                            x:Name="ServiceButton"
+                            Margin="0,5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Click="BookedService_Click"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Tag="{Binding Service.ServiceType}">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Gray" />
+                                                            <Setter Property="BorderThickness" Value="0" />
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border
+                                                    x:Name="border"
+                                                    Padding="10"
+                                                    Background="Gray"
+                                                    CornerRadius="15">
+                                                                            <StackPanel
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        Orientation="Horizontal">
+                                                                                <!-- Ảnh dịch vụ -->
+                                                                                <Image
+                                                            x:Name="ServiceIcon"
+                                                            Width="20"
+                                                            Height="20"
+                                                            Margin="0,0,10,0"
+                                                            Source="pack://application:,,,/backgrounds/serviceIcon.png" />
+                                                                            </StackPanel>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <!-- Enable button only for specific services -->
+                                                                            <DataTrigger Binding="{Binding Service.ServiceType}" Value="Printing">
+                                                                                <Setter Property="IsEnabled" Value="True" />
+                                                                                <Setter TargetName="border" Property="Background" Value="#348EF6" />
+                                                                                <Setter TargetName="ServiceIcon" Property="Source" Value="pack://application:,,,/backgrounds/print.png" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Service.ServiceType}" Value="EmailSending">
+                                                                                <Setter Property="IsEnabled" Value="True" />
+                                                                                <Setter TargetName="border" Property="Background" Value="#348EF6" />
+                                                                                <Setter TargetName="ServiceIcon" Property="Source" Value="pack://application:,,,/backgrounds/letter.png" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Service.ServiceType}" Value="CreatingQR">
+                                                                                <Setter Property="IsEnabled" Value="True" />
+                                                                                <Setter TargetName="border" Property="Background" Value="#348EF6" />
+                                                                                <Setter TargetName="ServiceIcon" Property="Source" Value="pack://application:,,,/backgrounds/qrcode.png" />
+                                                                            </DataTrigger>
+                                                                            <!-- Interactive Effects Only for Enabled Buttons -->
+                                                                            <DataTrigger Binding="{Binding IsEnabled}" Value="True">
+                                                                                <Setter Property="Background" Value="Transparent" />
+                                                                            </DataTrigger>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter TargetName="border" Property="Background" Value="#FFBEE6FD" />
+                                                                                <Setter Property="Cursor" Value="Hand" />
+                                                                            </Trigger>
+                                                                            <Trigger Property="IsPressed" Value="True">
+                                                                                <Setter TargetName="border" Property="Background" Value="DarkSlateGray" />
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </StackPanel>
                         </TabItem>
+
+
+
 
                         <!--  Tab for Available Services  -->
                         <TabItem Margin="0,0,0,0" Header="Available Services" Visibility="Hidden">
@@ -1726,7 +1678,6 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-
                         <!--  Nút In Ảnh  -->
                         <Button
                             x:Name="PrintButton"

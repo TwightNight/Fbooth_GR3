@@ -614,8 +614,8 @@ namespace FBoothApp
                     SavePhoto.CurrentSessionPath = null;
 
                     HomeText.Visibility = Visibility.Visible;
-                    RoundedTextBox.Clear();
-                    RoundedTextBox_LostFocus(sender, e);
+                    /*RoundedTextBox.Clear();
+                    RoundedTextBox_LostFocus(sender, e);*/
                     BorderPanel.Visibility = Visibility.Visible;
 
                     TurnOnLayoutMenu();
@@ -698,7 +698,7 @@ namespace FBoothApp
             PhotoTextBox.Visibility = Visibility.Visible;
 
 
-            PhotoTextBox.Text = "Click the lens to start capturing photos!";
+            PhotoTextBox.Text = "Click the lens to take photo";
 
             try
             {
@@ -793,12 +793,12 @@ namespace FBoothApp
         {
             SendButton.IsEnabled = false;
             SendButton.Visibility = Visibility.Hidden;
-            LoadingProgressBarContainer.Visibility = Visibility.Visible;
+            //LoadingProgressBarContainer.Visibility = Visibility.Visible;
             StartLoadingAnimation();
 
             try
             {
-                var checkinCode = long.Parse(RoundedTextBox.Text);
+                var checkinCode = long.Parse("985034");
                 Guid BoothID = Guid.Parse("28110B4A-BF04-4C04-A19B-1B91D976EE7C");
 
                 var request = new CheckinRequest
@@ -849,7 +849,7 @@ namespace FBoothApp
             finally
             {
                 SendButton.IsEnabled = true;
-                LoadingProgressBarContainer.Visibility = Visibility.Collapsed;
+                //LoadingProgressBarContainer.Visibility = Visibility.Collapsed;
                 SendButton.Visibility = Visibility.Visible;
                 StopLoadingAnimation();
             }
@@ -865,12 +865,12 @@ namespace FBoothApp
                 RepeatBehavior = RepeatBehavior.Forever
             };
 
-            LoadingRotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+            //LoadingRotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
         }
 
         private void StopLoadingAnimation()
         {
-            LoadingRotateTransform.BeginAnimation(RotateTransform.AngleProperty, null);
+            //LoadingRotateTransform.BeginAnimation(RotateTransform.AngleProperty, null);
         }
 
         private DispatcherTimer checkEndTimeTimer;
@@ -1856,15 +1856,11 @@ namespace FBoothApp
 
         private List<string> selectedPhotoPaths = new List<string>();
         private Dictionary<string, int> selectedPhotoPathsWithQuantities = new Dictionary<string, int>();
+        // Cờ kiểm tra ảnh đã được chọn hay chưa
 
+        // Hàm khi người dùng chọn ảnh
         private void ThumbnailBooking_Click(object sender, MouseButtonEventArgs e)
         {
-            if (!isServiceSelected)
-            {
-                MessageBox.Show("Please select a service before choosing a photo.");
-                return;
-            }
-
             var clickedBorder = sender as Border;
             if (clickedBorder != null)
             {
@@ -1879,29 +1875,71 @@ namespace FBoothApp
             }
         }
 
-        private void HandlePhotoSelection(Border clickedBorder, Grid quantityGrid, StackPanel controlPanel)
-        {
-            int availableQuantity;
 
-            // Xác định số lượng có thể chọn dựa trên loại dịch vụ hiện tại
-            if (currentServiceType == ServiceType.EmailSending)
+
+        // Hàm khi người dùng chọn dịch vụ
+        private async void BookedService_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedPhotoPaths.Count == 0)
             {
-                availableQuantity = totalEmailServiceCount - emailUsageCount;
-            }
-            else if (currentServiceType == ServiceType.Printing)
-            {
-                availableQuantity = totalPrintServiceCount - printingUsageCount;
-            }
-            else if (currentServiceType == ServiceType.CreatingQR)
-            {
-                availableQuantity = totalQRServiceCount - creatingQRUsageCount;
-            }
-            else
-            {
-                MessageBox.Show("This service is not supported.");
+                MessageBox.Show("Please Select at least 1 photo");
                 return;
             }
 
+            var button = sender as Button;
+            if (button != null)
+            {
+                var border = VisualTreeHelper.GetParent(button) as Border;
+                var serviceData = button.DataContext as dynamic;
+
+                if (serviceData != null)
+                {
+                    var selectedService = serviceData.Service;
+                    currentServiceType = selectedService.ServiceType;
+                    isServiceSelected = true;
+
+                    // Cập nhật giao diện, v.v.
+                    UpdateServiceButtons();
+
+                    if (border != null)
+                    {
+                        border.Background = new SolidColorBrush(Colors.Orange);
+                        button.Foreground = new SolidColorBrush(Colors.White);
+                    }
+
+                    if (currentServiceType == ServiceType.EmailSending)
+                    {
+                        SendEmailButton.Visibility = Visibility.Collapsed;
+                        // Gọi hàm gửi email ngay lập tức nếu cần
+                        SendEmailButtonClick(sender, e);
+                    }
+                    else if (currentServiceType == ServiceType.Printing)
+                    {
+                        PrintButton.Visibility = Visibility.Collapsed;
+                        // Gọi hành động in ấn ngay lập tức (nếu có)
+                    }
+                    else if (currentServiceType == ServiceType.CreatingQR)
+                    {
+                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
+                        // Gọi trực tiếp hành động tạo QR Code ngay
+                        CreateQRCodeButton_Click(sender, e);
+                    }
+                    else
+                    {
+                        SendEmailButton.Visibility = Visibility.Collapsed;
+                        PrintButton.Visibility = Visibility.Collapsed;
+                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
+                    }
+
+                    BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
+
+
+        private void HandlePhotoSelection(Border clickedBorder, Grid quantityGrid, StackPanel controlPanel)
+        {
             if (quantityGrid.Visibility == Visibility.Visible)
             {
                 // Nếu ảnh đã được chọn, bỏ chọn ảnh này
@@ -1913,22 +1951,14 @@ namespace FBoothApp
             }
             else
             {
-                // Kiểm tra xem số lượng đã chọn có vượt quá số lượng dịch vụ đã book không
-                if (selectedPhotoPaths.Count < availableQuantity)
-                {
-                    selectedPhotoPaths.Add(clickedBorder.Tag as string);
-                    selectedPhotoPathsWithQuantities[clickedBorder.Tag as string] = 1;
+                // Thêm ảnh vào danh sách ảnh đã chọn mà không ràng buộc số lượng
+                selectedPhotoPaths.Add(clickedBorder.Tag as string);
+                selectedPhotoPathsWithQuantities[clickedBorder.Tag as string] = 1;
 
-                    quantityGrid.Visibility = Visibility.Visible;
-                    clickedBorder.BorderBrush = System.Windows.Media.Brushes.Transparent;
-                }
-                else
-                {
-                    MessageBox.Show($"You can only select up to {availableQuantity} different photos.");
-                }
+                quantityGrid.Visibility = Visibility.Visible;
+                clickedBorder.BorderBrush = System.Windows.Media.Brushes.Transparent;
             }
         }
-
 
         // Helper method to find a visual parent of a specific type
         private T FindVisualParent<T>(DependencyObject child) where T : DependencyObject
@@ -2277,19 +2307,11 @@ namespace FBoothApp
                 return;
             }
 
-            int totalEmailQuantity = selectedPhotoPaths.Count;
-            int remainingEmailCount = emailUsageCount + totalEmailQuantity;
-
-            // Giả sử bạn có một biến để lưu trữ tổng số lượng dịch vụ EmailSending đã book
-            if (remainingEmailCount > totalEmailServiceCount)
-            {
-                MessageBox.Show($"You can only send a total of {totalEmailServiceCount} photos.");
-                return;
-            }
-
+            // Hiển thị hộp thoại nhập email
             EmailSendDialog inputEmailSendDialog = new EmailSendDialog("Please enter your email address:", "name@gmail.com");
             if (inputEmailSendDialog.ShowDialog() == true)
             {
+
                 List<string> photoPathsToSend = new List<string>();
 
                 foreach (var photoPath in selectedPhotoPaths)
@@ -2300,8 +2322,7 @@ namespace FBoothApp
                 EmailSender emailSender = new EmailSender();
                 emailSender.SendEmail(inputEmailSendDialog.Answer, photoPathsToSend);
 
-                // Cập nhật số lần sử dụng dịch vụ EmailSending
-                emailUsageCount += totalEmailQuantity;
+                emailUsageCount += selectedPhotoPaths.Count;
 
                 if (emailUsageCount >= totalEmailServiceCount)
                 {
@@ -2312,7 +2333,8 @@ namespace FBoothApp
         }
 
 
-        private void RoundedTextBox_GotFocus(object sender, RoutedEventArgs e)
+
+        /*private void RoundedTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (RoundedTextBox.Text == "Enter the code from your email here!")
             {
@@ -2344,7 +2366,7 @@ namespace FBoothApp
                 SendButton.IsEnabled = true;
                 SendButton.Opacity = 1.0;
             }
-        }
+        }*/
 
 
         public void LoadBookedServices(List<BookingServiceResponse> bookingServices)
@@ -2448,73 +2470,11 @@ namespace FBoothApp
 
 
 
-        // Hàm xử lý khi người dùng click vào dịch vụ đã đặt trong tab "Booked Services"
-        private bool isServiceSelected = false; // Flag to check if a service is selected
-        private ServiceType currentServiceType;
+        // Hàm xử lý khi người dùng click vào dịch vụ đã đặt trong tab "Booked Services" // Flag to check if a service is selected
+        private ServiceType currentServiceType; 
+        private bool isServiceSelected = false;
 
-
-        private void BookedService_Click(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            if (button != null)
-            {
-                var border = VisualTreeHelper.GetParent(button) as Border;
-                var serviceData = button.DataContext as dynamic;
-
-                if (serviceData != null)
-                {
-                    var selectedService = serviceData.Service;
-                    currentServiceType = selectedService.ServiceType;
-                    isServiceSelected = true;
-
-                    // Unselect all photos when a new service is selected
-                    UnselectAllPhotos();
-
-                    // Update the appearance of the buttons
-                    UpdateServiceButtons();
-
-                    // Make the current button and its border appear more prominent
-                    if (border != null)
-                    {
-                        border.Background = new SolidColorBrush(Colors.Orange);
-                        button.Foreground = new SolidColorBrush(Colors.White);
-                    }
-
-                    // Ensure only relevant UI elements are shown
-                    if (currentServiceType == ServiceType.EmailSending)
-                    {
-                        SendEmailButton.Visibility = Visibility.Visible;
-                        PrintButton.Visibility = Visibility.Collapsed;
-                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
-                    }
-                    else if (currentServiceType == ServiceType.Printing)
-                    {
-                        PrintButton.Visibility = Visibility.Visible;
-                        SendEmailButton.Visibility = Visibility.Collapsed;
-                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
-
-                    }
-                    else if (currentServiceType == ServiceType.CreatingQR)
-                    {
-                        CreateQRCodeButton.Visibility = Visibility.Visible;
-                        SendEmailButton.Visibility = Visibility.Collapsed;
-                        PrintButton.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        SendEmailButton.Visibility = Visibility.Collapsed;
-                        PrintButton.Visibility = Visibility.Collapsed;
-                        CreateQRCodeButton.Visibility = Visibility.Collapsed;
-                    }
-
-                    BookingPhotoThumbnailGrid.Visibility = Visibility.Visible;
-                }
-            }
-        }
-
-
-
-
+        
         private void UnselectAllPhotos()
         {
             // Loop through all selected photos and unselect them
@@ -2634,8 +2594,8 @@ namespace FBoothApp
             sliderTimer.Start();
             slider(null, null);
 
-            RoundedTextBox.Clear();
-            RoundedTextBox_LostFocus(null, null);
+            /*RoundedTextBox.Clear();
+            RoundedTextBox_LostFocus(null, null);*/
             BorderPanel.Visibility = Visibility.Visible;
 
             checkEndTimeTimer?.Stop();
@@ -2654,7 +2614,7 @@ namespace FBoothApp
                 MessageBox.Show("Closing booking...");
 
                 // Gọi phương thức CloseBookingAsync để gửi yêu cầu đóng booking tới API
-                bool isClosed = await _apiServices.CloseBookingAsync(BoothID, BookingID);
+                bool isClosed = await _apiServices.CloseBookingAsync(Guid.Parse("28110B4A-BF04-4C04-A19B-1B91D976EE7C"), BookingID);
 
                 if (isClosed)
                 {

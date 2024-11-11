@@ -23,11 +23,10 @@ namespace FBoothApp
     public partial class EmailSendDialog : Window
     {
 
-        public EmailSendDialog(string question, string defaultAnswer = "")
+        public EmailSendDialog()
         {
             InitializeComponent();
-            textBoxEmailAnswer.Text = defaultAnswer;
-
+            ShowVirtualKeyboard();
         }
 
         public static bool IsValidEmail(string email)
@@ -79,6 +78,25 @@ namespace FBoothApp
         private void ButtonCancel_OnClick(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void ShowVirtualKeyboard()
+        {
+            var virtualKeyboard = new VirtualKeyboard();
+            virtualKeyboard.KeyPressed += VirtualKeyboard_KeyPressed;
+            virtualKeyboard.Show();
+        }
+
+        private void VirtualKeyboard_KeyPressed(string key)
+        {
+            if (key == "DELETE" && textBoxEmailAnswer.Text.Length > 0)
+            {
+                textBoxEmailAnswer.Text = textBoxEmailAnswer.Text.Substring(0, textBoxEmailAnswer.Text.Length - 1);
+            }
+            else
+            {
+                textBoxEmailAnswer.Text += key;
+            }
         }
     }
 }
